@@ -13,6 +13,8 @@ RUN set -x \
   && cp out_gstdout.so tailing-sidecar/lib
 
 FROM fluent/fluent-bit:1.6.8
+ENV LOG_LEVEL=warning
+
 COPY --from=go-builder \
   /build/tailing-sidecar/ \
   /tailing-sidecar/
