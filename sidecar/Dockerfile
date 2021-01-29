@@ -1,23 +1,15 @@
-FROM golang:1.14 as go-builder
+FROM golang:1.15 as go-builder
 RUN mkdir /build
-ADD ./src/go /build/
-
+ADD ./out_gstdout /build/
 WORKDIR /build
-RUN set -x \
-  && go get github.com/fluent/fluent-bit-go/output \
-  && go build -buildmode=c-shared -o out_gstdout.so .
-
-RUN set -x \
-  && mkdir -p tailing-sidecar/lib \
-  && mkdir -p tailing-sidecar/var \
-  && cp out_gstdout.so tailing-sidecar/lib
+RUN make all
 
 FROM fluent/fluent-bit:1.6.8
 ENV LOG_LEVEL=warning
 
 COPY --from=go-builder \
-  /build/tailing-sidecar/ \
-  /tailing-sidecar/
+  /build/out_gstdout.so \
+  /tailing-sidecar/lib/
 
 COPY conf/fluent-bit.conf \
   conf/plugins.conf \
