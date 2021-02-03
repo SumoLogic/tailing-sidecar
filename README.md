@@ -139,6 +139,44 @@ example2: 3 Wed Jan 27 11:59:31 UTC 2021
 ...
 ```
 
+## Testing in Vagrant environment
+
+### Prerequisites
+
+Please install the following:
+
+- [VirtualBox](https://www.virtualbox.org/)
+- [Vagrant](https://www.vagrantup.com/)
+- [vagrant-disksize](https://github.com/sprotheroe/vagrant-disksize) plugin
+
+### Setting up
+
+Start and provision the Vagrant environment:
+
+```bash
+vagrant up
+```
+
+Connect to virtual machine:
+
+```bash
+vagrant ssh
+```
+
+### Build and run tailing sidecar
+
+Build and push docker image to local container registry:
+
+```bash
+/tailing-sidecar/sidecar/Makefile
+```
+
+Run example Pod:
+
+```bash
+kubectl apply -f /tailing-sidecar/sidecar/examples/pod_with_tailing_sidecars.yaml
+```
+
 ### License
 
 This project is released under the [Apache 2.0 License](LICENSE).

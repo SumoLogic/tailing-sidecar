@@ -1,5 +1,18 @@
+#!/usr/bin/make -f
+
+# mkfile_path is absolute path of this file
+# The intention is to be able to run this file from any location
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+
+# root_dir is a root directory of the project (github repo)
+root_dir := $(dir $(abspath $(mkfile_path)/..))
+
+TAG ?= "localhost:32000/sumologic/tailing-sidecar:demo"
+
+all: build push
+
 build:
-	docker build . --tag $(TAG)
+	docker build --tag $(TAG) --file ${root_dir}sidecar/Dockerfile ${root_dir}sidecar/
 
 run: build
 	docker run --rm -it \
