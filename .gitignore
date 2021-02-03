@@ -1,0 +1,9 @@
+# Vagrant ignores
+.vagrant
+ubuntu-bionic-18.04-cloudimg-console.log
+.kube-config
+
+# Fluent Bit ignores
+sidecar/out_gstdout/out_gstdout.h
+sidecar/out_gstdout/out_gstdout.so
+sidecar/var/
