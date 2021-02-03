@@ -1,0 +1,16 @@
+name: PRs checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'release-v[0-9]+.[0-9]+'
+
+jobs:
+  build-image:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build tailing-sidecar image
+        working-directory: ./sidecar
+        run: make build TAG=localhost:32000/sumologic/tailing-sidecar:demo
