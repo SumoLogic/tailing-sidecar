@@ -14,3 +14,34 @@ jobs:
       - name: Build tailing-sidecar image
         working-directory: ./sidecar
         run: make build TAG=localhost:32000/sumologic/tailing-sidecar:demo
+
+  create-pod-with-sidecars:
+    name: Create Pod with sidecars in k3d
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AbsaOSS/k3d-action
+        id: single-cluster
+        name: Create single k3d Cluster with Registry
+        with:
+          cluster-name: "test-cluster"
+          use-default-registry: true
+          args: >-
+            --agents 1
+            --no-lb
+            --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+      - name: Build tailing-sidecar image
+        working-directory: ./sidecar
+        run: make build TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Push tailing-sidecar image
+        run: make push TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Change tailing-sidecar image in example Pod
+        run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:demo/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
+      - name: Create Pod with sidecars
+        run: kubectl apply -f sidecar/examples/pod_with_tailing_sidecars.yaml
+      - name: Wait for Pod to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod example-with-tailling-sidecars
+      - name: Check logs from sidecar1
+        run: kubectl logs --tail 5 example-with-tailling-sidecars sidecar1
+      - name: Check logs from sidecar2
+        run: kubectl logs --tail 5 example-with-tailling-sidecars sidecar2
