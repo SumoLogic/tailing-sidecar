@@ -1,7 +1,10 @@
 # sumologic-tailing-sidecar
 
-**tailing sidecar** is a cluster-level logging agent for Kubernetes using
-[Fluent Bit](https://fluentbit.io/) as the underlying logging component.
+**tailing sidecar** is a cluster-level logging agent for Kubernetes.
+
+It helps with [tailing](https://en.wikipedia.org/wiki/Tail_(Unix)) files in Kubernetes, handling situations like the file not being there when tailing starts, tailing multiple files, rotating files, etc.
+
+It uses [Fluent Bit](https://fluentbit.io/) under the hood, benefiting from its performance.
 
 For more information about cluster-level logging architecture please read Kubernetes
 [documentation](https://kubernetes.io/docs/concepts/cluster-administration/logging/#cluster-level-logging-architectures).
