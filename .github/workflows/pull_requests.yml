@@ -44,3 +44,19 @@ jobs:
         run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar1 | grep example1 | wc -l) == 5 ? 0 : 1 ))"
       - name: Check logs from sidecar2
         run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar2 | grep example2 | wc -l) == 5 ? 0 : 1 ))"
+  
+  build-operator-image:
+    name: Build tailing sidecar operator image
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        go: [ '1.15', '1.14' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Run tests and build tailing sidecar operator image
+        working-directory: ./operator
+        run: make docker-build
