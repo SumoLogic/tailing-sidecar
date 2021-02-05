@@ -49,3 +49,13 @@ mv operator-sdk_linux_amd64 /usr/local/bin/operator-sdk
 # Install kustomize
 curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 mv kustomize /usr/local/bin/
+
+# Check if k8s is ready
+while true; do
+  kubectl -n kube-system get services 1>/dev/null 2>&1 && break
+  echo 'Waiting for k8s server'
+  sleep 1
+done
+
+# Deploy cert manger
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml

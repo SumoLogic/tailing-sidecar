@@ -23,13 +23,18 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type SidecarConfig struct {
+	File   string `json:"file,omitempty"`
+	Volume string `json:"volume,omitempty"`
+}
+
 // TailingSidecarSpec defines the desired state of TailingSidecar
 type TailingSidecarSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of TailingSidecar. Edit TailingSidecar_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Configs contains configurations for tailing sidecars
+	Configs map[string]SidecarConfig `json:"configs,omitempty"`
 }
 
 // TailingSidecarStatus defines the observed state of TailingSidecar

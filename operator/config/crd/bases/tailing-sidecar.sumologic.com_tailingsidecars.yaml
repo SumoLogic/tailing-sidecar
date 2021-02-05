@@ -36,10 +36,16 @@ spec:
         spec:
           description: TailingSidecarSpec defines the desired state of TailingSidecar
           properties:
-            foo:
-              description: Foo is an example field of TailingSidecar. Edit TailingSidecar_types.go
-                to remove/update
-              type: string
+            configs:
+              additionalProperties:
+                properties:
+                  file:
+                    type: string
+                  volume:
+                    type: string
+                type: object
+              description: Configs contains configurations for tailing sidecars
+              type: object
           type: object
         status:
           description: TailingSidecarStatus defines the observed state of TailingSidecar

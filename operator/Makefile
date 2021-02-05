@@ -56,6 +56,63 @@ deploy: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
+# Remove resources created with make deploy
+teardown:
+	$(KUSTOMIZE) build config/default | kubectl delete -f -
+
+# Deploy examples
+deploy-examples:
+	kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
+	kubectl apply -f examples/pod_with_annotations.yaml
+	kubectl apply -f examples/deployment_with_annotations.yaml
+	kubectl apply -f examples/pod_without_annotations.yaml
+
+# Deploy examples update
+deploy-examples-update:
+	kubectl apply -f examples/pod_with_annotations_update.yaml --force
+	kubectl apply -f examples/deployment_with_annotations_update.yaml --force
+
+# Remove resources created with make deploy-examples
+teardown-examples:
+	kubectl delete -n tailing-sidecar-system pod pod-without-annotations
+	kubectl delete -n tailing-sidecar-system pod pod-with-annotations
+	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
+	kubectl delete -n tailing-sidecar-system TailingSidecar tailingsidecar-sample
+
+# Check resources create with make deploy-examples
+check-examples:
+	kubectl get all -n tailing-sidecar-system
+
+	kubectl logs pod-with-annotations tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations tailing-sidecar1 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations tailing-sidecar2 -n tailing-sidecar-system --tail 5
+
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
+		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
+		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
+		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
+		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
+		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
+		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
+		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
+		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
+		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+
+# Check resources create with make deploy-examples-update
+check-examples-update:
+	kubectl get all -n tailing-sidecar-system
+	kubectl logs pod-with-annotations tailing-sidecar3 -n tailing-sidecar-system --tail 5
+
 # Generate manifests e.g. CRD, RBAC etc.
 manifests: controller-gen
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases

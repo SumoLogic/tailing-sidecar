@@ -3,5 +3,7 @@ kind: TailingSidecar
 metadata:
   name: tailingsidecar-sample
 spec:
-  # Add fields here
-  foo: bar
+  configs:
+    sidecarconfig:
+      volume: varlogconfig
+      file: /varconfig/log/example2.log
