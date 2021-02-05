@@ -1,0 +1,20 @@
+# permissions for end users to view tailingsidecars.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tailingsidecar-viewer-role
+rules:
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars/status
+  verbs:
+  - get

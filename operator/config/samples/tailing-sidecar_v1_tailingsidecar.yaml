@@ -1,0 +1,7 @@
+apiVersion: tailing-sidecar.sumologic.com/v1
+kind: TailingSidecar
+metadata:
+  name: tailingsidecar-sample
+spec:
+  # Add fields here
+  foo: bar

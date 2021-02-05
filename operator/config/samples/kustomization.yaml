@@ -1,0 +1,4 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- tailing-sidecar_v1_tailingsidecar.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
