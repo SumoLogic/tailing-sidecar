@@ -1,0 +1,28 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars/status
+  verbs:
+  - get
+  - patch
+  - update
