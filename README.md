@@ -1,8 +1,10 @@
-# sumologic-tailing-sidecar
+# tailing-sidecar
 
-**tailing sidecar** is a cluster-level logging agent for Kubernetes.
+**tailing sidecar** is a [streaming sidecar container](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container) - the cluster-level logging agent for Kubernetes.
 
-It helps with [tailing](https://en.wikipedia.org/wiki/Tail_(Unix)) files in Kubernetes, handling situations like the file not being there when tailing starts, tailing multiple files, rotating files, etc.
+It helps when your application inside the Pod cannot write to standard output and/or standard error stream or when it outputs additional logs to a file instead (eg. the gc.log).
+
+It [tails](https://en.wikipedia.org/wiki/Tail_(Unix)) the files inside Kubernetes Pods, handling situations like the file not being there when tailing starts, tailing multiple files, rotating files, etc.
 
 It uses [Fluent Bit](https://fluentbit.io/) under the hood, benefiting from its performance.
 
