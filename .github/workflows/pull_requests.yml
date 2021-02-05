@@ -1,0 +1,46 @@
+name: PRs checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'release-v[0-9]+.[0-9]+'
+
+jobs:
+  build-image:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build tailing-sidecar image
+        working-directory: ./sidecar
+        run: make build
+
+  create-pod-with-sidecars:
+    name: Create Pod with sidecars
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AbsaOSS/k3d-action@v1.1.0
+        id: single-cluster
+        name: Create single k3d Cluster with Registry
+        with:
+          cluster-name: "test-cluster"
+          use-default-registry: true
+          args: >-
+            --agents 1
+            --no-lb
+            --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+      - name: Build and push tailing-sidecar image
+        run: sidecar/Makefile TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Change tailing-sidecar image in example Pod
+        run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:demo/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
+      - name: Create Pod with sidecars
+        run: kubectl apply -f sidecar/examples/pod_with_tailing_sidecars.yaml
+      - name: Wait for Pod to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod example-with-tailling-sidecars
+      - name: Wait for logs to be generated
+        run: sleep 5
+      - name: Check logs from sidecar1
+        run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar1 | grep example1 | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check logs from sidecar2
+        run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar2 | grep example2 | wc -l) == 5 ? 0 : 1 ))"
