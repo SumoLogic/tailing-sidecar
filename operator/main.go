@@ -26,9 +26,11 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 	"github.com/SumoLogic/tailing-sidecar/operator/controllers"
+	"github.com/SumoLogic/tailing-sidecar/operator/handler"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -76,6 +78,8 @@ func main() {
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
+
+	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{Handler: &handler.PodExtender{Client: mgr.GetClient()}})
 
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {

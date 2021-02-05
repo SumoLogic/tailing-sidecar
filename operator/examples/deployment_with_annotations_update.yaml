@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-with-annotations
+  namespace: tailing-sidecar-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: deployment-with-annotations
+  template:
+    metadata:
+      labels:
+        app: deployment-with-annotations
+      annotations:
+        tailing-sidecar: varlog:/var/log/example0.log;varlog:/var/log/example1.log
+    spec:
+      containers:
+      - name: count
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - >
+          i=0;
+          while true;
+          do
+            echo "example0: $i $(date)" >> /var/log/example0.log;
+            echo "example1: $i $(date)" >> /var/log/example1.log;
+            echo "example2: $i $(date)" >> /varconfig/log/example2.log;
+            i=$((i+1));
+            sleep 1;
+          done
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlogconfig
+          mountPath: /varconfig/log
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      - name: varlogconfig
+        emptyDir: {}
