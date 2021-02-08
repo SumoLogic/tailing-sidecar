@@ -36,7 +36,6 @@ import (
 
 const (
 	sidecarEnv             = "PATH_TO_TAIL"
-	sidecarImage           = "localhost:32000/sumologic/tailing-sidecar:demo"
 	sidecarContainerName   = "tailing-sidecar%d"
 	sidecarContainerPrefix = "tailing-sidecar"
 
@@ -52,8 +51,9 @@ var (
 
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
-	Client  client.Client
-	decoder *admission.Decoder
+	Client              client.Client
+	TailingSidecarImage string
+	decoder             *admission.Decoder
 }
 
 // Handle handle requests to create/update Pod and extend it by adding tailing sidecars
@@ -135,7 +135,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 					})
 
 				container := corev1.Container{
-					Image: sidecarImage,
+					Image: e.TailingSidecarImage,
 					Name:  containerName,
 					Env: []corev1.EnvVar{{
 						Name:  sidecarEnv,
