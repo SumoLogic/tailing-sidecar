@@ -1,0 +1,10 @@
+Dockerfile
+Makefile
+PROJECT
+bin
+config
+cover.out
+examples
+hack
+testbin
+*.log
