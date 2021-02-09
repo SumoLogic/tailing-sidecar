@@ -70,8 +70,24 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		"Operation", req.Operation,
 	)
 
-	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; ok {
+	e.extendPod(ctx, pod)
 
+	marshaledPod, err := json.Marshal(pod)
+	if err != nil {
+		return admission.Errored(http.StatusInternalServerError, err)
+	}
+	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
+}
+
+// InjectDecoder injects the decoder.
+func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
+	e.decoder = d
+	return nil
+}
+
+// extendPod extends Pod by adding tailing sidecars according to configuration in annotation
+func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
+	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; ok {
 		// Get TailingSidecars from namespace
 		tailingSidecarList := &tailingsidecarv1.TailingSidecarList{}
 		tailingSidecarListOpts := []client.ListOption{
@@ -156,19 +172,8 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 			pod.Spec.Containers = append(podContainers, containers...)
 		}
 	}
-
-	marshaledPod, err := json.Marshal(pod)
-	if err != nil {
-		return admission.Errored(http.StatusInternalServerError, err)
-	}
-	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
 }
 
-// InjectDecoder injects the decoder.
-func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
-	e.decoder = d
-	return nil
-}
 func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarConfig) []corev1.Container {
 	podContainers := make([]corev1.Container, 0)
 	for _, container := range containers {
