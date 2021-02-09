@@ -7,7 +7,8 @@ on:
       - 'release-v[0-9]+.[0-9]+'
 
 jobs:
-  build-image:
+  build-sidecar-image:
+    name: Build tailing sidecar image
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -15,11 +16,40 @@ jobs:
         working-directory: ./sidecar
         run: make build
 
-  create-pod-with-sidecars:
-    name: Create Pod with sidecars
+  build-operator:
+    name: Build tailing sidecar operator
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        go: [ '1.15', '1.14' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Run tests for tailing sidecar operator
+        working-directory: ./operator
+        run: make test
+      - name: Build tailing sidecar operator
+        working-directory: ./operator
+        run: make manager
+
+  build-operator-image:
+    name: Build tailing sidecar operator image
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: Build tailing sidecar operator image
+        working-directory: ./operator
+        run: make docker-build
+
+  create-resources-with-sidecars:
+    name: Create resources with sidecars
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: imranismail/setup-kustomize@v1
       - uses: AbsaOSS/k3d-action@v1.1.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
@@ -30,9 +60,10 @@ jobs:
             --agents 1
             --no-lb
             --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
-      - name: Build and push tailing-sidecar image
+
+      - name: Build and push tailing sidecar image
         run: sidecar/Makefile TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
-      - name: Change tailing-sidecar image in example Pod
+      - name: Change tailing sidecar image in example Pod
         run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:demo/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
       - name: Create Pod with sidecars
         run: kubectl apply -f sidecar/examples/pod_with_tailing_sidecars.yaml
@@ -44,19 +75,73 @@ jobs:
         run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar1 | grep example1 | wc -l) == 5 ? 0 : 1 ))"
       - name: Check logs from sidecar2
         run: "exit $(( $(kubectl logs --tail 5 example-with-tailling-sidecars sidecar2 | grep example2 | wc -l) == 5 ? 0 : 1 ))"
-  
-  build-operator-image:
-    name: Build tailing sidecar operator image
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        go: [ '1.15', '1.14' ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go }}
-      - name: Run tests and build tailing sidecar operator image
+      - name: Deploy cert manager
+        run: kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+      - name: Wait for cert manager to be ready
+        run: kubectl wait --for=condition=ready --timeout 300s pod -l "app.kubernetes.io/instance=cert-manager" -n cert-manager
+      - name: Build, push and deploy tailing sidecar operator
         working-directory: ./operator
-        run: make docker-build
+        run: make IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
+      - name: Wait for tailing operator to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod -l control-plane=controller-manager -n tailing-sidecar-system
+      # Create resources
+      - name: Create TailingSidecar with configuration
+        working-directory: ./operator
+        run: kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
+      - name: Create Pod with annotations
+        working-directory: ./operator
+        run: kubectl apply -f examples/pod_with_annotations.yaml
+      - name: Create StatefulSet with annotations
+        working-directory: ./operator
+        run: kubectl apply -f examples/statefulset_with_annotations.yaml
+      - name: Create Deployment with annotations
+        working-directory: ./operator
+        run: kubectl apply -f examples/deployment_with_annotations.yaml
+      - name: Create DaemonSet with annotations
+        working-directory: ./operator
+        run: kubectl apply -f examples/daemonset_with_annotations.yaml
+      # Wait for resources
+      - name: Wait for Pod to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod -l app=pod-with-annotations -n tailing-sidecar-system
+      - name: Wait for StatefulSet to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod -l app=statefulset-with-annotations -n tailing-sidecar-system
+      - name: Wait for Deployment to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod -l app=deployment-with-annotations -n tailing-sidecar-system
+      - name: Wait for DaemonSet to be ready
+        run: kubectl wait --for=condition=ready --timeout 60s pod -l app=daemonset-with-annotations -n tailing-sidecar-system
+      - name: Wait for logs to be generated
+        run: sleep 5
+      # Check Pod logs
+      - name: Check Pod logs from tailing-sidecar0
+        run: "exit $(( $(kubectl logs pod-with-annotations tailing-sidecar0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check Pod logs from tailing-sidecar1
+        run: "exit $(( $(kubectl logs pod-with-annotations tailing-sidecar1 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check Pod logs from tailing-sidecar2
+        run: "exit $(( $(kubectl logs pod-with-annotations tailing-sidecar2 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      # Check StatefulSet logs
+      - name: Check StatefulSet logs from tailing-sidecar0
+        run: "exit $(( $(kubectl logs statefulset-with-annotations-0 tailing-sidecar0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check StatefulSet logs from tailing-sidecar1
+        run: "exit $(( $(kubectl logs statefulset-with-annotations-0 tailing-sidecar1 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check StatefulSet logs from tailing-sidecar2
+        run: "exit $(( $(kubectl logs statefulset-with-annotations-0 tailing-sidecar2 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+        # Check Deployment logs
+      - name: Check Deployment logs from tailing-sidecar0
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check Deployment logs from tailing-sidecar1
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar1 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check Deployment logs from tailing-sidecar2
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar2 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+        # Check DaemonSet logs
+      - name: Check DaemonSet logs from tailing-sidecar0
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=daemonset-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check DaemonSet logs from tailing-sidecar1
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=daemonset-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar1 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
+      - name: Check DaemonSet logs from tailing-sidecar2
+        run: "exit $(( $(kubectl logs $(kubectl get pod -l app=daemonset-with-annotations -n tailing-sidecar-system -o jsonpath='{.items[0].metadata.name}')
+        tailing-sidecar2 -n tailing-sidecar-system --tail 5 | grep example | wc -l) == 5 ? 0 : 1 ))"
