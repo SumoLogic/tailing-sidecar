@@ -5,6 +5,8 @@ metadata:
   namespace: tailing-sidecar-system
   annotations:
     tailing-sidecar: sidecarconfig;varlog:/var/log/example0.log;varlog:/var/log/example1.log
+  labels:
+    app: pod-with-annotations
 spec:
   containers:
   - name: count
