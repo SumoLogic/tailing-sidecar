@@ -103,7 +103,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 		// Join configurations from TailingSidecars
 		tailingSidecarConfigs := joinTailinSidecarConfigs(tailingSidecarList.Items)
 
-		// Parse configuration from annotation and join them with configurations from TailingSidecars
+		// Parse configurations from annotation and join them with configurations from TailingSidecars
 		configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
 
 		hostPathDir := setHostPath(pod)
@@ -174,6 +174,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 	}
 }
 
+// removeDeletedSidecars removes deleted tailing sidecar containers from Pod specification
 func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarConfig) []corev1.Container {
 	podContainers := make([]corev1.Container, 0)
 	for _, container := range containers {
@@ -190,6 +191,7 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 	return podContainers
 }
 
+// joinTailinSidecarConfigs joins configurations defined in TailingSidecar resources
 func joinTailinSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) map[string]tailingsidecarv1.SidecarConfig {
 	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarConfig, 0)
 	for _, tailitailinSidecar := range tailinSidecars {
@@ -200,6 +202,7 @@ func joinTailinSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) 
 	return sidecarConfigs
 }
 
+// isSidecarAvailable checks if tailing sidecar container with given configuration exists in Pod specification
 func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarConfig) bool {
 	for _, container := range containers {
 		if strings.HasPrefix(container.Name, sidecarContainerPrefix) &&
@@ -211,6 +214,7 @@ func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.S
 	return false
 }
 
+// isSidecarEnvAvailable checks if PATH_TO_TAIL env is defined and has specific value
 func isSidecarEnvAvailable(envs []corev1.EnvVar, envValue string) bool {
 	for _, env := range envs {
 		if env.Name == sidecarEnv && env.Value == envValue {
@@ -220,6 +224,7 @@ func isSidecarEnvAvailable(envs []corev1.EnvVar, envValue string) bool {
 	return false
 }
 
+// isVolumeMountAvailable checks is volume with given name is available as volume mounted to the container
 func isVolumeMountAvailable(volumeMounts []corev1.VolumeMount, volumeName string) bool {
 	for _, volumeMount := range volumeMounts {
 		if volumeMount.Name == volumeName {
@@ -229,6 +234,7 @@ func isVolumeMountAvailable(volumeMounts []corev1.VolumeMount, volumeName string
 	return false
 }
 
+// getVolume returns volume with given name
 func getVolume(containers []corev1.Container, volumeName string) (corev1.VolumeMount, error) {
 	for _, container := range containers {
 		for _, volume := range container.VolumeMounts {
@@ -240,6 +246,8 @@ func getVolume(containers []corev1.Container, volumeName string) (corev1.VolumeM
 	return corev1.VolumeMount{}, fmt.Errorf("Volume was not found, volume: %s", volumeName)
 }
 
+// getTailingSidecars returns tailing sidecar containers,
+// tailing sidecar containers have name starting with "tailing-sidecar" prefix
 func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 	tailingSidecars := make([]corev1.Container, 0)
 	for _, container := range containers {
@@ -250,6 +258,7 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 	return tailingSidecars
 }
 
+// setHostPath returns path to host path directory for Fluent Bit database
 func setHostPath(pod *corev1.Pod) string {
 	if pod.ObjectMeta.Namespace != "" && pod.ObjectMeta.Name != "" {
 		return fmt.Sprintf(hostPathDirPath, pod.ObjectMeta.Namespace, pod.ObjectMeta.Name)

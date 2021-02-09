@@ -36,6 +36,7 @@ const (
 	sidecarAnnotation = "tailing-sidecar"
 )
 
+// getConfigs parses configurations from annotation and joins them with configurations from TailingSidecars
 func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailingsidecarv1.SidecarConfig) []tailingsidecarv1.SidecarConfig {
 	configs := make([]tailingsidecarv1.SidecarConfig, 0)
 
