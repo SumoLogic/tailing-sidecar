@@ -70,7 +70,9 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		"GenerateName", pod.ObjectMeta.GenerateName,
 		"Operation", req.Operation)
 
-	e.extendPod(ctx, pod)
+	if err := e.extendPod(ctx, pod); err != nil {
+		return admission.Errored(http.StatusInternalServerError, err)
+	}
 
 	marshaledPod, err := json.Marshal(pod)
 	if err != nil {
@@ -86,10 +88,9 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
-func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
-	_, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]
-	if !ok {
-		return
+func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
+	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; !ok {
+		return nil
 	}
 
 	// Get TailingSidecars from namespace
@@ -102,6 +103,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 		handlerLog.Error(err,
 			"Failed to get list of TailingSidecars in namespace",
 			"namespace", pod.ObjectMeta.Namespace)
+		return err
 	}
 
 	// Join configurations from TailingSidecars
@@ -115,7 +117,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 			"Name", pod.ObjectMeta.Name,
 			"Namespace", pod.ObjectMeta.Namespace,
 			"GenerateName", pod.ObjectMeta.GenerateName)
-		return
+		return nil
 	}
 
 	handlerLog.Info("Found configuration for Pod",
@@ -180,6 +182,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 	}
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
 	pod.Spec.Containers = append(podContainers, containers...)
+	return nil
 }
 
 // removeDeletedSidecars removes deleted tailing sidecar containers from Pod specification
