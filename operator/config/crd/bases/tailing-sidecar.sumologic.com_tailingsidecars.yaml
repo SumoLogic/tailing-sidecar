@@ -44,7 +44,8 @@ spec:
                   volume:
                     type: string
                 type: object
-              description: Configs contains configurations for tailing sidecars
+              description: Configs contains configurations for tailing sidecars map
+                key indicates name of configuration which can be used in annotation
               type: object
           type: object
         status:

@@ -89,7 +89,7 @@ teardown-examples:
 	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
 	kubectl delete -n tailing-sidecar-system TailingSidecar tailingsidecar-sample
 
-# Check resources create with make deploy-examples
+# Check resources created with make deploy-examples
 check-examples:
 	kubectl get all -n tailing-sidecar-system
 
@@ -118,7 +118,7 @@ check-examples:
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
 		tailing-sidecar2 -n tailing-sidecar-system --tail 5
 
-# Check resources create with make deploy-examples-update
+# Check resources created with make deploy-examples-update
 check-examples-update:
 	kubectl get all -n tailing-sidecar-system
 	kubectl logs pod-with-annotations tailing-sidecar3 -n tailing-sidecar-system --tail 5

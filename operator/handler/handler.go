@@ -56,7 +56,7 @@ type PodExtender struct {
 	decoder             *admission.Decoder
 }
 
-// Handle handle requests to create/update Pod and extend it by adding tailing sidecars
+// Handle handles requests to create/update Pod and extends it by adding tailing sidecars
 func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admission.Response {
 	pod := &corev1.Pod{}
 	err := e.decoder.Decode(req, pod)
@@ -67,8 +67,8 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	handlerLog.Info("Handling request for Pod",
 		"Name", pod.ObjectMeta.Name,
 		"Namespace", pod.ObjectMeta.Namespace,
-		"Operation", req.Operation,
-	)
+		"GenerateName", pod.ObjectMeta.GenerateName,
+		"Operation", req.Operation)
 
 	e.extendPod(ctx, pod)
 
@@ -79,7 +79,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
 }
 
-// InjectDecoder injects the decoder.
+// InjectDecoder injects the decoder
 func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 	e.decoder = d
 	return nil
@@ -87,7 +87,6 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
 func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
-
 	_, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]
 	if !ok {
 		return
@@ -113,14 +112,16 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 
 	if len(configs) == 0 {
 		handlerLog.Info("Missing configuration for Pod",
-			"Pod Name", pod.ObjectMeta.Name,
-			"Namespace", pod.ObjectMeta.Namespace)
+			"Name", pod.ObjectMeta.Name,
+			"Namespace", pod.ObjectMeta.Namespace,
+			"GenerateName", pod.ObjectMeta.GenerateName)
 		return
 	}
 
 	handlerLog.Info("Found configuration for Pod",
 		"Pod Name", pod.ObjectMeta.Name,
-		"Namespace", pod.ObjectMeta.Namespace)
+		"Namespace", pod.ObjectMeta.Namespace,
+		"GenerateName", pod.ObjectMeta.GenerateName)
 
 	containers := make([]corev1.Container, 0)
 	hostPathDir := setHostPath(pod)
@@ -140,7 +141,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
 			handlerLog.Error(err,
 				"Failed to find volume",
 				"Pod Name", pod.ObjectMeta.Name,
-				"Namespace", pod.ObjectMeta.Namespace)
+				"Namespace", pod.ObjectMeta.Namespace,
+				"GenerateName", pod.ObjectMeta.GenerateName)
 			continue
 		}
 
