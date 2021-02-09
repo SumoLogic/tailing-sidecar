@@ -87,91 +87,97 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
 func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) {
-	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; ok {
-		// Get TailingSidecars from namespace
-		tailingSidecarList := &tailingsidecarv1.TailingSidecarList{}
-		tailingSidecarListOpts := []client.ListOption{
-			client.InNamespace(pod.ObjectMeta.Namespace),
+
+	_, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]
+	if !ok {
+		return
+	}
+
+	// Get TailingSidecars from namespace
+	tailingSidecarList := &tailingsidecarv1.TailingSidecarList{}
+	tailingSidecarListOpts := []client.ListOption{
+		client.InNamespace(pod.ObjectMeta.Namespace),
+	}
+
+	if err := e.Client.List(ctx, tailingSidecarList, tailingSidecarListOpts...); err != nil {
+		handlerLog.Error(err,
+			"Failed to get list of TailingSidecars in namespace",
+			"namespace", pod.ObjectMeta.Namespace)
+	}
+
+	// Join configurations from TailingSidecars
+	tailingSidecarConfigs := joinTailinSidecarConfigs(tailingSidecarList.Items)
+
+	// Parse configurations from annotation and join them with configurations from TailingSidecars
+	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
+
+	if len(configs) == 0 {
+		handlerLog.Info("Missing configuration for Pod",
+			"Pod Name", pod.ObjectMeta.Name,
+			"Namespace", pod.ObjectMeta.Namespace)
+		return
+	}
+
+	handlerLog.Info("Found configuration for Pod",
+		"Pod Name", pod.ObjectMeta.Name,
+		"Namespace", pod.ObjectMeta.Namespace)
+
+	containers := make([]corev1.Container, 0)
+	hostPathDir := setHostPath(pod)
+	sidecarID := len(getTailingSidecars(pod.Spec.Containers))
+
+	for _, config := range configs {
+		if isSidecarAvailable(pod.Spec.Containers, config) {
+			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
+			handlerLog.Info("Tailing sidecar exists",
+				"file", config.File,
+				"volume", config.Volume)
+			continue
 		}
 
-		if err := e.Client.List(ctx, tailingSidecarList, tailingSidecarListOpts...); err != nil {
+		volume, err := getVolume(pod.Spec.Containers, config.Volume)
+		if err != nil {
 			handlerLog.Error(err,
-				"Failed to get list of TailingSidecars in namespace",
-				"namespace", pod.ObjectMeta.Namespace)
-		}
-
-		// Join configurations from TailingSidecars
-		tailingSidecarConfigs := joinTailinSidecarConfigs(tailingSidecarList.Items)
-
-		// Parse configurations from annotation and join them with configurations from TailingSidecars
-		configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
-
-		hostPathDir := setHostPath(pod)
-
-		// Add tailing sidecars to Pod
-		if len(configs) != 0 {
-			handlerLog.Info("Found configuration for Pod",
+				"Failed to find volume",
 				"Pod Name", pod.ObjectMeta.Name,
 				"Namespace", pod.ObjectMeta.Namespace)
-
-			containers := make([]corev1.Container, 0)
-
-			sidecarID := len(getTailingSidecars(pod.Spec.Containers))
-
-			for _, config := range configs {
-				if isSidecarAvailable(pod.Spec.Containers, config) {
-					// Do not add tailing sidecar if tailing sidecar with specific configuration exists
-					handlerLog.Info("Tailing sidecar exists",
-						"file", config.File,
-						"volume", config.Volume)
-					continue
-				}
-
-				volume, err := getVolume(pod.Spec.Containers, config.Volume)
-				if err != nil {
-					handlerLog.Error(err,
-						"Failed to find volume",
-						"Pod Name", pod.ObjectMeta.Name,
-						"Namespace", pod.ObjectMeta.Namespace)
-					continue
-				}
-
-				volumeName := fmt.Sprintf(hostPathVolumeName, sidecarID)
-				containerName := fmt.Sprintf(sidecarContainerName, sidecarID)
-				hostPath := fmt.Sprintf("%s/%s", hostPathDir, containerName)
-				pod.Spec.Volumes = append(pod.Spec.Volumes,
-					corev1.Volume{
-						Name: volumeName,
-						VolumeSource: corev1.VolumeSource{
-							HostPath: &corev1.HostPathVolumeSource{
-								Path: hostPath,
-								Type: &hostPathType,
-							},
-						},
-					})
-
-				container := corev1.Container{
-					Image: e.TailingSidecarImage,
-					Name:  containerName,
-					Env: []corev1.EnvVar{{
-						Name:  sidecarEnv,
-						Value: config.File,
-					}},
-					VolumeMounts: []corev1.VolumeMount{
-						volume,
-						{
-							Name:      volumeName,
-							MountPath: hostPathMountPath,
-						},
-					},
-				}
-				containers = append(containers, container)
-				sidecarID++
-			}
-			podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
-			pod.Spec.Containers = append(podContainers, containers...)
+			continue
 		}
+
+		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarID)
+		containerName := fmt.Sprintf(sidecarContainerName, sidecarID)
+		hostPath := fmt.Sprintf("%s/%s", hostPathDir, containerName)
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: volumeName,
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: hostPath,
+						Type: &hostPathType,
+					},
+				},
+			})
+
+		container := corev1.Container{
+			Image: e.TailingSidecarImage,
+			Name:  containerName,
+			Env: []corev1.EnvVar{{
+				Name:  sidecarEnv,
+				Value: config.File,
+			}},
+			VolumeMounts: []corev1.VolumeMount{
+				volume,
+				{
+					Name:      volumeName,
+					MountPath: hostPathMountPath,
+				},
+			},
+		}
+		containers = append(containers, container)
+		sidecarID++
 	}
+	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
+	pod.Spec.Containers = append(podContainers, containers...)
 }
 
 // removeDeletedSidecars removes deleted tailing sidecar containers from Pod specification
