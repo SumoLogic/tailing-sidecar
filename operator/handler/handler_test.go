@@ -19,14 +19,21 @@ package handler
 import (
 	"context"
 	"net/http"
+	"path/filepath"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 	admv1 "k8s.io/api/admission/v1beta1"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+
 	"k8s.io/apimachinery/pkg/runtime"
-	testclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
+	"k8s.io/client-go/kubernetes/scheme"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/envtest"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
@@ -35,18 +42,38 @@ func TestPodExtender(t *testing.T) {
 	RunSpecs(t, "PodExtender Suite")
 }
 
-var _ = Describe("Handler", func() {
+var _ = Describe("handler", func() {
+	logf.SetLogger(zap.LoggerTo(GinkgoWriter, true))
 
 	Context("PodExtender.Handle", func() {
 
-		decoder, err := admission.NewDecoder(runtime.NewScheme())
+		testEnv := &envtest.Environment{
+			CRDDirectoryPaths: []string{filepath.Join("..", "config", "crd", "bases")},
+		}
+		cfg, err := testEnv.Start()
+		It("starts test environment", func() {
+			Expect(err).ToNot(HaveOccurred())
+			Expect(cfg).ToNot(BeNil())
+		})
+
+		err = tailingsidecarv1.AddToScheme(scheme.Scheme)
+		It("adds TailingSidecar to scheme", func() {
+			Expect(err).ToNot(HaveOccurred())
+		})
+
+		k8sClient, clientErr := client.New(cfg, client.Options{Scheme: scheme.Scheme})
+		It("creates a new client", func() {
+			Expect(clientErr).ToNot(HaveOccurred())
+		})
+
+		decoder, err := admission.NewDecoder(scheme.Scheme)
 		It("creates decoder without any errors", func() {
 			Expect(err).To(BeNil())
 
 		})
 
 		podExtender := PodExtender{
-			Client:              testclient.NewFakeClient(),
+			Client:              k8sClient,
 			TailingSidecarImage: "tailing-sidecar-image:test",
 			decoder:             decoder,
 		}
@@ -64,7 +91,7 @@ var _ = Describe("Handler", func() {
 			resp := podExtender.Handle(context.Background(), request)
 			It("rejects request as decoder returns an error", func() {
 				Expect(resp.Allowed).To(BeFalse())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 				Expect(resp.Result.Code).Should(Equal(int32(http.StatusBadRequest)))
 			})
 		})
@@ -81,9 +108,9 @@ var _ = Describe("Handler", func() {
 
 			resp := podExtender.Handle(context.Background(), request)
 
-			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as there is missing tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 			})
 		})
 
@@ -110,9 +137,9 @@ var _ = Describe("Handler", func() {
 			}
 
 			resp := podExtender.Handle(context.Background(), request)
-			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as there is missing tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 			})
 		})
 
@@ -143,9 +170,9 @@ var _ = Describe("Handler", func() {
 			}
 
 			resp := podExtender.Handle(context.Background(), request)
-			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as there is missing tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 			})
 		})
 
@@ -175,9 +202,9 @@ var _ = Describe("Handler", func() {
 			}
 
 			resp := podExtender.Handle(context.Background(), request)
-			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as there is missing tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 			})
 		})
 
@@ -207,9 +234,9 @@ var _ = Describe("Handler", func() {
 			}
 
 			resp := podExtender.Handle(context.Background(), request)
-			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as there is missing tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patch).To(BeEmpty())
+				Expect(resp.Patches).To(BeEmpty())
 			})
 		})
 	})

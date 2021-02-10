@@ -64,6 +64,10 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		return admission.Errored(http.StatusBadRequest, err)
 	}
 
+	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; !ok {
+		return admission.Allowed("missing tailing-sidecar annotation, tailing sidecars not added")
+	}
+
 	handlerLog.Info("Handling request for Pod",
 		"Name", pod.ObjectMeta.Name,
 		"Namespace", pod.ObjectMeta.Namespace,
@@ -90,10 +94,6 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
 func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
-	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; !ok {
-		return nil
-	}
-
 	// Get TailingSidecars from namespace
 	tailingSidecarList := &tailingsidecarv1.TailingSidecarList{}
 	tailingSidecarListOpts := []client.ListOption{
