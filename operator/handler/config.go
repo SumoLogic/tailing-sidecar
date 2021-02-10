@@ -61,7 +61,8 @@ func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailing
 		case configPredefined:
 			if _, ok := sidecarConfigs[configParts[configNameIndex]]; !ok {
 				handlerLog.Info("Missing configuration in TailingSidecar configurations",
-					"configuration name", configParts[configNameIndex])
+					"configuration name", configParts[configNameIndex],
+				)
 				continue
 			}
 			configs = append(configs, sidecarConfigs[configParts[configNameIndex]])

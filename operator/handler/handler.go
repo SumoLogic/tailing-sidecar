@@ -68,7 +68,8 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		"Name", pod.ObjectMeta.Name,
 		"Namespace", pod.ObjectMeta.Namespace,
 		"GenerateName", pod.ObjectMeta.GenerateName,
-		"Operation", req.Operation)
+		"Operation", req.Operation,
+	)
 
 	if err := e.extendPod(ctx, pod); err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
@@ -102,7 +103,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	if err := e.Client.List(ctx, tailingSidecarList, tailingSidecarListOpts...); err != nil {
 		handlerLog.Error(err,
 			"Failed to get list of TailingSidecars in namespace",
-			"namespace", pod.ObjectMeta.Namespace)
+			"namespace", pod.ObjectMeta.Namespace,
+		)
 		return err
 	}
 
@@ -116,14 +118,16 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		handlerLog.Info("Missing configuration for Pod",
 			"Name", pod.ObjectMeta.Name,
 			"Namespace", pod.ObjectMeta.Namespace,
-			"GenerateName", pod.ObjectMeta.GenerateName)
+			"GenerateName", pod.ObjectMeta.GenerateName,
+		)
 		return nil
 	}
 
 	handlerLog.Info("Found configuration for Pod",
 		"Pod Name", pod.ObjectMeta.Name,
 		"Namespace", pod.ObjectMeta.Namespace,
-		"GenerateName", pod.ObjectMeta.GenerateName)
+		"GenerateName", pod.ObjectMeta.GenerateName,
+	)
 
 	containers := make([]corev1.Container, 0)
 	hostPathDir := getHostPath(pod)
@@ -134,7 +138,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
 				"file", config.File,
-				"volume", config.Volume)
+				"volume", config.Volume,
+			)
 			continue
 		}
 
@@ -144,7 +149,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 				"Failed to find volume",
 				"Pod Name", pod.ObjectMeta.Name,
 				"Namespace", pod.ObjectMeta.Namespace,
-				"GenerateName", pod.ObjectMeta.GenerateName)
+				"GenerateName", pod.ObjectMeta.GenerateName,
+			)
 			continue
 		}
 
@@ -254,7 +260,7 @@ func getVolume(containers []corev1.Container, volumeName string) (corev1.VolumeM
 			}
 		}
 	}
-	return corev1.VolumeMount{}, fmt.Errorf("Volume was not found, volume: %s", volumeName)
+	return corev1.VolumeMount{}, fmt.Errorf("volume was not found, volume: %s", volumeName)
 }
 
 // getTailingSidecars returns tailing sidecar containers,

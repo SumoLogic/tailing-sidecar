@@ -33,7 +33,7 @@ type TailingSidecarSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Configs contains configurations for tailing sidecars
+	// Configs contains configurations for tailing sidecars,
 	// map key indicates name of configuration which can be used in annotation
 	Configs map[string]SidecarConfig `json:"configs,omitempty"`
 }
