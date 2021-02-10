@@ -126,7 +126,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		"GenerateName", pod.ObjectMeta.GenerateName)
 
 	containers := make([]corev1.Container, 0)
-	hostPathDir := setHostPath(pod)
+	hostPathDir := getHostPath(pod)
 	sidecarID := len(getTailingSidecars(pod.Spec.Containers))
 
 	for _, config := range configs {
@@ -269,8 +269,8 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 	return tailingSidecars
 }
 
-// setHostPath returns path to host path directory for Fluent Bit database
-func setHostPath(pod *corev1.Pod) string {
+// getHostPath returns path to host path directory for Fluent Bit database
+func getHostPath(pod *corev1.Pod) string {
 	if pod.ObjectMeta.Namespace != "" && pod.ObjectMeta.Name != "" {
 		return fmt.Sprintf(hostPathDirPath, pod.ObjectMeta.Namespace, pod.ObjectMeta.Name)
 	}
