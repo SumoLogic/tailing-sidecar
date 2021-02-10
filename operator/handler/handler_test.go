@@ -32,13 +32,12 @@ import (
 
 func TestPodExtender(t *testing.T) {
 	RegisterFailHandler(Fail)
-
 	RunSpecs(t, "PodExtender Suite")
 }
 
-var _ = Describe("PodExtender", func() {
+var _ = Describe("Handler", func() {
 
-	Context("PodExtender Handler", func() {
+	Context("PodExtender.Handle", func() {
 
 		decoder, err := admission.NewDecoder(runtime.NewScheme())
 		It("creates decoder without any errors", func() {
@@ -52,7 +51,7 @@ var _ = Describe("PodExtender", func() {
 			decoder:             decoder,
 		}
 
-		When("When request does not contain any object", func() {
+		When("request does not contain any object", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Create,
@@ -70,7 +69,7 @@ var _ = Describe("PodExtender", func() {
 			})
 		})
 
-		When("When request contains empty json", func() {
+		When("request contains empty json", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Create,
@@ -88,7 +87,7 @@ var _ = Describe("PodExtender", func() {
 			})
 		})
 
-		When("When Pod with null metadata is created", func() {
+		When("Pod with null metadata is created", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Create,
@@ -111,13 +110,13 @@ var _ = Describe("PodExtender", func() {
 			}
 
 			resp := podExtender.Handle(context.Background(), request)
-			It("eturns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
+			It("returns empty patch as extendPod function didn't find tailing-sidecar annotation", func() {
 				Expect(resp.Allowed).To(BeTrue())
 				Expect(resp.Patch).To(BeEmpty())
 			})
 		})
 
-		When("When Pod with empty metadata is created", func() {
+		When("Pod with empty metadata is created", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Update,
@@ -150,7 +149,7 @@ var _ = Describe("PodExtender", func() {
 			})
 		})
 
-		When("When Pod with empty annotation is created", func() {
+		When("Pod with empty annotation is created", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Update,
@@ -182,7 +181,7 @@ var _ = Describe("PodExtender", func() {
 			})
 		})
 
-		When("When Pod with null annotation is created", func() {
+		When("Pod with null annotation is created", func() {
 			request := admission.Request{
 				AdmissionRequest: admv1.AdmissionRequest{
 					Operation: admv1.Update,
