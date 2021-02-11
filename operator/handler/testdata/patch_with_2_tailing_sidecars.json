@@ -1,0 +1,74 @@
+[
+    {
+        "op": "add",
+        "path": "/spec/containers/1",
+        "value": {
+            "env": [
+                {
+                    "name": "PATH_TO_TAIL",
+                    "value": "/var/log/example0.log"
+                }
+            ],
+            "image": "tailing-sidecar-image:test",
+            "name": "tailing-sidecar0",
+            "resources": {},
+            "volumeMounts": [
+                {
+                    "mountPath": "/var/log",
+                    "name": "varlog"
+                },
+                {
+                    "mountPath": "/tailing-sidecar/var",
+                    "name": "volume-sidecar0"
+                }
+            ]
+        }
+    },
+    {
+        "op": "add",
+        "path": "/spec/containers/2",
+        "value": {
+            "env": [
+                {
+                    "name": "PATH_TO_TAIL",
+                    "value": "/var/log/example1.log"
+                }
+            ],
+            "image": "tailing-sidecar-image:test",
+            "name": "tailing-sidecar1",
+            "resources": {},
+            "volumeMounts": [
+                {
+                    "mountPath": "/var/log",
+                    "name": "varlog"
+                },
+                {
+                    "mountPath": "/tailing-sidecar/var",
+                    "name": "volume-sidecar1"
+                }
+            ]
+        }
+    },
+    {
+        "op": "add",
+        "path": "/spec/volumes/2",
+        "value": {
+            "hostPath": {
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0",
+                "type": "DirectoryOrCreate"
+            },
+            "name": "volume-sidecar0"
+        }
+    },
+    {
+        "op": "add",
+        "path": "/spec/volumes/3",
+        "value": {
+            "hostPath": {
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                "type": "DirectoryOrCreate"
+            },
+            "name": "volume-sidecar1"
+        }
+    }
+]
