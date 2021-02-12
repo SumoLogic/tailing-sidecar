@@ -29,7 +29,7 @@ Set tailing-sidecar operator image:
 
 ```bash
 export TAILING_SIDECAR_OPERATOR_IMG="<some-registry>/<project-name>:tag"
-(cd config/manager && kustomize edit set image controller=${TAILING_SIDECAR_OPERATOR_IMG})
+(cd config/manager && kustomize edit set image controller="${TAILING_SIDECAR_OPERATOR_IMG}")
 ```
 
 ### Deploy operator
