@@ -1,6 +1,6 @@
 # Tailing sidecar container image
 
-**tailing sidecar container image** is a an image which can be used to manually extend Pods by streaming sidecar containers.
+**tailing sidecar container image** is a an image which can be used to manually extend Pods by [streaming sidecar containers](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container).
 
 ## Getting Started
 

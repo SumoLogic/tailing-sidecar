@@ -1,7 +1,7 @@
 # Tailing sidecar operator
 
 *Tailing sidecar operator* automatically adds
-[streaming sidecar containers]((https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container))
+[streaming sidecar containers](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container)
 which use [tailing sidecar image](../sidecar/) to Pods based on configuration provided in annotation.
 
 Configuration for tailing sidecar operator is described [here](docs/configuration.md).
@@ -48,7 +48,7 @@ kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailin
 
 to learn more about configuration see [this](docs/configuration.md).
 
-Deploy Pod with `tailing-sidecar` annotation:
+Deploy Pod with `tailing-sidecar` annotation e.g.
 
 ```bash
 kubectl apply -f examples/pod_with_annotations.yaml
