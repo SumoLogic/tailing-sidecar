@@ -57,5 +57,18 @@ while true; do
   sleep 1
 done
 
-# Deploy cert manger
+# Deploy cert-manager
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+
+# Check if cert-manager is ready
+# NOTICE: kubectl wait is not used due to unexpected errors
+# https://github.com/ubuntu/microk8s/issues/1710
+while true; do
+  if [ $( kubectl get pods -n cert-manager  | grep Running | wc -l ) -eq 3 ]; then
+    echo 'cert-manager is ready'
+    break
+  else
+    echo 'Waiting for cert-manager'
+  fi
+  sleep 5
+done
