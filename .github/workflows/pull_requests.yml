@@ -7,6 +7,27 @@ on:
       - 'release-v[0-9]+.[0-9]+'
 
 jobs:
+  markdownlint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: install markdownlint
+        run: gem install mdl
+      - name: markdownlint check
+        run: make markdownlint
+
+  yamllint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install yamllint
+        run: pip install yamllint
+      - name: yamllint
+        run: make yamllint
+
   build-sidecar-image:
     name: Build tailing sidecar image
     runs-on: ubuntu-20.04
