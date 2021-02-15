@@ -4,9 +4,9 @@ markdownlint: mdl
 
 mdl:
 	mdl --style .markdownlint/style.rb \
-	sidecar/README.md \
-	operator/README.md \
-	operator/docs
+		sidecar/README.md \
+		operator/README.md \
+		operator/docs
 
 yamllint:
 	yamllint -c .yamllint.yaml \
