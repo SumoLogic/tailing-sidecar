@@ -65,6 +65,7 @@ deploy: manifests kustomize
 	sed -i.backup "s#sumologic/tailing-sidecar:latest#${TAILING_SIDECAR_IMG}#g" config/default/manager_args_patch.yaml
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	kubectl wait --for=condition=ready --timeout 60s pod -l control-plane=tailing-sidecar-operator -n tailing-sidecar-system
 
 # Remove resources created with make deploy
 teardown:
@@ -74,8 +75,14 @@ teardown:
 deploy-examples:
 	kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
 	kubectl apply -f examples/pod_with_annotations.yaml
+	kubectl apply -f examples/statefulset_with_annotations.yaml
 	kubectl apply -f examples/deployment_with_annotations.yaml
+	kubectl apply -f examples/daemonset_with_annotations.yaml
 	kubectl apply -f examples/pod_without_annotations.yaml
+	kubectl wait --for=condition=ready --timeout 60s pod -l app=pod-with-annotations -n tailing-sidecar-system
+	kubectl wait --for=condition=ready --timeout 60s pod -l app=deployment-with-annotations -n tailing-sidecar-system
+	kubectl wait --for=condition=ready --timeout 60s pod -l app=statefulset-with-annotations -n tailing-sidecar-system
+	kubectl wait --for=condition=ready --timeout 60s pod -l app=daemonset-with-annotations -n tailing-sidecar-system
 
 # Deploy examples update
 deploy-examples-update:
@@ -86,8 +93,14 @@ deploy-examples-update:
 teardown-examples:
 	kubectl delete -n tailing-sidecar-system pod pod-without-annotations
 	kubectl delete -n tailing-sidecar-system pod pod-with-annotations
+	kubectl delete -n tailing-sidecar-system deployment statefulset-with-annotations
 	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
+	kubectl delete -n tailing-sidecar-system deployment daemonset-with-annotations
 	kubectl delete -n tailing-sidecar-system TailingSidecar tailingsidecar-sample
+
+# Check if logs from resources created with make deploy-examples have proper content
+test-examples:
+	tests/test.sh
 
 # Check resources created with make deploy-examples
 check-examples:
@@ -122,6 +135,11 @@ check-examples:
 check-examples-update:
 	kubectl get all -n tailing-sidecar-system
 	kubectl logs pod-with-annotations tailing-sidecar3 -n tailing-sidecar-system --tail 5
+
+# Deploy certmanger
+deploy-certmanager:
+	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+	kubectl wait --for=condition=ready --timeout 300s pod -l "app.kubernetes.io/instance=cert-manager" -n cert-manager
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests: controller-gen
