@@ -23,3 +23,13 @@ run: build
 
 push:
 	docker push $(TAG)
+
+deploy-examples:
+	kubectl apply -f ${root_dir}sidecar/examples/pod_with_tailing_sidecars.yaml
+	kubectl wait --for=condition=ready --timeout 60s pod example-with-tailling-sidecars
+
+test-examples:
+	${root_dir}sidecar/tests/test.sh
+
+teardown-examples:
+	kubectl delete pod example-with-tailling-sidecars

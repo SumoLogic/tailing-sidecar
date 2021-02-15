@@ -136,8 +136,8 @@ check-examples-update:
 	kubectl get all -n tailing-sidecar-system
 	kubectl logs pod-with-annotations tailing-sidecar3 -n tailing-sidecar-system --tail 5
 
-# Deploy certmanger
-deploy-certmanager:
+# Deploy cert-manager
+deploy-cert-manager:
 	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
 	kubectl wait --for=condition=ready --timeout 300s pod -l "app.kubernetes.io/instance=cert-manager" -n cert-manager
 
