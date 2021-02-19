@@ -22,6 +22,6 @@ This project is released under the [Apache 2.0 License](LICENSE).
 
 ## Contributing
 
-Please share your thoughts about sumologic-tailing-sidecar by opening an issue.
+Please share your thoughts about tailing sidecar by opening an [issue](https://github.com/SumoLogic/tailing-sidecar/issues/new).
 
 To get started contributing, please refer to our [Contributing](CONTRIBUTING.md) documentation.
