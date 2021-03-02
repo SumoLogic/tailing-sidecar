@@ -6,7 +6,7 @@
             "env": [
                 {
                     "name": "PATH_TO_TAIL",
-                    "value": "/var/log/example0.log"
+                    "value": "/varconfig/log/example2.log"
                 },
                 {
                     "name": "TAILING_SIDECAR",
@@ -14,12 +14,12 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar0",
+            "name": "test-container2",
             "resources": {},
             "volumeMounts": [
                 {
-                    "mountPath": "/var/log",
-                    "name": "varlog"
+                    "mountPath": "/varconfig/log",
+                    "name": "varlogconfig"
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
@@ -35,7 +35,7 @@
             "env": [
                 {
                     "name": "PATH_TO_TAIL",
-                    "value": "/var/log/example1.log"
+                    "value": "/var/log/example0.log"
                 },
                 {
                     "name": "TAILING_SIDECAR",
@@ -43,7 +43,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar1",
+            "name": "test-container0",
             "resources": {},
             "volumeMounts": [
                 {
@@ -59,10 +59,39 @@
     },
     {
         "op": "add",
+        "path": "/spec/containers/3",
+        "value": {
+            "env": [
+                {
+                    "name": "PATH_TO_TAIL",
+                    "value": "/var/log/example1.log"
+                },
+                {
+                    "name": "TAILING_SIDECAR",
+                    "value": "true"
+                }
+            ],
+            "image": "tailing-sidecar-image:test",
+            "name": "test-container1",
+            "resources": {},
+            "volumeMounts": [
+                {
+                    "mountPath": "/var/log",
+                    "name": "varlog"
+                },
+                {
+                    "mountPath": "/tailing-sidecar/var",
+                    "name": "volume-sidecar2"
+                }
+            ]
+        }
+    },
+    {
+        "op": "add",
         "path": "/spec/volumes/2",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container2",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar0"
@@ -73,10 +102,21 @@
         "path": "/spec/volumes/3",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container0",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar1"
+        }
+    },
+    {
+        "op": "add",
+        "path": "/spec/volumes/4",
+        "value": {
+            "hostPath": {
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container1",
+                "type": "DirectoryOrCreate"
+            },
+            "name": "volume-sidecar2"
         }
     }
 ]

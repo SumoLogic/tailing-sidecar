@@ -40,6 +40,10 @@
                                 {
                                         "name": "PATH_TO_TAIL",
                                         "value": "/varconfig/log/example2.log"
+                                },
+                                {
+                                        "name": "TAILING_SIDECAR",
+                                        "value": "true"
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",
@@ -65,6 +69,10 @@
                                 {
                                         "name": "PATH_TO_TAIL",
                                         "value": "/var/log/example0.log"
+                                },
+                                {
+                                        "name": "TAILING_SIDECAR",
+                                        "value": "true"
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",
@@ -90,6 +98,10 @@
                                 {
                                         "name": "PATH_TO_TAIL",
                                         "value": "/var/log/example1.log"
+                                },
+                                {
+                                        "name": "TAILING_SIDECAR",
+                                        "value": "true"
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",

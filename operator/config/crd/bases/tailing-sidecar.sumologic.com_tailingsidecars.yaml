@@ -39,6 +39,8 @@ spec:
             configs:
               additionalProperties:
                 properties:
+                  container:
+                    type: string
                   file:
                     type: string
                   volume:

@@ -108,7 +108,11 @@ check-examples:
 
 	kubectl logs pod-with-annotations tailing-sidecar0 -n tailing-sidecar-system --tail 5
 	kubectl logs pod-with-annotations tailing-sidecar1 -n tailing-sidecar-system --tail 5
-	kubectl logs pod-with-annotations tailing-sidecar2 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations named-container -n tailing-sidecar-system --tail 5
+
+	kubectl logs statefulset-with-annotations-0 tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs statefulset-with-annotations-0 my-named-sidecar -n tailing-sidecar-system --tail 5
+	kubectl logs statefulset-with-annotations-0 tailing-sidecar2 -n tailing-sidecar-system --tail 5
 
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
 		tailing-sidecar0 -n tailing-sidecar-system --tail 5
@@ -134,7 +138,7 @@ check-examples:
 # Check resources created with make deploy-examples-update
 check-examples-update:
 	kubectl get all -n tailing-sidecar-system
-	kubectl logs pod-with-annotations tailing-sidecar3 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations named-sidecar -n tailing-sidecar-system --tail 5
 
 # Deploy cert-manager
 deploy-cert-manager:
