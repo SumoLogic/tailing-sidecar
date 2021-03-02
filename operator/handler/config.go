@@ -23,11 +23,13 @@ import (
 )
 
 const (
-	configRaw        = 2
-	configPredefined = 1
+	configRaw              = 2 // e.g. tailing-sidecar: <volume-name0>:<path-to-tail0>
+	configRawWithContainer = 3 // e.g. tailing-sidecar: <container-name0>:<volume-name0>:<path-to-tail0>
+	configPredefined       = 1 // e.g. tailing-sidecar: <config-name0>
 
 	volumeIndex     = 0
 	fileIndex       = 1
+	containerIndex  = 0
 	configNameIndex = 0
 
 	volumeFileSeparator = ":"
@@ -56,6 +58,13 @@ func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailing
 			config := tailingsidecarv1.SidecarConfig{
 				File:   configParts[fileIndex],
 				Volume: configParts[volumeIndex],
+			}
+			configs = append(configs, config)
+		case configRawWithContainer:
+			config := tailingsidecarv1.SidecarConfig{
+				Container: configParts[containerIndex],
+				Volume:    configParts[containerIndex+1],
+				File:      configParts[containerIndex+2],
 			}
 			configs = append(configs, config)
 		case configPredefined:

@@ -35,7 +35,10 @@ import (
 // +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update,versions=v1,name=tailing-sidecar.sumologic.com
 
 const (
-	sidecarEnv             = "PATH_TO_TAIL"
+	sidecarEnvPath      = "PATH_TO_TAIL"
+	sidecarEnvMarker    = "TAILING_SIDECAR"
+	sidecarEnvMarkerVal = "true"
+
 	sidecarContainerName   = "tailing-sidecar%d"
 	sidecarContainerPrefix = "tailing-sidecar"
 
@@ -139,6 +142,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			handlerLog.Info("Tailing sidecar exists",
 				"file", config.File,
 				"volume", config.Volume,
+				"container", config.Container,
 			)
 			continue
 		}
@@ -155,8 +159,11 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		}
 
 		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarID)
-		containerName := fmt.Sprintf(sidecarContainerName, sidecarID)
-		hostPath := fmt.Sprintf("%s/%s", hostPathDir, containerName)
+		if config.Container == "" {
+			config.Container = fmt.Sprintf(sidecarContainerName, sidecarID)
+		}
+
+		hostPath := fmt.Sprintf("%s/%s", hostPathDir, config.Container)
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
 				Name: volumeName,
@@ -170,11 +177,17 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
-			Name:  containerName,
-			Env: []corev1.EnvVar{{
-				Name:  sidecarEnv,
-				Value: config.File,
-			}},
+			Name:  config.Container,
+			Env: []corev1.EnvVar{
+				{
+					Name:  sidecarEnvPath,
+					Value: config.File,
+				},
+				{
+					Name:  sidecarEnvMarker,
+					Value: sidecarEnvMarkerVal,
+				},
+			},
 			VolumeMounts: []corev1.VolumeMount{
 				volume,
 				{
@@ -195,11 +208,13 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarConfig) []corev1.Container {
 	podContainers := make([]corev1.Container, 0)
 	for _, container := range containers {
-		if !strings.HasPrefix(container.Name, sidecarContainerPrefix) {
+		if !isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) {
 			podContainers = append(podContainers, container)
 		} else {
 			for _, config := range configs {
-				if isSidecarEnvAvailable(container.Env, config.File) && isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
+				if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
+					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.File) &&
+					isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
 					podContainers = append(podContainers, container)
 				}
 			}
@@ -222,8 +237,9 @@ func joinTailinSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) 
 // isSidecarAvailable checks if tailing sidecar container with given configuration exists in Pod specification
 func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarConfig) bool {
 	for _, container := range containers {
-		if strings.HasPrefix(container.Name, sidecarContainerPrefix) &&
-			isSidecarEnvAvailable(container.Env, config.File) &&
+		if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
+			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.File) &&
+			isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) &&
 			isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
 			return true
 		}
@@ -231,10 +247,10 @@ func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.S
 	return false
 }
 
-// isSidecarEnvAvailable checks if PATH_TO_TAIL env is defined and has specific value
-func isSidecarEnvAvailable(envs []corev1.EnvVar, envValue string) bool {
+// isSidecarEnvAvailable checks if env is defined and has specific value
+func isSidecarEnvAvailable(envs []corev1.EnvVar, envName string, envValue string) bool {
 	for _, env := range envs {
-		if env.Name == sidecarEnv && env.Value == envValue {
+		if env.Name == envName && env.Value == envValue {
 			return true
 		}
 	}
@@ -264,11 +280,11 @@ func getVolume(containers []corev1.Container, volumeName string) (corev1.VolumeM
 }
 
 // getTailingSidecars returns tailing sidecar containers,
-// tailing sidecar containers have name starting with "tailing-sidecar" prefix
+// tailing sidecar containers have environmental variable TAILING_SIDECAR=true
 func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 	tailingSidecars := make([]corev1.Container, 0)
 	for _, container := range containers {
-		if strings.HasPrefix(container.Name, sidecarContainerPrefix) {
+		if isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) {
 			tailingSidecars = append(tailingSidecars, container)
 		}
 	}

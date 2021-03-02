@@ -24,8 +24,9 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type SidecarConfig struct {
-	File   string `json:"file,omitempty"`
-	Volume string `json:"volume,omitempty"`
+	File      string `json:"file,omitempty"`
+	Volume    string `json:"volume,omitempty"`
+	Container string `json:"container,omitempty"`
 }
 
 // TailingSidecarSpec defines the desired state of TailingSidecar

@@ -10,12 +10,14 @@ metadata:
 
 Tailing sidecar container is joined with container containing logs by Volume.
 
-Configuration for single tailing sidecar consist of:
+Configuration for single tailing sidecar consists of:
 
+- tailing sidecar container name (optional, if not specified container name will be automatically created and
+  it will start with "tailing-sidecar" prefix)
 - volume name
 - path to file containing logs to tail
 
-and it can be provide either through simple configurations in annotations or named configurations using TailingSidecar resources.
+Configuration can be provided either through simple configurations in annotations or named configurations using TailingSidecar resources.
 
 Configuration for single tailing sidecar is separated by `;`.
 
@@ -26,7 +28,7 @@ Simple configurations in annotations allow to define configurations for multiple
 ```yaml
 metadata:
   annotations:
-    tailing-sidecar: <volume-name0>:<path-to-tail0>;<volume-name1>:<path-to-tail1>;<volume-name2>:<path-to-tail2>
+    tailing-sidecar: <container-name0>:<volume-name0>:<path-to-tail0>;<volume-name1>:<path-to-tail1>;<volume-name2>:<path-to-tail2>
 ```
 
 ## Named configurations using TailingSidecar
@@ -41,12 +43,14 @@ metadata:
 spec:
   configs:
     <config-name0>:
+      container: <container-name0>
       volume: <volume-name0>
       file: <path-to-tail0>
     <config-name1>:
       volume: <volume-name1>
       file: <path-to-tail1>
     <config-name2>:
+      container: <container-name2>
       volume: <volume-name2>
       file: <path-to-tail2>
 ```
@@ -64,7 +68,7 @@ Named configurations can be mixed with simple configurations so following form o
 ```yaml
 metadata:
   annotations:
-    tailing-sidecar: <config-name0>;<config-name1>;<config-name2>;<volume-name3>:<path-to-tail3>;<volume-name4>:<path-to-tail4>
+    tailing-sidecar: <config-name0>;<config-name1>;<config-name2>;<container-name3>:<volume-name3>:<path-to-tail3>;<volume-name4>:<path-to-tail4>
 ```
 
 ## Examples

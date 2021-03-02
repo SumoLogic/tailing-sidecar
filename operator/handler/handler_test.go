@@ -581,6 +581,10 @@ var _ = Describe("handler", func() {
 									  {
 										"name": "PATH_TO_TAIL",
 										"value": "/varconfig/log/example2.log"
+									  },
+									  {
+										"name": "TAILING_SIDECAR",
+										"value": "true"
 									  }
 									],
 									"volumeMounts": [
@@ -841,7 +845,7 @@ var _ = Describe("handler", func() {
 			})
 		})
 
-		When("Pod with all options in configuration is created", func() {
+		When("Pod with raw and predefined options in configuration is created", func() {
 			tailingSidecar := &tailingsidecarv1.TailingSidecar{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
@@ -931,6 +935,319 @@ var _ = Describe("handler", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
+		})
+
+		When("Pod with named sidecars", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "tailing-sidecar-in-pod-namespace",
+					Namespace: "tailing-sidecar-system",
+				},
+				Spec: tailingsidecarv1.TailingSidecarSpec{
+					Configs: map[string]tailingsidecarv1.SidecarConfig{
+						"sidecarconfig": {
+							File:      "/varconfig/log/example2.log",
+							Volume:    "varlogconfig",
+							Container: "test-container2",
+						},
+					},
+				},
+			}
+
+			err = k8sClient.Create(ctx, tailingSidecar)
+			It("creates a Tailingsidecar with configuration", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+
+			request := admission.Request{
+				AdmissionRequest: admv1.AdmissionRequest{
+					Operation: admv1.Create,
+					Object: runtime.RawExtension{
+						Raw: []byte(`{
+							"apiVersion": "v1",
+							"kind": "Pod",
+							"metadata": {
+							  "creationTimestamp": null,
+							  "name": "pod-with-annotations",
+							  "namespace": "tailing-sidecar-system",
+							  "annotations": {
+								"tailing-sidecar": "sidecarconfig;test-container0:varlog:/var/log/example0.log;test-container1:varlog:/var/log/example1.log"
+							  }
+							},
+							"status": {},
+							"spec": {
+							  "containers": [
+								{
+								  "name": "count",
+								  "image": "busybox",
+								   "resources": {},
+								  "volumeMounts": [
+									{
+									  "name": "varlog",
+									  "mountPath": "/var/log"
+									},
+									{
+									  "name": "varlogconfig",
+									  "mountPath": "/varconfig/log"
+									}
+								  ]
+								}
+							  ],
+							  "volumes": [
+								{
+								  "name": "varlog",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "varlogconfig",
+								  "emptyDir": {}
+								}
+							  ]
+							}
+						  }`),
+					},
+				},
+			}
+
+			resp := podExtender.Handle(ctx, request)
+			It("returns patch with tailing sidecar containers", func() {
+				Expect(resp.Allowed).To(BeTrue())
+				Expect(resp.Patches).NotTo(BeEmpty())
+
+				expectedPatches := loadJSONPatches("testdata/patch_with_3_named_tailing_sidecars.json")
+
+				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
+
+				for _, patch := range resp.Patches {
+					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
+				}
+			})
+
+			err = k8sClient.Delete(ctx, tailingSidecar)
+			It("deletes TailingSidecar", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+
+		When("Pod with named and not named sidecars", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "tailing-sidecar-in-pod-namespace",
+					Namespace: "tailing-sidecar-system",
+				},
+				Spec: tailingsidecarv1.TailingSidecarSpec{
+					Configs: map[string]tailingsidecarv1.SidecarConfig{
+						"sidecarconfig1": {
+							File:      "/varconfig/log/example2.log",
+							Volume:    "varlogconfig",
+							Container: "test-container2",
+						},
+						"sidecarconfig2": {
+							File:   "/varconfig/log/example3.log",
+							Volume: "varlogconfig",
+						},
+					},
+				},
+			}
+
+			err = k8sClient.Create(ctx, tailingSidecar)
+			It("creates a Tailingsidecar with configuration", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+
+			request := admission.Request{
+				AdmissionRequest: admv1.AdmissionRequest{
+					Operation: admv1.Create,
+					Object: runtime.RawExtension{
+						Raw: []byte(`{
+							"apiVersion": "v1",
+							"kind": "Pod",
+							"metadata": {
+							  "creationTimestamp": null,
+							  "name": "pod-with-annotations",
+							  "namespace": "tailing-sidecar-system",
+							  "annotations": {
+								"tailing-sidecar": "sidecarconfig1;sidecarconfig2;test-container0:varlog:/var/log/example0.log;varlog:/var/log/example1.log"
+							  }
+							},
+							"status": {},
+							"spec": {
+							  "containers": [
+								{
+								  "name": "count",
+								  "image": "busybox",
+								   "resources": {},
+								  "volumeMounts": [
+									{
+									  "name": "varlog",
+									  "mountPath": "/var/log"
+									},
+									{
+									  "name": "varlogconfig",
+									  "mountPath": "/varconfig/log"
+									}
+								  ]
+								}
+							  ],
+							  "volumes": [
+								{
+								  "name": "varlog",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "varlogconfig",
+								  "emptyDir": {}
+								}
+							  ]
+							}
+						  }`),
+					},
+				},
+			}
+
+			resp := podExtender.Handle(ctx, request)
+			It("returns patch with tailing sidecar containers", func() {
+				Expect(resp.Allowed).To(BeTrue())
+				Expect(resp.Patches).NotTo(BeEmpty())
+
+				expectedPatches := loadJSONPatches("testdata/patch_with_4_named_not_named_tailing_sidecars.json")
+
+				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
+
+				for _, patch := range resp.Patches {
+					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
+				}
+			})
+
+			err = k8sClient.Delete(ctx, tailingSidecar)
+			It("deletes TailingSidecar", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+
+		When("Update Pod with one named sidecars and add not named", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "tailing-sidecar-in-pod-namespace",
+					Namespace: "tailing-sidecar-system",
+				},
+				Spec: tailingsidecarv1.TailingSidecarSpec{
+					Configs: map[string]tailingsidecarv1.SidecarConfig{
+						"sidecarconfig": {
+							File:      "/varconfig/log/example0.log",
+							Volume:    "varlogconfig",
+							Container: "test-container",
+						},
+					},
+				},
+			}
+
+			err = k8sClient.Create(ctx, tailingSidecar)
+			It("creates a Tailingsidecar with configuration", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+
+			request := admission.Request{
+				AdmissionRequest: admv1.AdmissionRequest{
+					Operation: admv1.Update,
+					Object: runtime.RawExtension{
+						Raw: []byte(`{
+							"apiVersion": "v1",
+							"kind": "Pod",
+							"metadata": {
+							  "creationTimestamp": null,
+							  "name": "pod-with-annotations",
+							  "namespace": "tailing-sidecar-system",
+							  "annotations": {
+								"tailing-sidecar": "sidecarconfig;varlog:/var/log/example1.log"
+							  }
+							},
+							"status": {},
+							"spec": {
+							  "containers": [
+								{
+								  "name": "count",
+								  "image": "busybox",
+								   "resources": {},
+								  "volumeMounts": [
+									{
+									  "name": "varlog",
+									  "mountPath": "/var/log"
+									},
+									{
+									  "name": "varlogconfig",
+									  "mountPath": "/varconfig/log"
+									}
+								  ]
+								},
+								{
+									"name": "test-container",
+									"image": "busybox",
+									"resources": {},
+									"env": [
+										{
+											"name": "PATH_TO_TAIL",
+											"value": "/varconfig/log/example0.log"
+										},
+										{
+											"name": "TAILING_SIDECAR",
+											"value": "true"
+										}
+									],
+									"volumeMounts": [
+									  {
+										"mountPath": "/tailing-sidecar/var",
+										"name": "volume-sidecar0"
+									  },
+									  {
+										"name": "varlogconfig",
+										"mountPath": "/varconfig/log"
+									  }
+									]
+								  }
+							  ],
+							  "volumes": [
+								{
+								  "name": "varlog",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "varlogconfig",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "volume-sidecar0",
+								  "hostPath":
+								  {
+									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container",
+									"type": "DirectoryOrCreate"
+								  }
+								}
+							  ]
+							}
+						  }`),
+					},
+				},
+			}
+
+			resp := podExtender.Handle(ctx, request)
+			It("returns patch with tailing sidecar containers", func() {
+				Expect(resp.Allowed).To(BeTrue())
+				Expect(resp.Patches).NotTo(BeEmpty())
+
+				expectedPatches := loadJSONPatches("testdata/patch_update_1_tailing_sidecar.json")
+
+				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
+
+				for _, patch := range resp.Patches {
+					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
+				}
+			})
+
+			err = k8sClient.Delete(ctx, tailingSidecar)
+			It("deletes TailingSidecar", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
 		})
 
 		err = k8sClient.Delete(ctx, namespace1)
