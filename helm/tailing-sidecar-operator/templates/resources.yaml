@@ -1,0 +1,334 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: tailing-sidecar-operator
+  name: tailing-sidecar-system
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: tailingsidecars.tailing-sidecar.sumologic.com
+spec:
+  group: tailing-sidecar.sumologic.com
+  names:
+    kind: TailingSidecar
+    listKind: TailingSidecarList
+    plural: tailingsidecars
+    singular: tailingsidecar
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: TailingSidecar is the Schema for the tailingsidecars API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: TailingSidecarSpec defines the desired state of TailingSidecar
+          properties:
+            configs:
+              additionalProperties:
+                properties:
+                  file:
+                    type: string
+                  volume:
+                    type: string
+                type: object
+              description: Configs contains configurations for tailing sidecars, map
+                key indicates name of configuration which can be used in annotation
+              type: object
+          type: object
+        status:
+          description: TailingSidecarStatus defines the observed state of TailingSidecar
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: tailing-sidecar-system/tailing-sidecar-serving-cert
+  creationTimestamp: null
+  name: tailing-sidecar-mutating-webhook-configuration
+  namespace: tailing-sidecar-system
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: tailing-sidecar-webhook-service
+      namespace: tailing-sidecar-system
+      path: /add-tailing-sidecars-v1-pod
+  failurePolicy: Fail
+  name: mpod.kb.io
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - pods
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tailing-sidecar-leader-election-role
+  namespace: tailing-sidecar-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: tailing-sidecar-manager-role
+rules:
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tailing-sidecar.sumologic.com
+  resources:
+  - tailingsidecars/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tailing-sidecar-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tailing-sidecar-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tailing-sidecar-leader-election-rolebinding
+  namespace: tailing-sidecar-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tailing-sidecar-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tailing-sidecar-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tailing-sidecar-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tailing-sidecar-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tailing-sidecar-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tailing-sidecar-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tailing-sidecar-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tailing-sidecar-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: tailing-sidecar-operator
+  name: tailing-sidecar-operator-metrics-service
+  namespace: tailing-sidecar-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    control-plane: tailing-sidecar-operator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tailing-sidecar-webhook-service
+  namespace: tailing-sidecar-system
+spec:
+  ports:
+  - port: 443
+    targetPort: 9443
+  selector:
+    control-plane: tailing-sidecar-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: tailing-sidecar-operator
+  name: tailing-sidecar-operator
+  namespace: tailing-sidecar-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: tailing-sidecar-operator
+  template:
+    metadata:
+      labels:
+        control-plane: tailing-sidecar-operator
+    spec:
+      containers:
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+      - args:
+        - --metrics-addr=127.0.0.1:8080
+        - --enable-leader-election
+        - --tailing-sidecar-image=sumologic/tailing-sidecar:latest
+        command:
+        - /manager
+        image: localhost:32000/sumologic/tailing-sidecar-operator:latest
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: tailing-sidecar-serving-cert
+  namespace: tailing-sidecar-system
+spec:
+  dnsNames:
+  - tailing-sidecar-webhook-service.tailing-sidecar-system.svc
+  - tailing-sidecar-webhook-service.tailing-sidecar-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: tailing-sidecar-selfsigned-issuer
+  secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: tailing-sidecar-selfsigned-issuer
+  namespace: tailing-sidecar-system
+spec:
+  selfSigned: {}
