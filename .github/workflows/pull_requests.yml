@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
-      - uses: AbsaOSS/k3d-action@v1.1.0
+      - uses: AbsaOSS/k3d-action@v1.3.1
         id: single-cluster
         name: Create single k3d Cluster with Registry
         with:
