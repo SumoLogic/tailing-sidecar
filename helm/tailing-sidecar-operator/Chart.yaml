@@ -1,0 +1,6 @@
+apiVersion: v2
+name: tailing-sidecar-operator
+description: Installs Tailing Sidecar Operator
+type: application
+version: 0.0.0
+appVersion: 0.0.0
