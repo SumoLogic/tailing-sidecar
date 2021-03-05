@@ -1,0 +1,36 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
+
+  - package-ecosystem: "docker"
+    directory: "/operator"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
+
+  - package-ecosystem: "gomod"
+    directory: "/operator"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
+
+  - package-ecosystem: "docker"
+    directory: "/sidecar"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
+
+  - package-ecosystem: "gomod"
+    directory: "/sidecar/out_gstdout"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
