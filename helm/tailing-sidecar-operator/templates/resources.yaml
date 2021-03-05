@@ -1,10 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    control-plane: tailing-sidecar-operator
-  name: tailing-sidecar-system
----
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -62,27 +55,21 @@ spec:
   - name: v1
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: tailing-sidecar-system/tailing-sidecar-serving-cert
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/tailing-sidecar-serving-cert
   creationTimestamp: null
   name: tailing-sidecar-mutating-webhook-configuration
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 webhooks:
 - clientConfig:
     caBundle: Cg==
     service:
       name: tailing-sidecar-webhook-service
-      namespace: tailing-sidecar-system
+      namespace: {{ .Release.Namespace }}
       path: /add-tailing-sidecars-v1-pod
   failurePolicy: Fail
   name: mpod.kb.io
@@ -101,7 +88,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: tailing-sidecar-leader-election-role
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - ""
@@ -190,7 +177,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: tailing-sidecar-leader-election-rolebinding
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -198,7 +185,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -211,7 +198,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -224,7 +211,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
 kind: Service
@@ -232,7 +219,7 @@ metadata:
   labels:
     control-plane: tailing-sidecar-operator
   name: tailing-sidecar-operator-metrics-service
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: https
@@ -245,7 +232,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tailing-sidecar-webhook-service
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - port: 443
@@ -257,18 +244,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    control-plane: tailing-sidecar-operator
+    {{- include "operator.labels" . | nindent 4 }}
   name: tailing-sidecar-operator
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: tailing-sidecar-operator
+      {{- include "operator.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        control-plane: tailing-sidecar-operator
+        {{- include "operator.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - args:
@@ -284,22 +271,18 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
-        - --tailing-sidecar-image=sumologic/tailing-sidecar:latest
+        - --tailing-sidecar-image={{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}
         command:
         - /manager
-        image: localhost:32000/sumologic/tailing-sidecar-operator:latest
+        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}
+        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
         name: manager
         ports:
         - containerPort: 9443
           name: webhook-server
           protocol: TCP
         resources:
-          limits:
-            cpu: 100m
-            memory: 30Mi
-          requests:
-            cpu: 100m
-            memory: 20Mi
+          {{- toYaml .Values.operator.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
@@ -315,11 +298,11 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: tailing-sidecar-serving-cert
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-  - tailing-sidecar-webhook-service.tailing-sidecar-system.svc
-  - tailing-sidecar-webhook-service.tailing-sidecar-system.svc.cluster.local
+  - tailing-sidecar-webhook-service.{{ .Release.Namespace }}.svc
+  - tailing-sidecar-webhook-service.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: tailing-sidecar-selfsigned-issuer
@@ -329,6 +312,6 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
   name: tailing-sidecar-selfsigned-issuer
-  namespace: tailing-sidecar-system
+  namespace: {{ .Release.Namespace }}
 spec:
   selfSigned: {}
