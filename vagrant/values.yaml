@@ -1,0 +1,9 @@
+operator:
+  image:
+    repository: localhost:32000/sumologic/tailing-sidecar
+    tag: demo
+
+sidecar:
+  image:
+    repository: localhost:32000/sumologic/tailing-sidecar-operator
+    tag: latest
