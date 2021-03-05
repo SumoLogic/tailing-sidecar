@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/go-logr/logr v0.1.0
-	github.com/google/uuid v1.1.1
+	github.com/google/uuid v1.2.0
 	github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce
 	github.com/onsi/ginkgo v1.12.1
 	github.com/onsi/gomega v1.10.1
