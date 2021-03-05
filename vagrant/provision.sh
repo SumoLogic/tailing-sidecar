@@ -50,6 +50,13 @@ mv operator-sdk_linux_amd64 /usr/local/bin/operator-sdk
 curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 mv kustomize /usr/local/bin/
 
+# Install Helm
+HELM_VERSION=v3.5.2
+mkdir /opt/helm3
+curl "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /opt/helm3
+ln -s /opt/helm3/linux-amd64/helm /usr/bin/helm3
+ln -s /usr/bin/helm3 /usr/bin/helm
+
 # Check if k8s is ready
 while true; do
   kubectl -n kube-system get services 1>/dev/null 2>&1 && break
