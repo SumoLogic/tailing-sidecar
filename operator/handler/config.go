@@ -48,6 +48,12 @@ func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailing
 		return configs
 	}
 
+	if annotation == "" {
+		handlerLog.Info("Empty tailing-sidecar annotation",
+			"annotation", annotation)
+		return configs
+	}
+
 	configElements := strings.Split(annotation, configSeparator)
 	for _, configElement := range configElements {
 		configParts := strings.Split(configElement, volumeFileSeparator)

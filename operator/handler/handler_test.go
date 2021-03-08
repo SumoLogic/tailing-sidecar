@@ -1520,6 +1520,105 @@ var _ = Describe("handler", func() {
 			})
 		})
 
+		When("Remove all tailing sidecars", func() {
+			request := admission.Request{
+				AdmissionRequest: admv1.AdmissionRequest{
+					Operation: admv1.Update,
+					Object: runtime.RawExtension{
+						Raw: []byte(`{
+							"apiVersion": "v1",
+							"kind": "Pod",
+							"metadata": {
+							  "creationTimestamp": null,
+							  "name": "pod-with-annotations",
+							  "namespace": "tailing-sidecar-system",
+							  "annotations": {
+								"tailing-sidecar": ""
+							  }
+							},
+							"status": {},
+							"spec": {
+							  "containers": [
+								{
+								  "name": "count",
+								  "image": "busybox",
+								   "resources": {},
+								  "volumeMounts": [
+									{
+									  "name": "varlog",
+									  "mountPath": "/var/log"
+									},
+									{
+									  "name": "varlogconfig",
+									  "mountPath": "/varconfig/log"
+									}
+								  ]
+								},
+								{
+									"name": "tailing-sidecar0",
+									"image": "busybox",
+									"resources": {},
+									"env": [
+										{
+											"name": "PATH_TO_TAIL",
+											"value": "/varconfig/log/example0.log"
+										},
+										{
+											"name": "TAILING_SIDECAR",
+											"value": "true"
+										}
+									],
+									"volumeMounts": [
+									  {
+										"mountPath": "/tailing-sidecar/var",
+										"name": "volume-sidecar0"
+									  },
+									  {
+										"name": "varlogconfig",
+										"mountPath": "/varconfig/log"
+									  }
+									]
+								  }
+							  ],
+							  "volumes": [
+								{
+								  "name": "varlog",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "varlogconfig",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "volume-sidecar0",
+								  "hostPath":
+								  {
+									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0r",
+									"type": "DirectoryOrCreate"
+								  }
+								}
+							  ]
+							}
+						  }`),
+					},
+				},
+			}
+
+			resp := podExtender.Handle(ctx, request)
+			It("returns patch with tailing sidecar containers", func() {
+				Expect(resp.Allowed).To(BeTrue())
+				Expect(resp.Patches).NotTo(BeEmpty())
+
+				expectedPatches := loadJSONPatches("testdata/patch_remove_tailing_sidecar.json")
+
+				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
+
+				for _, patch := range resp.Patches {
+					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
+				}
+			})
+		})
+
 		err = k8sClient.Delete(ctx, namespace1)
 		It("deletes the first Namespace", func() {
 			Expect(err).ToNot(HaveOccurred())

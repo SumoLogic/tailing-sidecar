@@ -42,9 +42,10 @@ const (
 	sidecarContainerName   = "tailing-sidecar%d"
 	sidecarContainerPrefix = "tailing-sidecar"
 
-	hostPathDirPath    = "/var/log/tailing-sidecar-fluentbit/%s/%s"
-	hostPathVolumeName = "volume-sidecar%d"
-	hostPathMountPath  = "/tailing-sidecar/var"
+	hostPathDirPath      = "/var/log/tailing-sidecar-fluentbit/%s/%s"
+	hostPathVolumeName   = "volume-sidecar%d"
+	hostPathVolumePrefix = "volume-sidecar"
+	hostPathMountPath    = "/tailing-sidecar/var"
 )
 
 var (
@@ -118,6 +119,9 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	// Join configurations from TailingSidecars
 	tailingSidecarConfigs := joinTailinSidecarConfigs(tailingSidecarList.Items)
 
+	// Get number of existing tailing sidecars
+	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
+
 	// Parse configurations from annotation and join them with configurations from TailingSidecars
 	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
 
@@ -130,7 +134,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		return err
 	}
 
-	if len(configs) == 0 {
+	if len(configs) == 0 && sidecarsCount == 0 {
 		handlerLog.Info("Missing configuration for Pod",
 			"Name", pod.ObjectMeta.Name,
 			"Namespace", pod.ObjectMeta.Namespace,
@@ -147,7 +151,6 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 
 	containers := make([]corev1.Container, 0)
 	hostPathDir := getHostPath(pod)
-	sidecarID := len(getTailingSidecars(pod.Spec.Containers))
 
 	for _, config := range configs {
 		if isSidecarAvailable(pod.Spec.Containers, config) {
@@ -171,12 +174,12 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			continue
 		}
 
-		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarID)
+		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarsCount)
 		if config.Container == "" {
-			config.Container = fmt.Sprintf(sidecarContainerName, sidecarID)
+			config.Container = fmt.Sprintf(sidecarContainerName, sidecarsCount)
 		}
-
 		hostPath := fmt.Sprintf("%s/%s", hostPathDir, config.Container)
+
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
 				Name: volumeName,
@@ -210,10 +213,12 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			},
 		}
 		containers = append(containers, container)
-		sidecarID++
+		sidecarsCount++
 	}
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
+
 	pod.Spec.Containers = append(podContainers, containers...)
+	pod.Spec.Volumes = filterNotUsedVolumes(pod.Spec.Volumes, pod.Spec.Containers)
 	return nil
 }
 
@@ -248,6 +253,33 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 		}
 	}
 	return podContainers
+}
+
+// filterNotUsedVolumes filter out not used volumes earlier assigned to tailing sidecars and leaves the rest of volumes
+// each of tailing-sidecars has its own volume to store Fluent Bit database
+// when sidecar container is removed volume is no longer needed
+func filterNotUsedVolumes(volumes []corev1.Volume, containers []corev1.Container) []corev1.Volume {
+	podVolumes := make([]corev1.Volume, 0)
+	for _, volume := range volumes {
+		if !strings.HasPrefix(volume.Name, hostPathVolumePrefix) {
+			podVolumes = append(podVolumes, volume)
+			continue
+		}
+		found := false
+		for _, container := range containers {
+			for _, volumeMount := range container.VolumeMounts {
+				if volumeMount.Name == volume.Name {
+					podVolumes = append(podVolumes, volume)
+					found = true
+					break
+				}
+			}
+			if found {
+				break
+			}
+		}
+	}
+	return podVolumes
 }
 
 // joinTailinSidecarConfigs joins configurations defined in TailingSidecar resources
