@@ -12,8 +12,8 @@ webhooks:
       name: webhook-service
       namespace: system
       path: /add-tailing-sidecars-v1-pod
-  failurePolicy: Fail
-  name: mpod.kb.io
+  failurePolicy: Ignore
+  name: tailing-sidecar.sumologic.com
   rules:
   - apiGroups:
     - ""
