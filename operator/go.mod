@@ -6,7 +6,7 @@ require (
 	github.com/go-logr/logr v0.1.0
 	github.com/google/uuid v1.2.0
 	github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce
-	github.com/onsi/ginkgo v1.15.0
+	github.com/onsi/ginkgo v1.15.1
 	github.com/onsi/gomega v1.10.5
 	gomodules.xyz/jsonpatch/v2 v2.0.1
 	k8s.io/api v0.18.6
