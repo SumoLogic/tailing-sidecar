@@ -1,5 +1,7 @@
 # tailing-sidecar
 
+![Project Status](https://img.shields.io/badge/status-alpha-important?style=for-the-badge)
+
 **tailing sidecar** is a [streaming sidecar container](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container) - the cluster-level logging agent for Kubernetes.
 
 It helps when your application inside the Pod cannot write to standard output and/or standard error stream or when it outputs additional logs to a file instead (eg. the gc.log).
