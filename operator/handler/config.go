@@ -17,6 +17,7 @@ limitations under the License.
 package handler
 
 import (
+	"fmt"
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
@@ -92,4 +93,22 @@ func removeEmptyConfigs(configParts []string) []string {
 		}
 	}
 	return nonEmptyConfigs
+}
+
+// validateConfigs validates configurations
+// checks if container names provided in configurations have unique names
+func validateConfigs(configs []tailingsidecarv1.SidecarConfig) error {
+	containerNames := make(map[string]interface{})
+	namesCount := 0
+	for _, config := range configs {
+		if config.Container != "" {
+			containerNames[config.Container] = nil
+			namesCount++
+		}
+	}
+
+	if len(containerNames) != namesCount {
+		return fmt.Errorf("names for tailing sidecars must be unique")
+	}
+	return nil
 }

@@ -82,6 +82,10 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
 
+	if err := validateContainers(pod.Spec.Containers); err != nil {
+		return admission.Errored(http.StatusInternalServerError, err)
+	}
+
 	marshaledPod, err := json.Marshal(pod)
 	if err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
@@ -116,6 +120,15 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 
 	// Parse configurations from annotation and join them with configurations from TailingSidecars
 	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
+
+	err := validateConfigs(configs)
+	if err != nil {
+		handlerLog.Error(err,
+			"Incorrect configuration",
+			"config", configs,
+		)
+		return err
+	}
 
 	if len(configs) == 0 {
 		handlerLog.Info("Missing configuration for Pod",
@@ -201,6 +214,20 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	}
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
 	pod.Spec.Containers = append(podContainers, containers...)
+	return nil
+}
+
+// validateContainers validates containers
+// checks if there is container names conflict
+// potential conflict e.g. when container not managed by operator has name with prefix "tailing-sidecar"
+func validateContainers(containers []corev1.Container) error {
+	containerNames := make(map[string]interface{})
+	for _, container := range containers {
+		containerNames[container.Name] = nil
+	}
+	if len(containerNames) != len(containers) {
+		return fmt.Errorf("container names not unique, when name is not configured for tailing sidecar container it starts with 'tailing-sidecar' prefix")
+	}
 	return nil
 }
 
