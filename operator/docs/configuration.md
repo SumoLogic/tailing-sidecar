@@ -31,6 +31,10 @@ metadata:
 
 ## Named configurations using TailingSidecar
 
+![Immature Config Status](https://img.shields.io/badge/config-immature-important?style=for-the-badge)
+
+**_NOTE: this configuration option is being reviewed and most probably will change. Please do not use it._**
+
 Named configurations using TailingSidecar allow to define named configurations for multiple tailing sidecars in following form:
 
 ```yaml
