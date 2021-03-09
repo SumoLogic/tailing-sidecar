@@ -93,9 +93,9 @@ deploy-examples-update:
 teardown-examples:
 	kubectl delete -n tailing-sidecar-system pod pod-without-annotations
 	kubectl delete -n tailing-sidecar-system pod pod-with-annotations
-	kubectl delete -n tailing-sidecar-system deployment statefulset-with-annotations
+	kubectl delete -n tailing-sidecar-system statefulset statefulset-with-annotations
 	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
-	kubectl delete -n tailing-sidecar-system deployment daemonset-with-annotations
+	kubectl delete -n tailing-sidecar-system daemonset daemonset-with-annotations
 	kubectl delete -n tailing-sidecar-system TailingSidecar tailingsidecar-sample
 
 # Check if logs from resources created with make deploy-examples have proper content
