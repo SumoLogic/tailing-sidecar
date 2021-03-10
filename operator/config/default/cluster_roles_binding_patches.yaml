@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: proxy-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: tailing-sidecar-service-account
+  namespace: tailing-sidecar-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: manager-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: tailing-sidecar-service-account
+  namespace: tailing-sidecar-system
