@@ -116,14 +116,11 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		return err
 	}
 
-	// Join configurations from TailingSidecars
-	tailingSidecarConfigs := joinTailinSidecarConfigs(tailingSidecarList.Items)
-
 	// Get number of existing tailing sidecars
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
-	// Parse configurations from annotation and join them with configurations from TailingSidecars
-	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
+	// Get configurations from TailingSidecars and annotations
+	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarList.Items)
 
 	err := validateConfigs(configs)
 	if err != nil {
@@ -280,17 +277,6 @@ func filterNotUsedVolumes(volumes []corev1.Volume, containers []corev1.Container
 		}
 	}
 	return podVolumes
-}
-
-// joinTailinSidecarConfigs joins configurations defined in TailingSidecar resources
-func joinTailinSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) map[string]tailingsidecarv1.SidecarConfig {
-	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarConfig, 0)
-	for _, tailitailinSidecar := range tailinSidecars {
-		for name, config := range tailitailinSidecar.Spec.Configs {
-			sidecarConfigs[name] = config
-		}
-	}
-	return sidecarConfigs
 }
 
 // isSidecarAvailable checks if tailing sidecar container with given configuration exists in Pod specification
