@@ -39,22 +39,30 @@ const (
 	sidecarAnnotation = "tailing-sidecar"
 )
 
-// getConfigs parses configurations from annotation and joins them with configurations from TailingSidecars
-func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailingsidecarv1.SidecarConfig) []tailingsidecarv1.SidecarConfig {
-	configs := make([]tailingsidecarv1.SidecarConfig, 0)
-
+// getConfigs gets configurations from TailingSidecars and annotations
+func getConfigs(annotations map[string]string, tailinSidecars []tailingsidecarv1.TailingSidecar) []tailingsidecarv1.SidecarConfig {
 	annotation, ok := annotations[sidecarAnnotation]
 	if !ok {
-		return configs
+		return []tailingsidecarv1.SidecarConfig{}
 	}
 
 	if annotation == "" {
 		handlerLog.Info("Empty tailing-sidecar annotation",
 			"annotation", annotation)
-		return configs
+		return []tailingsidecarv1.SidecarConfig{}
 	}
 
+	sidecarConfigs := joinTailingSidecarConfigs(tailinSidecars)
+
+	configs := parseAnnotation(annotation, sidecarConfigs)
+	return configs
+}
+
+// parseAnnotation parses configurations from 'tailing-sidecar' annotation and joins them with configurations from TailingSidecars
+func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecarv1.SidecarConfig) []tailingsidecarv1.SidecarConfig {
+	configs := make([]tailingsidecarv1.SidecarConfig, 0)
 	configElements := strings.Split(annotation, configSeparator)
+
 	for _, configElement := range configElements {
 		configParts := strings.Split(configElement, volumeFileSeparator)
 
@@ -88,6 +96,17 @@ func getConfigs(annotations map[string]string, sidecarConfigs map[string]tailing
 		}
 	}
 	return configs
+}
+
+// joinTailingSidecarConfigs joins configurations defined in TailingSidecar resources
+func joinTailingSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) map[string]tailingsidecarv1.SidecarConfig {
+	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarConfig, len(tailinSidecars))
+	for _, tailitailinSidecar := range tailinSidecars {
+		for name, config := range tailitailinSidecar.Spec.Configs {
+			sidecarConfigs[name] = config
+		}
+	}
+	return sidecarConfigs
 }
 
 // removeEmptyConfigs removes empty elements from configuration e.g. when there is ":" in annotation
