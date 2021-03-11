@@ -40,8 +40,8 @@ test: generate fmt vet manifests
 	source $(ENVTEST_ASSETS_DIR)/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
 clean:
-	git checkout -- config/default/manager_args_patch.yaml
-	rm -f config/default/manager_args_patch.yaml.backup
+	git checkout -- config/default/manager_patch.yaml
+	rm -f config/default/manager_patch.yaml.backup
 	rm -rf testbin
 
 # Build manager binary
@@ -62,7 +62,7 @@ uninstall: manifests kustomize
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests kustomize
-	sed -i.backup "s#sumologic/tailing-sidecar:latest#${TAILING_SIDECAR_IMG}#g" config/default/manager_args_patch.yaml
+	sed -i.backup "s#sumologic/tailing-sidecar:latest#${TAILING_SIDECAR_IMG}#g" config/default/manager_patch.yaml
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 	kubectl wait --for=condition=ready --timeout 60s pod -l control-plane=tailing-sidecar-operator -n tailing-sidecar-system
