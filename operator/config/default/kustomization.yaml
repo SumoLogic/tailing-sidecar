@@ -25,7 +25,7 @@ bases:
 #- ../prometheus
 
 patchesStrategicMerge:
-  # Add tailing sidecar image as container args
+  # Patches for tailing sidecar operator manager
 - manager_patch.yaml
   # Protect the /metrics endpoint by putting it behind auth.
   # If you want your operator to expose the /metrics
