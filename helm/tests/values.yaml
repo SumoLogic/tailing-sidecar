@@ -1,0 +1,9 @@
+operator:
+  image:
+    repository: registry.localhost:5000/sumologic/tailing-sidecar-operator
+    tag: test
+
+sidecar:
+  image:
+    repository: registry.localhost:5000/sumologic/tailing-sidecar
+    tag: test
