@@ -225,7 +225,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    control-plane: tailing-sidecar-operator
+    {{- include "operator.labels" . | nindent 4 }}
   name: tailing-sidecar-operator-metrics-service
   namespace: {{ .Release.Namespace }}
 spec:
@@ -234,7 +234,7 @@ spec:
     port: 8443
     targetPort: https
   selector:
-    control-plane: tailing-sidecar-operator
+    {{- include "operator.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: Service
@@ -246,7 +246,7 @@ spec:
   - port: 443
     targetPort: 9443
   selector:
-    control-plane: tailing-sidecar-operator
+    {{- include "operator.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment

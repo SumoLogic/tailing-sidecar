@@ -48,5 +48,4 @@ Selector labels
 {{- define "operator.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-control-plane: tailing-sidecar-operator
 {{- end }}
