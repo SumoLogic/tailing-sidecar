@@ -40,7 +40,7 @@ const (
 )
 
 // getConfigs gets configurations from TailingSidecars and annotations
-func getConfigs(annotations map[string]string, tailinSidecars []tailingsidecarv1.TailingSidecar) []tailingsidecarv1.SidecarConfig {
+func getConfigs(annotations map[string]string, tailingSidecars []tailingsidecarv1.TailingSidecar) []tailingsidecarv1.SidecarConfig {
 	annotation, ok := annotations[sidecarAnnotation]
 	if !ok {
 		return []tailingsidecarv1.SidecarConfig{}
@@ -52,7 +52,7 @@ func getConfigs(annotations map[string]string, tailinSidecars []tailingsidecarv1
 		return []tailingsidecarv1.SidecarConfig{}
 	}
 
-	sidecarConfigs := joinTailingSidecarConfigs(tailinSidecars)
+	sidecarConfigs := joinTailingSidecarConfigs(tailingSidecars)
 
 	configs := parseAnnotation(annotation, sidecarConfigs)
 	return configs
@@ -99,9 +99,9 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 }
 
 // joinTailingSidecarConfigs joins configurations defined in TailingSidecar resources
-func joinTailingSidecarConfigs(tailinSidecars []tailingsidecarv1.TailingSidecar) map[string]tailingsidecarv1.SidecarConfig {
-	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarConfig, len(tailinSidecars))
-	for _, tailitailinSidecar := range tailinSidecars {
+func joinTailingSidecarConfigs(tailingSidecars []tailingsidecarv1.TailingSidecar) map[string]tailingsidecarv1.SidecarConfig {
+	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarConfig, len(tailingSidecars))
+	for _, tailitailinSidecar := range tailingSidecars {
 		for name, config := range tailitailinSidecar.Spec.Configs {
 			sidecarConfigs[name] = config
 		}
