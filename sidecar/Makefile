@@ -7,7 +7,7 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 # root_dir is a root directory of the project (github repo)
 root_dir := $(dir $(abspath $(mkfile_path)/..))
 
-TAG ?= "localhost:32000/sumologic/tailing-sidecar:demo"
+TAG ?= "localhost:32000/sumologic/tailing-sidecar:latest"
 
 all: build push
 

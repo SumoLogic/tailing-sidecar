@@ -6,4 +6,4 @@ operator:
 sidecar:
   image:
     repository: localhost:32000/sumologic/tailing-sidecar
-    tag: demo
+    tag: latest

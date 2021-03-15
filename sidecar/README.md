@@ -66,7 +66,7 @@ spec:
     - name: varlog
       mountPath: /var/log
   - name: sidecar1
-    image: localhost:32000/sumologic/tailing-sidecar:demo
+    image: localhost:32000/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example1.log
@@ -78,7 +78,7 @@ spec:
     - name: volume-sidecar1
       mountPath: /tailing-sidecar/var
   - name: sidecar2
-    image: localhost:32000/sumologic/tailing-sidecar:demo
+    image: localhost:32000/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example2.log
@@ -154,7 +154,7 @@ e.g.
 export DIR_TO_TAIL="$PWD/examples"
 export FLUENT_BIT_DB_DIR="$PWD/var"
 export FILES_PATTERN="*.log"
-export TAILING_SIDECAR_IMAGE="localhost:32000/sumologic/tailing-sidecar:demo"
+export TAILING_SIDECAR_IMAGE="localhost:32000/sumologic/tailing-sidecar:latest"
 export LOG_LEVEL="warning"
 ```
 
@@ -193,7 +193,7 @@ make build TAG=<DOCKER_IMAGE_TAG>
 e.g.
 
 ```bash
-make build TAG=localhost:32000/sumologic/tailing-sidecar:demo
+make build TAG=localhost:32000/sumologic/tailing-sidecar:latest
 ```
 
 To push Docker image to container registry:
@@ -205,7 +205,7 @@ make push TAG=<DOCKER_IMAGE_TAG>
 e.g.
 
 ```bash
-make push TAG=localhost:32000/sumologic/tailing-sidecar:demo
+make push TAG=localhost:32000/sumologic/tailing-sidecar:latest
 ```
 
 ## Testing in Vagrant environment
