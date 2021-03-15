@@ -259,6 +259,8 @@ func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container)
 	podVolumes := make([]corev1.Volume, 0)
 	for _, volume := range volumes {
 		if !strings.HasPrefix(volume.Name, hostPathVolumePrefix) {
+			// name of volumes assigned to tailing sidecar starts with 'volume-sidecar' prefix
+			// when volumes starts with different prefix should not be filtered out
 			podVolumes = append(podVolumes, volume)
 			continue
 		}
