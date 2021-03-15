@@ -15,7 +15,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 IMG ?= localhost:32000/sumologic/tailing-sidecar-operator:latest
 
 # Image URL for tailing sidecar
-TAILING_SIDECAR_IMG ?= localhost:32000/sumologic/tailing-sidecar:demo
+TAILING_SIDECAR_IMG ?= localhost:32000/sumologic/tailing-sidecar:latest
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"

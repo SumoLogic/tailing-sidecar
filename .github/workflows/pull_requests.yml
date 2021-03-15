@@ -86,7 +86,7 @@ jobs:
         working-directory: ./sidecar
         run: make TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
       - name: Change tailing sidecar image in example Pod
-        run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:demo/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
+        run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:latest/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
       - name: Create Pod with sidecars
         working-directory: ./sidecar
         run: make deploy-examples

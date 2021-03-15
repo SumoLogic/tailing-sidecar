@@ -22,7 +22,7 @@ spec:
     - name: varlog
       mountPath: /var/log
   - name: sidecar1
-    image: localhost:32000/sumologic/tailing-sidecar:demo
+    image: localhost:32000/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example1.log
@@ -32,7 +32,7 @@ spec:
     - name: volume-sidecar1
       mountPath: /tailing-sidecar/var
   - name: sidecar2
-    image: localhost:32000/sumologic/tailing-sidecar:demo
+    image: localhost:32000/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example2.log
