@@ -215,7 +215,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
 
 	pod.Spec.Containers = append(podContainers, containers...)
-	pod.Spec.Volumes = filterNotUsedVolumes(pod.Spec.Volumes, pod.Spec.Containers)
+	pod.Spec.Volumes = filterUnusedVolumes(pod.Spec.Volumes, pod.Spec.Containers)
 	return nil
 }
 
@@ -252,10 +252,10 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 	return podContainers
 }
 
-// filterNotUsedVolumes filter out not used volumes earlier assigned to tailing sidecars and leaves the rest of volumes
+// filterUnusedVolumes filter out not used volumes earlier assigned to tailing sidecars and leaves the rest of volumes
 // each of tailing-sidecars has its own volume to store Fluent Bit database
 // when sidecar container is removed volume is no longer needed
-func filterNotUsedVolumes(volumes []corev1.Volume, containers []corev1.Container) []corev1.Volume {
+func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container) []corev1.Volume {
 	podVolumes := make([]corev1.Volume, 0)
 	for _, volume := range volumes {
 		if !strings.HasPrefix(volume.Name, hostPathVolumePrefix) {
