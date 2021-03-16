@@ -1,0 +1,51 @@
+name: Releases
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-sumo-[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-sumo-[0-9]+-alpha.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-sumo-[0-9]+-beta.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-sumo-[0-9]+-rc.[0-9]+'
+env:
+  SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
+  OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
+  LATEST_TAG: "latest"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract tag
+        id: extract_tag
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/v})"
+      - name: Print container tag
+        run: echo "Running release build for ${{ steps.extract_tag.outputs.tag }}"
+      - name: Build tailing sidecar image
+        run: make build TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar
+      - name: Build tailing sidecar operator image
+        run: make docker-build IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
+      - name: Login to GitHub Container Registry
+        run: make login
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}
+          CR_OWNER: USERNAME
+      - name: Push tailing sidecar image
+        run: make push TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar
+      - name: Push tailing sidecar operator image
+        run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
+      - name: Set latest image for tailing sidecar
+        run: docker tag ${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
+      - name: Push tailing sidecar image with latest tag
+        run: make push TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
+        working-directory: ./sidecar
+      - name: Set latest image for tailing sidecar operator
+        run: docker tag ${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
+      - name: Push tailing sidecar operator image with latest tag
+        run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
+        working-directory: ./operator
