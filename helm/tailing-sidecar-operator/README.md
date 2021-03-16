@@ -14,8 +14,8 @@ Before installing this chart, ensure the following prerequisites are satisfied i
 - [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites)
   are enabled
 
-Unfortunately, due to a limitation of `cert-manager` chart it cannot be used as a dependency and needs to be installed separately.
-See issue https://github.com/jetstack/cert-manager/issues/3062 for details.
+Unfortunately, due to a limitation of `cert-manager` chart, it cannot be used as a dependency and needs to be installed separately.
+See issue [jetstack/cert-manager#3062](https://github.com/jetstack/cert-manager/issues/3062) for details.
 
 ## Installing
 
