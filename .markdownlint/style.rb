@@ -10,7 +10,7 @@ rule 'MD009'
 rule 'MD010'
 rule 'MD011'
 rule 'MD012'
-rule 'MD013', :line_length => 360
+rule 'MD013', :line_length => 120
 rule 'MD014'
 rule 'MD018'
 rule 'MD019'

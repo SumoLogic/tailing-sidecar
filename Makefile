@@ -4,6 +4,7 @@ markdownlint: mdl
 
 mdl:
 	mdl --style .markdownlint/style.rb \
+		README.md \
 		sidecar/README.md \
 		operator/README.md \
 		operator/docs
