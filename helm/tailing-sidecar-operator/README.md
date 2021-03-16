@@ -34,4 +34,4 @@ helm uninstall tailing-sidecar-operator
 
 ## Configuration
 
-TBD
+See [values.yaml](./values.yaml) file for the available configuration options.
