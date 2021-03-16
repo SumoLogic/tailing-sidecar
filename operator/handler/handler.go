@@ -252,9 +252,9 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 	return podContainers
 }
 
-// filterUnusedVolumes filter out not used volumes earlier assigned to tailing sidecars and leaves the rest of volumes
-// each of tailing-sidecars has its own volume to store Fluent Bit database
-// when sidecar container is removed volume is no longer needed
+// filterUnusedVolumes filters out unused volumes, previously assigned to tailing sidecars from the provided slice.
+// Each of tailing-sidecars has its own volume to store Fluent Bit database.
+// When sidecar container is removed volume is no longer needed.
 func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container) []corev1.Volume {
 	podVolumes := make([]corev1.Volume, 0)
 	for _, volume := range volumes {
