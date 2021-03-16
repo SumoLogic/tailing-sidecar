@@ -17,7 +17,8 @@ Configuration for single tailing sidecar consists of:
 - volume name
 - path to file containing logs to tail
 
-Configuration can be provided either through simple configurations in annotations or named configurations using TailingSidecar resources.
+Configuration can be provided either through simple configurations in annotations or named configurations
+using TailingSidecar resources.
 
 Configuration for single tailing sidecar is separated by `;`.
 
@@ -37,7 +38,8 @@ metadata:
 
 **_NOTE: this configuration option is being reviewed and most probably will change. Use at your own risk._**
 
-Named configurations using TailingSidecar allow to define named configurations for multiple tailing sidecars in following form:
+Named configurations using TailingSidecar allow to define named configurations for multiple tailing sidecars
+in the following form:
 
 ```yaml
 apiVersion: tailing-sidecar.sumologic.com/v1

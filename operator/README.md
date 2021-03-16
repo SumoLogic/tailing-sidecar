@@ -13,7 +13,8 @@ To quickly see benefits of using tailing sidecar operator try it in prepared [Va
 ### Prerequisities
 
 - [cert-manager](https://cert-manager.io/docs/installation/)
-- [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites) enabled
+- [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites)
+  enabled
 - [kustomize](https://kustomize.io/)
 
 ### Set images (optional)
