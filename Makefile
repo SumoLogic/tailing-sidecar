@@ -19,3 +19,6 @@ build-push-sidecar:
 
 build-push-deploy-operator:
 	$(MAKE) -C operator all
+
+login:
+	echo "${CR_PAT}" | docker login ghcr.io -u "${CR_OWNER}" --password-stdin
