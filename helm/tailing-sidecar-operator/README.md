@@ -2,7 +2,7 @@
 
 ![Project Status](https://img.shields.io/badge/status-alpha-important?style=for-the-badge)
 
-[Tailing Sidecar Operator](https://github.com/SumoLogic/tailing-sidecar/tree/main/operator) makes it easy to add
+[Tailing Sidecar Operator](../../operator/README.md) makes it easy to add
 [streaming sidecar containers](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container)
 to pods in your cluster by adding annotations on the pods.
 
