@@ -10,7 +10,7 @@ env:
   LATEST_TAG: "dev-latest"
 
 jobs:
-  build:
+  build-sidecar:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -22,10 +22,7 @@ jobs:
       - name: Build tailing sidecar image
         run: make build TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar
-      - name: Build tailing sidecar operator image
-        run: make docker-build IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
-        working-directory: ./operator
-       - name: Generate token
+      - name: Generate token
         id: generate_token
         uses: tibdex/github-app-token@v1
         with:
@@ -40,14 +37,39 @@ jobs:
       - name: Push tailing sidecar image
         run: make push TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar
-      - name: Push tailing sidecar operator image
-        run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
-        working-directory: ./operator
       - name: Set latest image for tailing sidecar
         run: docker tag ${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
       - name: Push tailing sidecar image with latest tag
         run: make push TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./sidecar
+
+  build-operator:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract tag
+        id: extract_tag
+        run: echo "::set-output name=tag::$(echo $(git describe --tags --always))"
+      - name: Print container tag
+        run: echo "Running release build for ${{ steps.extract_tag.outputs.tag }}"
+      - name: Build tailing sidecar operator image
+        run: make docker-build IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.CONTAINER_REGISTRY_APP_ID }}
+          private_key: ${{ secrets.CONTAINER_REGISTRY_PRIVATE_KEY }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: USERNAME
+          password: ${{ steps.generate_token.outputs.token }}
+      - name: Push tailing sidecar operator image
+        run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
       - name: Set latest image for tailing sidecar operator
         run: docker tag ${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
       - name: Push tailing sidecar operator image with latest tag
