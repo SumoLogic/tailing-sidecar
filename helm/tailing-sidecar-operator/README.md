@@ -10,12 +10,8 @@ to pods in your cluster by adding annotations on the pods.
 
 Before installing this chart, ensure the following prerequisites are satisfied in your cluster:
 
-- [cert-manager](https://cert-manager.io/docs/installation/) is installed
 - [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites)
   are enabled
-
-Unfortunately, due to a limitation of `cert-manager` chart, it cannot be used as a dependency and needs to be installed separately.
-See issue [jetstack/cert-manager#3062](https://github.com/jetstack/cert-manager/issues/3062) for details.
 
 ## Installing
 
@@ -35,3 +31,12 @@ helm uninstall tailing-sidecar-operator
 ## Configuration
 
 See [values.yaml](./values.yaml) file for the available configuration options.
+
+### Using `cert-manager` to manage operator's certificates
+
+By default, TLS certificates for the Tailing Sidecar Operator's API webhook
+are created using Helm's functions `genCA` and `genSignedCert`.
+The generated certificate is valid for 365 days after issuing, i.e. after chart installation.
+
+If you have [cert-manager](https://cert-manager.io/) installed in your cluster,
+you can make the chart use it for certificate management by setting the property `useCertManager` to `true`.
