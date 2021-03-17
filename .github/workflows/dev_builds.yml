@@ -5,8 +5,8 @@ on:
     branches:
       - main
 env:
-  SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
-  OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
+  SIDECAR_IMAGE: "ghcr.io/kkujawa-sumo/tailing-sidecar"
+  OPERATOR_IMAGE: "ghcr.io/kkujawa-sumo/tailing-sidecar-operator"
   LATEST_TAG: "dev-latest"
 
 jobs:
