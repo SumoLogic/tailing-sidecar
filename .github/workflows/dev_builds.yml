@@ -7,7 +7,7 @@ on:
 env:
   SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
   OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
-  LATEST_TAG: "dev-latest"
+  LATEST_TAG: "main"
 
 jobs:
   build-sidecar:
