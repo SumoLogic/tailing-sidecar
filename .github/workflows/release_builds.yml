@@ -26,7 +26,7 @@ jobs:
         run: make build TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar
       - name: Build tailing sidecar operator image
-        run: make docker-build IMG={{ env.operator_image }}:${{ steps.extract_tag.outputs.tag }}
+        run: make docker-build IMG=${{ env.operator_image }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./operator
       - name: Login to GitHub Container Registry
         run: make login
@@ -40,9 +40,9 @@ jobs:
         run: make docker-push IMG=${{ env.operator_image }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./operator
       - name: Set latest image for tailing sidecar
-        run: docker tag {{ env.sidecar_image }}:${{ steps.extract_tag.outputs.tag }} {{ env.sidecar_image }}:${{ env.latest_tag }}
-      - name: Push tailing sidecar image with ${{ env.latest_tag }} tag
-        run: make push TAG={{ env.sidecar_image }}:${{ env.latest_tag }}
+        run: docker tag ${{ env.sidecar_image }}:${{ steps.extract_tag.outputs.tag }} ${{ env.sidecar_image }}:${{ env.latest_tag }}
+      - name: Push tailing sidecar image with latest tag
+        run: make push TAG=${{ env.sidecar_image }}:${{ env.latest_tag }}
         working-directory: ./sidecar
       - name: Set latest image for tailing sidecar operator
         run: docker tag ${{ env.operator_image }}:${{ steps.extract_tag.outputs.tag }} ${{ env.operator_image }}:${{ env.latest_tag }}
