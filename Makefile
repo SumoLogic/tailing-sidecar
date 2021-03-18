@@ -7,7 +7,8 @@ mdl:
 		README.md \
 		sidecar/README.md \
 		operator/README.md \
-		operator/docs
+		operator/docs \
+		dev/releasing.md
 
 yamllint:
 	yamllint -c .yamllint.yaml \
