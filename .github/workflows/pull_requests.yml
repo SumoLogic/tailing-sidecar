@@ -110,8 +110,8 @@ jobs:
         working-directory: ./operator
         run: make test-examples
 
-  deploy-helm-chart:
-    name: Deploy helm chart for tailing sidecar operator
+  test-helm-chart:
+    name: Test Helm chart
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -155,8 +155,8 @@ jobs:
         working-directory: ./operator
         run: make test-examples
 
-  deploy-helm-chart-with-cert-manager:
-    name: Deploy helm chart with cert-manager
+  test-helm-chart-with-cert-manager:
+    name: Test Helm chart with cert-manager
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
