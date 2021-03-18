@@ -39,4 +39,4 @@ are created using Helm's functions `genCA` and `genSignedCert`.
 The generated certificate is valid for 365 days after issuing, i.e. after chart installation.
 
 If you have [cert-manager](https://cert-manager.io/) installed in your cluster,
-you can make the chart use it for certificate management by setting the property `useCertManager` to `true`.
+you can make the chart use it for certificate management by setting the property `certManager.enabled` to `true`.

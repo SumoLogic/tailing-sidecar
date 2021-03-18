@@ -58,7 +58,7 @@ spec:
     served: true
     storage: true
 ---
-{{- if .Values.useCertManager -}}
+{{- if .Values.certManager.enabled -}}
 {{- include "operator.webhookWithCertManager" . }}
 {{- else }}
 {{- include "operator.webhook" . }}
