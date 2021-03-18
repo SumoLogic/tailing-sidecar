@@ -63,3 +63,10 @@ jobs:
       - name: Push tailing sidecar operator image with latest tag
         run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./operator
+
+  push-helm-chart:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Push dev helm chart
+        run: make push-helm-chart
