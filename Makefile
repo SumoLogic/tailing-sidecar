@@ -20,3 +20,6 @@ build-push-sidecar:
 
 build-push-deploy-operator:
 	$(MAKE) -C operator all
+
+push-helm-chart:
+	./ci/push-helm-chart.sh
