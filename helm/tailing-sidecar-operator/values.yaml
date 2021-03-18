@@ -19,5 +19,5 @@ sidecar:
     repository: public.ecr.aws/sumologic/tailing-sidecar
     tag: 0.0.0
 
-
-useCertManager: false
+certManager:
+  enabled: false

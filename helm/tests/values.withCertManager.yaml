@@ -8,4 +8,5 @@ sidecar:
     repository: registry.localhost:5000/sumologic/tailing-sidecar
     tag: test
 
-useCertManager: true
+certManager:
+  enabled: true
