@@ -144,7 +144,9 @@ jobs:
         working-directory: ./helm
         run: helm upgrade --install test-release ./tailing-sidecar-operator -f tests/values.yaml -n tailing-sidecar-system --create-namespace
       - name: Wait for operator to be ready
-        run: kubectl wait --for=condition=ready --timeout 60s pod -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
+        run: |
+          kubectl wait --for=condition=available --timeout 10s deploy -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
+          kubectl wait --for=condition=ready --timeout 10s pod -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
