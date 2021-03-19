@@ -16,7 +16,7 @@ operator:
 
 sidecar:
   image:
-    repository: ghcr.io/sumologic/tailing-sidecar-operator
+    repository: ghcr.io/sumologic/tailing-sidecar
     tag: 0.1.0
 
 certManager:
