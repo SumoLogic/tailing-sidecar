@@ -15,11 +15,19 @@ Before installing this chart, ensure the following prerequisites are satisfied i
 
 ## Installing
 
-Having satisfied the [Prerequisites](#prerequisites), run the following to install the chart:
+Having satisfied the [Prerequisites](#prerequisites), run the following to add Helm repository:
 
 ```sh
-helm repo add TBD TBD
-helm install tailing-sidecar-operator TBD
+helm repo add tailing-sidecar https://sumologic.github.io/tailing-sidecar
+helm repo update
+```
+
+and install Helm chart:
+
+```sh
+helm upgrade --install tailing-sidecar tailing-sidecar/tailing-sidecar-operator \
+  -n tailing-sidecar-system \
+  --create-namespace
 ```
 
 ## Uninstalling

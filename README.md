@@ -2,6 +2,29 @@
 
 ![Project Status](https://img.shields.io/badge/status-alpha-important?style=for-the-badge)
 
+## TL;DR
+
+```sh
+helm repo add tailing-sidecar https://sumologic.github.io/tailing-sidecar
+helm repo update
+```
+
+```sh
+helm upgrade --install tailing-sidecar tailing-sidecar/tailing-sidecar-operator \
+  -n tailing-sidecar-system \
+  --create-namespace
+```
+
+Add `tailing-sidecar` annotation to Pod:
+
+```yaml
+metadata:
+  annotations:
+    tailing-sidecar: <sidecar-name-0>:<volume-name-0>:<path-to-tail-0>;<sidecar-name-1>:<volume-name-1>:<path-to-tail-1>
+```
+
+## Tailing Sidecar
+
 **tailing sidecar** is a [streaming sidecar container](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container),
 the cluster-level logging agent for Kubernetes.
 
