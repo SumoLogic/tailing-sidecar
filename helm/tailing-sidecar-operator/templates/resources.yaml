@@ -59,16 +59,16 @@ spec:
     storage: true
 ---
 {{- if .Values.certManager.enabled -}}
-{{- include "operator.webhookWithCertManager" . }}
+{{- include "tailing-sidecar-operator.webhookWithCertManager" . }}
 {{- else }}
-{{- include "operator.webhook" . }}
+{{- include "tailing-sidecar-operator.webhook" . }}
 {{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-service-account
   namespace: {{ .Release.Namespace }}
 ---
@@ -76,7 +76,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-leader-election-role
   namespace: {{ .Release.Namespace }}
 rules:
@@ -112,7 +112,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   creationTimestamp: null
   name: tailing-sidecar-manager-role
 rules:
@@ -141,7 +141,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-metrics-reader
 rules:
 - nonResourceURLs:
@@ -153,7 +153,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-proxy-role
 rules:
 - apiGroups:
@@ -173,7 +173,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-leader-election-rolebinding
   namespace: {{ .Release.Namespace }}
 roleRef:
@@ -189,7 +189,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -204,7 +204,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -219,7 +219,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-operator-metrics-service
   namespace: {{ .Release.Namespace }}
 spec:
@@ -228,38 +228,38 @@ spec:
     port: 8443
     targetPort: https
   selector:
-    {{- include "operator.selectorLabels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
-  name: {{ include "operator.fullname" . }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
+  name: {{ include "tailing-sidecar-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - port: 443
     targetPort: 9443
   selector:
-    {{- include "operator.selectorLabels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
-  name: {{ include "operator.fullname" . }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
+  name: {{ include "tailing-sidecar-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "operator.selectorLabels" . | nindent 6 }}
+      {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "operator.selectorLabels" . | nindent 8 }}
+        {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - args:
