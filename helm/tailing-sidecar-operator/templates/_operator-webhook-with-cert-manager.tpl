@@ -1,4 +1,4 @@
-{{- define "operator.webhookWithCertManager" }}
+{{- define "tailing-sidecar-operator.webhookWithCertManager" }}
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
@@ -10,7 +10,7 @@ webhooks:
 - clientConfig:
     caBundle: Cg==
     service:
-      name: {{ include "operator.fullname" . }}
+      name: {{ include "tailing-sidecar-operator.fullname" . }}
       namespace: {{ .Release.Namespace }}
       path: /add-tailing-sidecars-v1-pod
   failurePolicy:  Ignore
@@ -30,13 +30,13 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-serving-cert
   namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-  - {{ include "operator.fullname" . }}.{{ .Release.Namespace }}.svc
-  - {{ include "operator.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  - {{ include "tailing-sidecar-operator.fullname" . }}.{{ .Release.Namespace }}.svc
+  - {{ include "tailing-sidecar-operator.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: tailing-sidecar-selfsigned-issuer
@@ -46,7 +46,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
   labels:
-    {{- include "operator.labels" . | nindent 4 }}
+    {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
   name: tailing-sidecar-selfsigned-issuer
   namespace: {{ .Release.Namespace }}
 spec:
