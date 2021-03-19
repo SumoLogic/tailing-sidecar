@@ -1,1 +1,5 @@
 theme: jekyll-theme-cayman
+name: Tailing Sidecar Operator
+description: Operator adds streaming sidecar containers to Pods
+plugins:
+  - jekyll-seo-tag
