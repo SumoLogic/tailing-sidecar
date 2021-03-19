@@ -4,8 +4,8 @@ nameOverride: ""
 operator:
   image:
     pullPolicy: IfNotPresent
-    repository: public.ecr.aws/sumologic/tailing-sidecar-operator
-    tag: 0.0.0
+    repository: ghcr.io/sumologic/tailing-sidecar-operator
+    tag: 0.1.0
   resources:
     limits:
       cpu: 100m
@@ -16,8 +16,8 @@ operator:
 
 sidecar:
   image:
-    repository: public.ecr.aws/sumologic/tailing-sidecar
-    tag: 0.0.0
+    repository: ghcr.io/sumologic/tailing-sidecar-operator
+    tag: 0.1.0
 
 certManager:
   enabled: false
