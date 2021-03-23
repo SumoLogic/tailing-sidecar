@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   tailing-sidecar-operator:
   - apiVersion: v2
+    appVersion: 0.2.0-2-gea4c339a7bfa883fd7f1f3f8f444d542fc626c4d
+    created: "2021-03-23T12:20:46.722713917Z"
+    description: Installs Tailing Sidecar Operator
+    digest: 0b5925dc2ff7c032ac864d104db2279f9b5468d76d7dad1a236ba43fdee46daa
+    name: tailing-sidecar-operator
+    type: application
+    urls:
+    - https://sumologic.github.io/tailing-sidecar/dev/tailing-sidecar-operator-0.2.0-2-gea4c339a7bfa883fd7f1f3f8f444d542fc626c4d.tgz
+    version: 0.2.0-2-gea4c339a7bfa883fd7f1f3f8f444d542fc626c4d
+  - apiVersion: v2
     appVersion: 0.2.0-1-g7355174f216eabee85e049c384c859d0c12f151f
     created: "2021-03-23T10:51:13.191438764Z"
     description: Installs Tailing Sidecar Operator
@@ -101,4 +111,4 @@ entries:
     urls:
     - https://sumologic.github.io/tailing-sidecar/dev/tailing-sidecar-operator-0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1.tgz
     version: 0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1
-generated: "2021-03-23T10:51:13.190745469Z"
+generated: "2021-03-23T12:20:46.721913012Z"
