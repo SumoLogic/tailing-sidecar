@@ -4,3 +4,12 @@ description: Installs Tailing Sidecar Operator
 type: application
 version: 0.3.0
 appVersion: 0.3.0
+keywords:
+  - tailing-sidecar
+  - k8s-logging
+  - kubernetes-logging
+  - k8s-logs-pod
+icon: https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/main/images/sumo_logic_logo.png
+home: https://sumologic.github.io/tailing-sidecar
+sources:
+  - https://github.com/SumoLogic/tailing-sidecar
