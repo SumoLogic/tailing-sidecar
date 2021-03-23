@@ -19,5 +19,20 @@ sidecar:
     repository: ghcr.io/sumologic/tailing-sidecar
     tag: 0.2.0
 
+# Configuration for MutatingWebhook which is used by tailing sidecar operator
+# for details please see Kubernetes API Reference Docs
+# e.g. https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#mutatingwebhookconfiguration-v1-admissionregistration-k8s-io
+webhook:
+  failurePolicy: Ignore
+  reinvocationPolicy: IfNeeded
+  
+  objectSelector: {}
+    # matchLabels:
+    #   tailing-sidecar: "true"
+
+  namespaceSelector: {}
+    # matchLabels:
+    #   tailing-sidecar: "true"
+
 certManager:
   enabled: false
