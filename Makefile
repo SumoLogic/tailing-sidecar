@@ -1,3 +1,7 @@
+NAMESPACE ?= tailing-sidecar-system
+RELEASE ?= tailing-sidecar
+HELM_CHART ?= helm/tailing-sidecar-operator
+
 all: markdownlint yamllint
 
 markdownlint: mdl
@@ -24,3 +28,26 @@ build-push-deploy-operator:
 
 push-helm-chart:
 	./ci/push-helm-chart.sh
+
+helm-upgrade:
+	helm upgrade --install $(RELEASE) \
+		--namespace $(NAMESPACE) \
+		--create-namespace \
+		$(HELM_CHART)
+
+helm-dry-run:
+	helm install --dry-run $(RELEASE) \
+		--namespace $(NAMESPACE) \
+		$(HELM_CHART)
+
+helm-delete:
+	helm delete $(RELEASE) --namespace $(NAMESPACE)
+
+deploy-examples:
+	$(MAKE) -C operator deploy-examples
+
+check-examples:
+	$(MAKE) -C operator check-examples
+
+teardown-examples:
+	$(MAKE) -C operator teardown-examples
