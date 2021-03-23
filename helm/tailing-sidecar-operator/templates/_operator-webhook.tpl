@@ -14,8 +14,13 @@ webhooks:
       name: {{ include "tailing-sidecar-operator.fullname" . }}
       namespace: {{ .Release.Namespace }}
       path: /add-tailing-sidecars-v1-pod
-  failurePolicy:  Ignore
-  name: tailing-sidecar.sumologic.com
+  failurePolicy:  {{ .Values.webhook.failurePolicy }}
+  reinvocationPolicy: {{ .Values.webhook.reinvocationPolicy }}
+  objectSelector: 
+  {{- toYaml .Values.webhook.objectSelector | nindent 4 }}
+  namespaceSelector: 
+  {{- toYaml .Values.webhook.namespaceSelector | nindent 4 }}
+  name: tailing-sidecar.sumologic.com 
   rules:
   - apiGroups:
     - ""
