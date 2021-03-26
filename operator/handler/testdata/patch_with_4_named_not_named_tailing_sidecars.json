@@ -7,7 +7,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container2",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar0"
+            "name": "volume-sidecar-0"
         }
     },
     {
@@ -18,7 +18,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar1"
+            "name": "volume-sidecar-1"
         }
     },
     {
@@ -29,7 +29,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container0",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar2"
+            "name": "volume-sidecar-2"
         }
     },
     {
@@ -40,7 +40,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-3",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar3"
+            "name": "volume-sidecar-3"
         }
     },
     {
@@ -67,7 +67,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar0"
+                    "name": "volume-sidecar-0"
                 }
             ]
         }
@@ -96,7 +96,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar1"
+                    "name": "volume-sidecar-1"
                 }
             ]
         }
@@ -125,7 +125,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar2"
+                    "name": "volume-sidecar-2"
                 }
             ]
         }
@@ -154,7 +154,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar3"
+                    "name": "volume-sidecar-3"
                 }
             ]
         }

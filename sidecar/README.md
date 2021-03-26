@@ -75,7 +75,7 @@ spec:
     volumeMounts:
     - name: varlog
       mountPath: /var/log
-    - name: volume-sidecar1
+    - name: volume-sidecar-1
       mountPath: /tailing-sidecar/var
   - name: sidecar2
     image: ghcr.io/sumologic/tailing-sidecar:latest
@@ -87,16 +87,16 @@ spec:
     volumeMounts:
     - name: varlog
       mountPath: /var/log
-    - name: volume-sidecar2
+    - name: volume-sidecar-2
       mountPath: /tailing-sidecar/var
   volumes:
   - name: varlog
     emptyDir: {}
-  - name: volume-sidecar1
+  - name: volume-sidecar-1
     hostPath:
       path: /var/log/sidecar1
       type: DirectoryOrCreate
-  - name: volume-sidecar2
+  - name: volume-sidecar-2
     hostPath:
       path: /var/log/sidecar2
       type: DirectoryOrCreate
