@@ -14,7 +14,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar0",
+            "name": "tailing-sidecar-0",
             "resources": {},
             "volumeMounts": [
                 {
@@ -43,7 +43,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar1",
+            "name": "tailing-sidecar-1",
             "resources": {},
             "volumeMounts": [
                 {
@@ -62,7 +62,7 @@
         "path": "/spec/volumes/2",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar0"
@@ -73,7 +73,7 @@
         "path": "/spec/volumes/3",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar1"

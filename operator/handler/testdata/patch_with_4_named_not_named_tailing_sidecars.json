@@ -15,7 +15,7 @@
         "path": "/spec/volumes/3",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar1"
@@ -37,7 +37,7 @@
         "path": "/spec/volumes/5",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar3",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-3",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar3"
@@ -87,7 +87,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar1",
+            "name": "tailing-sidecar-1",
             "resources": {},
             "volumeMounts": [
                 {
@@ -145,7 +145,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar3",
+            "name": "tailing-sidecar-3",
             "resources": {},
             "volumeMounts": [
                 {
