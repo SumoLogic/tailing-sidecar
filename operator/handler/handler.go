@@ -39,8 +39,8 @@ const (
 	sidecarEnvMarker    = "TAILING_SIDECAR"
 	sidecarEnvMarkerVal = "true"
 
-	sidecarContainerName   = "tailing-sidecar%d"
-	sidecarContainerPrefix = "tailing-sidecar"
+	sidecarContainerName   = "tailing-sidecar-%d"
+	sidecarContainerPrefix = "tailing-sidecar-"
 
 	hostPathDirPath      = "/var/log/tailing-sidecar-fluentbit/%s/%s"
 	hostPathVolumeName   = "volume-sidecar%d"

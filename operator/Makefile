@@ -106,34 +106,34 @@ test-examples:
 check-examples:
 	kubectl get all -n tailing-sidecar-system
 
-	kubectl logs pod-with-annotations tailing-sidecar0 -n tailing-sidecar-system --tail 5
-	kubectl logs pod-with-annotations tailing-sidecar1 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations tailing-sidecar-0 -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations tailing-sidecar-1 -n tailing-sidecar-system --tail 5
 	kubectl logs pod-with-annotations named-container -n tailing-sidecar-system --tail 5
 
-	kubectl logs statefulset-with-annotations-0 tailing-sidecar0 -n tailing-sidecar-system --tail 5
+	kubectl logs statefulset-with-annotations-0 tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 	kubectl logs statefulset-with-annotations-0 my-named-sidecar -n tailing-sidecar-system --tail 5
-	kubectl logs statefulset-with-annotations-0 tailing-sidecar2 -n tailing-sidecar-system --tail 5
+	kubectl logs statefulset-with-annotations-0 tailing-sidecar-2 -n tailing-sidecar-system --tail 5
 
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
-		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
-		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-1 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
-		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-2 -n tailing-sidecar-system --tail 5
 
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
-		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
-		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-1 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[1].metadata.name}") \
-		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-2 -n tailing-sidecar-system --tail 5
 
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
-		tailing-sidecar0 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
-		tailing-sidecar1 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-1 -n tailing-sidecar-system --tail 5
 	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[2].metadata.name}") \
-		tailing-sidecar2 -n tailing-sidecar-system --tail 5
+		tailing-sidecar-2 -n tailing-sidecar-system --tail 5
 
 # Check resources created with make deploy-examples-update
 check-examples-update:

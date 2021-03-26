@@ -4,7 +4,7 @@
                 "path": "/spec/volumes/2",
                 "value": {
                         "hostPath": {
-                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0",
+                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
                                 "type": "DirectoryOrCreate"
                         },
                         "name": "volume-sidecar0"
@@ -15,7 +15,7 @@
                 "path": "/spec/volumes/3",
                 "value": {
                         "hostPath": {
-                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                                 "type": "DirectoryOrCreate"
                         },
                         "name": "volume-sidecar1"
@@ -26,7 +26,7 @@
                 "path": "/spec/volumes/4",
                 "value": {
                         "hostPath": {
-                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar2",
+                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-2",
                                 "type": "DirectoryOrCreate"
                         },
                         "name": "volume-sidecar2"
@@ -47,7 +47,7 @@
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",
-                        "name": "tailing-sidecar0",
+                        "name": "tailing-sidecar-0",
                         "resources": {},
                         "volumeMounts": [
                                 {
@@ -76,7 +76,7 @@
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",
-                        "name": "tailing-sidecar1",
+                        "name": "tailing-sidecar-1",
                         "resources": {},
                         "volumeMounts": [
                                 {
@@ -105,7 +105,7 @@
                                 }
                         ],
                         "image": "tailing-sidecar-image:test",
-                        "name": "tailing-sidecar2",
+                        "name": "tailing-sidecar-2",
                         "resources": {},
                         "volumeMounts": [
                                 {

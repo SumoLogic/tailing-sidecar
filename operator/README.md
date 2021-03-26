@@ -58,7 +58,7 @@ kubectl apply -f examples/pod_with_annotations.yaml
 Check logs from tailing sidecar e.g.
 
 ```bash
-kubectl logs pod-with-annotations tailing-sidecar0  --tail 5 -n tailing-sidecar-system
+kubectl logs pod-with-annotations tailing-sidecar-0  --tail 5 -n tailing-sidecar-system
 ```
 
 ## Build and push tailing sidecar operator image to container registry

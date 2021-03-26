@@ -14,7 +14,7 @@
                 }
             ],
             "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar1",
+            "name": "tailing-sidecar-1",
             "resources": {},
             "volumeMounts": [
                 {
@@ -33,7 +33,7 @@
         "path": "/spec/volumes/3",
         "value": {
             "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar1",
+                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                 "type": "DirectoryOrCreate"
             },
             "name": "volume-sidecar1"

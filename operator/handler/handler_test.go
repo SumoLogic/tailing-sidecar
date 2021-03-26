@@ -574,7 +574,7 @@ var _ = Describe("handler", func() {
 								  ]
 								},
 								{
-									"name": "tailing-sidecar0",
+									"name": "tailing-sidecar-0",
 									"image": "tailing-sidecar-image:test",
 									"resources": {},
 									"env": [
@@ -611,7 +611,7 @@ var _ = Describe("handler", func() {
 								{
 									"name": "volume-sidecar0",
 									"hostPath": {
-									  "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0",
+									  "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
 									  "type": "DirectoryOrCreate"
 									}
 								}
@@ -729,7 +729,7 @@ var _ = Describe("handler", func() {
 		When("Pod with configuration in TailingSidecars", func() {
 			tailingSidecar1 := &tailingsidecarv1.TailingSidecar{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "tailing-sidecar1",
+					Name:      "tailing-sidecar-1",
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarSpec{
@@ -753,7 +753,7 @@ var _ = Describe("handler", func() {
 
 			tailingSidecar2 := &tailingsidecarv1.TailingSidecar{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "tailing-sidecar2",
+					Name:      "tailing-sidecar-2",
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarSpec{
@@ -1555,7 +1555,7 @@ var _ = Describe("handler", func() {
 								  ]
 								},
 								{
-									"name": "tailing-sidecar0",
+									"name": "tailing-sidecar-0",
 									"image": "busybox",
 									"resources": {},
 									"env": [
@@ -1593,7 +1593,7 @@ var _ = Describe("handler", func() {
 								  "name": "volume-sidecar0",
 								  "hostPath":
 								  {
-									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar0r",
+									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
 									"type": "DirectoryOrCreate"
 								  }
 								}
