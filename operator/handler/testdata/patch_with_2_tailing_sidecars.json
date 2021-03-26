@@ -23,7 +23,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar0"
+                    "name": "volume-sidecar-0"
                 }
             ]
         }
@@ -52,7 +52,7 @@
                 },
                 {
                     "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar1"
+                    "name": "volume-sidecar-1"
                 }
             ]
         }
@@ -65,7 +65,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar0"
+            "name": "volume-sidecar-0"
         }
     },
     {
@@ -76,7 +76,7 @@
                 "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-1",
                 "type": "DirectoryOrCreate"
             },
-            "name": "volume-sidecar1"
+            "name": "volume-sidecar-1"
         }
     }
 ]

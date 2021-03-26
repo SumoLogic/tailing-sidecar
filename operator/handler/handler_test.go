@@ -593,7 +593,7 @@ var _ = Describe("handler", func() {
 										"mountPath": "/varconfig/log"
 									  },
 									  {
-										"name": "volume-sidecar0",
+										"name": "volume-sidecar-0",
 										"mountPath": "/tailing-sidecar/var"
 									  }
 									]
@@ -609,7 +609,7 @@ var _ = Describe("handler", func() {
 								  "emptyDir": {}
 								},
 								{
-									"name": "volume-sidecar0",
+									"name": "volume-sidecar-0",
 									"hostPath": {
 									  "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
 									  "type": "DirectoryOrCreate"
@@ -1197,7 +1197,7 @@ var _ = Describe("handler", func() {
 									"volumeMounts": [
 									  {
 										"mountPath": "/tailing-sidecar/var",
-										"name": "volume-sidecar0"
+										"name": "volume-sidecar-0"
 									  },
 									  {
 										"name": "varlogconfig",
@@ -1216,7 +1216,7 @@ var _ = Describe("handler", func() {
 								  "emptyDir": {}
 								},
 								{
-								  "name": "volume-sidecar0",
+								  "name": "volume-sidecar-0",
 								  "hostPath":
 								  {
 									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container",
@@ -1571,7 +1571,7 @@ var _ = Describe("handler", func() {
 									"volumeMounts": [
 									  {
 										"mountPath": "/tailing-sidecar/var",
-										"name": "volume-sidecar0"
+										"name": "volume-sidecar-0"
 									  },
 									  {
 										"name": "varlogconfig",
@@ -1590,7 +1590,7 @@ var _ = Describe("handler", func() {
 								  "emptyDir": {}
 								},
 								{
-								  "name": "volume-sidecar0",
+								  "name": "volume-sidecar-0",
 								  "hostPath":
 								  {
 									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",

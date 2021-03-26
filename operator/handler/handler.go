@@ -43,8 +43,8 @@ const (
 	sidecarContainerPrefix = "tailing-sidecar-"
 
 	hostPathDirPath      = "/var/log/tailing-sidecar-fluentbit/%s/%s"
-	hostPathVolumeName   = "volume-sidecar%d"
-	hostPathVolumePrefix = "volume-sidecar"
+	hostPathVolumeName   = "volume-sidecar-%d"
+	hostPathVolumePrefix = "volume-sidecar-"
 	hostPathMountPath    = "/tailing-sidecar/var"
 )
 
