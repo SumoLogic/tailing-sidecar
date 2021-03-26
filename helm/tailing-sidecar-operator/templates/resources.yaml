@@ -275,10 +275,10 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
-        - --tailing-sidecar-image={{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}
+        - --tailing-sidecar-image={{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}
         command:
         - /manager
-        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}
+        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
         name: manager
         ports:

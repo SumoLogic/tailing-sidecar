@@ -1,9 +1,8 @@
 # Tailing Sidecar Release Instruction
 
-1. Prepare Release pull request with Helm Chart version change in [Chart.yaml](../helm/tailing-sidecar-operator/Chart.yaml)
-   and version change for container images in [values.yaml](../helm/tailing-sidecar-operator/values.yaml)
+1. Prepare Release pull request with Helm Chart version change in [Chart.yaml](../helm/tailing-sidecar-operator/Chart.yaml).
 
-1. Create the release tag for commit with Helm Chart version change and version change for container images, e.g.
+1. Create the release tag for commit with Helm Chart version change, e.g.
 
    ```bash
    git tag -a v0.1.0 -m "Release v0.1.0"

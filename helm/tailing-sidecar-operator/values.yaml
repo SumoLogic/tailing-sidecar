@@ -5,7 +5,8 @@ operator:
   image:
     pullPolicy: IfNotPresent
     repository: ghcr.io/sumologic/tailing-sidecar-operator
-    tag: 0.3.0
+    # Overrides the image tag whose default is the Helm Chart appVersion.
+    tag: ""
   resources:
     limits:
       cpu: 100m
@@ -17,7 +18,8 @@ operator:
 sidecar:
   image:
     repository: ghcr.io/sumologic/tailing-sidecar
-    tag: 0.3.0
+    # Overrides the image tag whose default is the Helm Chart appVersion.
+    tag: ""
 
 # Configuration for MutatingWebhook which is used by tailing sidecar operator
 # for details please see Kubernetes API Reference Docs
