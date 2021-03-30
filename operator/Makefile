@@ -73,7 +73,6 @@ teardown:
 
 # Deploy examples
 deploy-examples:
-	kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
 	kubectl apply -f examples/pod_with_annotations.yaml
 	kubectl apply -f examples/statefulset_with_annotations.yaml
 	kubectl apply -f examples/deployment_with_annotations.yaml
@@ -88,6 +87,11 @@ deploy-examples:
 deploy-examples-update:
 	kubectl apply -f examples/pod_with_annotations_update.yaml --force
 	kubectl apply -f examples/deployment_with_annotations_update.yaml --force
+
+deploy-example-with-crd:
+	kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
+	kubectl apply -f tests/pod_with_annotations_crd.yaml
+	kubectl wait --for=condition=ready --timeout 60s pod -l app=pod-with-annotations-crd -n tailing-sidecar-system
 
 # Remove resources created with make deploy-examples
 teardown-examples:

@@ -20,5 +20,8 @@ readonly DAEMONSET_POD_NAME="$(kubectl get pod -l app=daemonset-with-annotations
 [[ $(kubectl logs ${DAEMONSET_POD_NAME} tailing-sidecar-0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 [[ $(kubectl logs ${DAEMONSET_POD_NAME} tailing-sidecar-1 -n tailing-sidecar-system --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 
+# Test Pod with configuration in CRD
+[[ $(kubectl logs pod-with-annotations-crd tailing-sidecar-0 -n tailing-sidecar-system --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
+
 echo "ok"
 exit 0
