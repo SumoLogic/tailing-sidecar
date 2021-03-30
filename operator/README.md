@@ -41,10 +41,12 @@ kustomize build config/default | kubectl apply -f -
 
 ### Test operator
 
-Deploy TailingSidecar with configuration e.g.
+Add annotation to Pod in following form:
 
-```bash
-kubectl apply -f config/samples/tailing-sidecar_v1_tailingsidecar.yaml -n tailing-sidecar-system
+```yaml
+metadata:
+  annotations:
+    tailing-sidecar: <sidecar-name-0>:<volume-name-0>:<path-to-tail-0>;<sidecar-name-1>:<volume-name-1>:<path-to-tail-1>
 ```
 
 to learn more about configuration see [this](docs/configuration.md).
