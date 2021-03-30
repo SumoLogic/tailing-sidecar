@@ -47,15 +47,6 @@ jobs:
         working-directory: ./operator
         run: make manager
 
-  build-operator-image:
-    name: Build tailing sidecar operator image
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build tailing sidecar operator image
-        working-directory: ./operator
-        run: make docker-build
-
   create-resources-with-sidecars:
     name: Create resources with sidecars
     runs-on: ubuntu-20.04
