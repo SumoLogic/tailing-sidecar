@@ -47,8 +47,8 @@ jobs:
         working-directory: ./operator
         run: make manager
 
-  create-resources-with-sidecars:
-    name: Create resources with sidecars
+  test-without-helm:
+    name: Test resources created without Helm chart
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
