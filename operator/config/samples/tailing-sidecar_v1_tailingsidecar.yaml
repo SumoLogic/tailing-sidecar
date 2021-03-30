@@ -6,4 +6,4 @@ spec:
   configs:
     sidecarconfig:
       volume: varlogconfig
-      file: /varconfig/log/example2.log
+      path: /varconfig/log/example2.log
