@@ -13,7 +13,7 @@ spec:
       labels:
         app: deployment-with-annotations
       annotations:
-        tailing-sidecar: sidecarconfig;varlog:/var/log/example0.log;varlog:/var/log/example1.log
+        tailing-sidecar: varlog:/var/log/example0.log;varlog:/var/log/example1.log
     spec:
       containers:
       - name: count

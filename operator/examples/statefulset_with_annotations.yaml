@@ -25,7 +25,7 @@ spec:
       labels:
         app: statefulset-with-annotations
       annotations:
-        tailing-sidecar: sidecarconfig;my-named-sidecar:varlog:/var/log/example0.log;varlog:/var/log/example1.log
+        tailing-sidecar: my-named-sidecar:varlog:/var/log/example0.log;varlog:/var/log/example1.log
     spec:
       containers:
       - name: count
