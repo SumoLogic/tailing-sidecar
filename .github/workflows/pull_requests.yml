@@ -28,15 +28,6 @@ jobs:
       - name: yamllint
         run: make yamllint
 
-  build-sidecar-image:
-    name: Build tailing sidecar image
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build tailing-sidecar image
-        working-directory: ./sidecar
-        run: make build
-
   build-operator:
     name: Build tailing sidecar operator
     runs-on: ubuntu-20.04
