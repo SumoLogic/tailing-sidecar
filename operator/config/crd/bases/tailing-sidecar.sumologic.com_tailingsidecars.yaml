@@ -41,7 +41,7 @@ spec:
                 properties:
                   container:
                     type: string
-                  file:
+                  path:
                     type: string
                   volume:
                     type: string

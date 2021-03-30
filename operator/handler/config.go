@@ -71,7 +71,7 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 		switch len(nonEmptyConfigParts) {
 		case configRaw:
 			config := tailingsidecarv1.SidecarConfig{
-				File:   configParts[fileIndex],
+				Path:   configParts[fileIndex],
 				Volume: configParts[volumeIndex],
 			}
 			configs = append(configs, config)
@@ -79,7 +79,7 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 			config := tailingsidecarv1.SidecarConfig{
 				Container: configParts[containerIndex],
 				Volume:    configParts[containerIndex+1],
-				File:      configParts[containerIndex+2],
+				Path:      configParts[containerIndex+2],
 			}
 			configs = append(configs, config)
 		case configPredefined:

@@ -153,7 +153,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		if isSidecarAvailable(pod.Spec.Containers, config) {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
-				"file", config.File,
+				"Path", config.Path,
 				"volume", config.Volume,
 				"container", config.Container,
 			)
@@ -194,7 +194,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			Env: []corev1.EnvVar{
 				{
 					Name:  sidecarEnvPath,
-					Value: config.File,
+					Value: config.Path,
 				},
 				{
 					Name:  sidecarEnvMarker,
@@ -242,7 +242,7 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 		} else {
 			for _, config := range configs {
 				if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
-					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.File) &&
+					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
 					isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
 					podContainers = append(podContainers, container)
 				}
@@ -285,7 +285,7 @@ func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container)
 func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarConfig) bool {
 	for _, container := range containers {
 		if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
-			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.File) &&
+			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
 			isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) &&
 			isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
 			return true
