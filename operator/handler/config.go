@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 const (
@@ -71,15 +72,19 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 		switch len(nonEmptyConfigParts) {
 		case configRaw:
 			config := tailingsidecarv1.SidecarConfig{
-				Path:        configParts[fileIndex],
-				VolumeMount: configParts[volumeIndex],
+				Path: configParts[fileIndex],
+				VolumeMount: corev1.VolumeMount{
+					Name: configParts[volumeIndex],
+				},
 			}
 			configs = append(configs, config)
 		case configRawWithContainer:
 			config := tailingsidecarv1.SidecarConfig{
-				Container:   configParts[containerIndex],
-				VolumeMount: configParts[containerIndex+1],
-				Path:        configParts[containerIndex+2],
+				Container: configParts[containerIndex],
+				VolumeMount: corev1.VolumeMount{
+					Name: configParts[containerIndex+1],
+				},
+				Path: configParts[containerIndex+2],
 			}
 			configs = append(configs, config)
 		case configPredefined:

@@ -4,7 +4,7 @@ metadata:
   name: pod-with-annotations-crd
   namespace: tailing-sidecar-system
   annotations:
-    tailing-sidecar: sidecarconfig1;sidecarconfig2
+    tailing-sidecar: sidecarconfig2
   labels:
     app: pod-with-annotations-crd
 spec:

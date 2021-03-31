@@ -1,0 +1,22 @@
+[
+    {
+            "op": "replace",
+            "path": "/spec/volumes/2/name",
+            "value": "volume-sidecar-1"
+    },
+    {
+            "op": "replace",
+            "path": "/spec/containers/1/volumeMounts/1/name",
+            "value": "volume-sidecar-1"
+    },
+    {
+            "op": "add",
+            "path": "/spec/containers/1/volumeMounts/0/readOnly",
+            "value": true
+    },
+    {
+            "op": "add",
+            "path": "/spec/containers/1/volumeMounts/0/mountPropagation",
+            "value": "Bidirectional"
+    }
+]
