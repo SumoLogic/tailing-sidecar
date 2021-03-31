@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
@@ -161,23 +162,24 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	hostPathDir := getHostPath(pod)
 
 	for _, config := range configs {
+
+		err := prepareVolume(pod.Spec.Containers, &config.VolumeMount)
+		if err != nil {
+			handlerLog.Error(err,
+				"Failed to prepare volume",
+				"Pod Name", pod.ObjectMeta.Name,
+				"Namespace", pod.ObjectMeta.Namespace,
+				"GenerateName", pod.ObjectMeta.GenerateName,
+			)
+			continue
+		}
+
 		if isSidecarAvailable(pod.Spec.Containers, config) {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
 				"Path", config.Path,
 				"volume", config.VolumeMount,
 				"container", config.Container,
-			)
-			continue
-		}
-
-		volume, err := getVolume(pod.Spec.Containers, config.VolumeMount)
-		if err != nil {
-			handlerLog.Error(err,
-				"Failed to find volume",
-				"Pod Name", pod.ObjectMeta.Name,
-				"Namespace", pod.ObjectMeta.Namespace,
-				"GenerateName", pod.ObjectMeta.GenerateName,
 			)
 			continue
 		}
@@ -213,7 +215,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 				},
 			},
 			VolumeMounts: []corev1.VolumeMount{
-				volume,
+				config.VolumeMount,
 				{
 					Name:      volumeName,
 					MountPath: hostPathMountPath,
@@ -315,26 +317,31 @@ func isSidecarEnvAvailable(envs []corev1.EnvVar, envName string, envValue string
 	return false
 }
 
-// isVolumeMountAvailable checks is volume with given name is available as volume mounted to the container
-func isVolumeMountAvailable(volumeMounts []corev1.VolumeMount, volumeName string) bool {
+// isVolumeMountAvailable checks if volume is available as volume mounted to the container
+func isVolumeMountAvailable(volumeMounts []corev1.VolumeMount, volume corev1.VolumeMount) bool {
 	for _, volumeMount := range volumeMounts {
-		if volumeMount.Name == volumeName {
+		if reflect.DeepEqual(volumeMount, volume) {
 			return true
 		}
 	}
 	return false
 }
 
-// getVolume returns volume with given name
-func getVolume(containers []corev1.Container, volumeName string) (corev1.VolumeMount, error) {
+// prepareVolume returns volume with given name
+func prepareVolume(containers []corev1.Container, sidecarVolume *corev1.VolumeMount) error {
 	for _, container := range containers {
 		for _, volume := range container.VolumeMounts {
-			if volume.Name == volumeName {
-				return volume, nil
+			if volume.Name == sidecarVolume.Name {
+				if sidecarVolume.MountPath == "" {
+					// mount volume at the same path as for container with log file
+					// by default mountPath does not need to be provided in configuration
+					sidecarVolume.MountPath = volume.MountPath
+				}
+				return nil
 			}
 		}
 	}
-	return corev1.VolumeMount{}, fmt.Errorf("volume was not found, volume: %s", volumeName)
+	return fmt.Errorf("volume provided in configuration is not mounted to any container, volume name: %s", sidecarVolume.Name)
 }
 
 // getTailingSidecars returns tailing sidecar containers,

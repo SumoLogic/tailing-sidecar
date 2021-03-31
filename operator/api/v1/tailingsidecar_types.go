@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -24,9 +25,9 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type SidecarConfig struct {
-	Path        string `json:"path,omitempty"`
-	VolumeMount string `json:"volumeMount,omitempty"`
-	Container   string `json:"container,omitempty"`
+	Container   string             `json:"container,omitempty"`
+	Path        string             `json:"path,omitempty"`
+	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
 }
 
 // TailingSidecarSpec defines the desired state of TailingSidecar

@@ -52,7 +52,8 @@
                         "volumeMounts": [
                                 {
                                         "mountPath": "/varconfig/log",
-                                        "name": "varlogconfig"
+                                        "name": "varlogconfig",
+                                        "readOnly": true
                                 },
                                 {
                                         "mountPath": "/tailing-sidecar/var",
