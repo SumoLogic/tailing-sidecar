@@ -437,8 +437,8 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:   "/varconfig/log/example2.log",
-							Volume: "varlogconfig",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
 						},
 					},
 				},
@@ -528,8 +528,8 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:   "/varconfig/log/example2.log",
-							Volume: "varlogconfig",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
 						},
 					},
 				},
@@ -644,8 +644,8 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:   "/varconfig/log/example2.log",
-							Volume: "varlogconfig-non-existing",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig-non-existing",
 						},
 					},
 				},
@@ -735,12 +735,12 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig0": {
-							Path:   "/varconfig/log/example2.log",
-							Volume: "varlogconfig",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
 						},
 						"sidecarconfig1": {
-							Path:   "/var/log/example0.log",
-							Volume: "varlog",
+							Path:        "/var/log/example0.log",
+							VolumeMount: "varlog",
 						},
 					},
 				},
@@ -759,8 +759,8 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig2": {
-							Path:   "/var/log/example1.log",
-							Volume: "varlog",
+							Path:        "/var/log/example1.log",
+							VolumeMount: "varlog",
 						},
 					},
 				},
@@ -854,8 +854,8 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:   "/varconfig/log/example2.log",
-							Volume: "varlogconfig",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
 						},
 					},
 				},
@@ -946,9 +946,9 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 					},
 				},
@@ -1038,13 +1038,13 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig1": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 						"sidecarconfig2": {
-							Path:   "/varconfig/log/example3.log",
-							Volume: "varlogconfig",
+							Path:        "/varconfig/log/example3.log",
+							VolumeMount: "varlogconfig",
 						},
 					},
 				},
@@ -1134,9 +1134,9 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:      "/varconfig/log/example0.log",
-							Volume:    "varlogconfig",
-							Container: "test-container",
+							Path:        "/varconfig/log/example0.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container",
 						},
 					},
 				},
@@ -1259,14 +1259,14 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 						"sidecarconfig2": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 					},
 				},
@@ -1356,14 +1356,14 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 						"sidecarconfig2": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container2",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container2",
 						},
 					},
 				},
@@ -1445,9 +1445,9 @@ var _ = Describe("handler", func() {
 				Spec: tailingsidecarv1.TailingSidecarSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
-							Path:      "/varconfig/log/example2.log",
-							Volume:    "varlogconfig",
-							Container: "test-container",
+							Path:        "/varconfig/log/example2.log",
+							VolumeMount: "varlogconfig",
+							Container:   "test-container",
 						},
 					},
 				},

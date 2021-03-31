@@ -5,5 +5,5 @@ metadata:
 spec:
   configs:
     sidecarconfig:
-      volume: varlogconfig
+      volumeMount: varlogconfig
       path: /varconfig/log/example2.log

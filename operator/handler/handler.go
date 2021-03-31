@@ -154,13 +154,13 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
 				"Path", config.Path,
-				"volume", config.Volume,
+				"volume", config.VolumeMount,
 				"container", config.Container,
 			)
 			continue
 		}
 
-		volume, err := getVolume(pod.Spec.Containers, config.Volume)
+		volume, err := getVolume(pod.Spec.Containers, config.VolumeMount)
 		if err != nil {
 			handlerLog.Error(err,
 				"Failed to find volume",
@@ -243,7 +243,7 @@ func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidec
 			for _, config := range configs {
 				if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
 					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
-					isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
+					isVolumeMountAvailable(container.VolumeMounts, config.VolumeMount) {
 					podContainers = append(podContainers, container)
 				}
 			}
@@ -287,7 +287,7 @@ func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.S
 		if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
 			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
 			isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) &&
-			isVolumeMountAvailable(container.VolumeMounts, config.Volume) {
+			isVolumeMountAvailable(container.VolumeMounts, config.VolumeMount) {
 			return true
 		}
 	}

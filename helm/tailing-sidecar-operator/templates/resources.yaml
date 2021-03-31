@@ -41,7 +41,7 @@ spec:
                     type: string
                   path:
                     type: string
-                  volume:
+                  volumeMount:
                     type: string
                 type: object
               description: Configs contains configurations for tailing sidecars, map
