@@ -95,6 +95,14 @@ jobs:
       - name: Check logs
         working-directory: ./operator
         run: make test-examples
+      - name: Deploy examples update
+        working-directory: ./operator
+        run: make deploy-examples-update
+      - name: Wait for logs to be generated
+        run: sleep 5
+      - name: Check logs after update
+        working-directory: ./operator
+        run: make test-examples-update
 
   test-helm-chart:
     name: Test Helm chart
@@ -144,6 +152,14 @@ jobs:
       - name: Check logs
         working-directory: ./operator
         run: make test-examples
+      - name: Deploy examples update
+        working-directory: ./operator
+        run: make deploy-examples-update
+      - name: Wait for logs to be generated
+        run: sleep 5
+      - name: Check logs after update
+        working-directory: ./operator
+        run: make test-examples-update
 
   test-helm-chart-with-cert-manager:
     name: Test Helm chart with cert-manager
@@ -196,3 +212,11 @@ jobs:
       - name: Check logs
         working-directory: ./operator
         run: make test-examples
+      - name: Deploy examples update
+        working-directory: ./operator
+        run: make deploy-examples-update
+      - name: Wait for logs to be generated
+        run: sleep 5
+      - name: Check logs after update
+        working-directory: ./operator
+        run: make test-examples-update
