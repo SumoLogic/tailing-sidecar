@@ -25,6 +25,7 @@ import (
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 	guuid "github.com/google/uuid"
+	admv1 "k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
@@ -32,7 +33,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
-// +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update,versions=v1,name=tailing-sidecar.sumologic.com
+// +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update;delete,versions=v1,name=tailing-sidecar.sumologic.com
 
 const (
 	sidecarEnvPath      = "PATH_TO_TAIL"
@@ -62,6 +63,12 @@ type PodExtender struct {
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
 func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admission.Response {
+	if req.Operation == admv1.Delete {
+		// eliminates hanging kubectl apply -f command
+		// kube-apiserver server waits for response from operator on DELETE request
+		return admission.Allowed("Tailing Sidecar Operator does not block Pod deletion")
+	}
+
 	pod := &corev1.Pod{}
 	err := e.decoder.Decode(req, pod)
 	if err != nil {
