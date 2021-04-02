@@ -65,7 +65,7 @@ deploy: manifests kustomize
 	sed -i.backup "s#sumologic/tailing-sidecar:latest#${TAILING_SIDECAR_IMG}#g" config/default/manager_patch.yaml
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
-	kubectl wait --for=condition=ready --timeout 60s pod -l control-plane=tailing-sidecar-operator -n tailing-sidecar-system
+	kubectl wait --for=condition=ready --timeout 300s pod -l control-plane=tailing-sidecar-operator -n tailing-sidecar-system
 
 # Remove resources created with make deploy
 teardown:
