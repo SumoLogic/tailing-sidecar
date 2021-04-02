@@ -17,7 +17,7 @@ spec:
             scheme: HTTPS
             path: /add-tailing-sidecars-v1-pod
             port: 9443
-          periodSeconds: 10
+          periodSeconds: 3
         livenessProbe:
           httpGet:
             scheme: HTTPS
