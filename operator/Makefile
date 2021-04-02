@@ -106,6 +106,10 @@ teardown-examples:
 test-examples:
 	tests/test.sh
 
+# Check if logs from resources created with make deploy-examples-update have proper content
+test-examples-update:
+	tests/test-update.sh
+
 # Check resources created with make deploy-examples
 check-examples:
 	kubectl get all -n tailing-sidecar-system
@@ -134,7 +138,11 @@ check-examples:
 # Check resources created with make deploy-examples-update
 check-examples-update:
 	kubectl get all -n tailing-sidecar-system
+	kubectl logs pod-with-annotations tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 	kubectl logs pod-with-annotations named-sidecar -n tailing-sidecar-system --tail 5
+	kubectl logs pod-with-annotations tailing-sidecar-1 -n tailing-sidecar-system --tail 5
+	kubectl logs $(shell kubectl get pod -l app=deployment-with-annotations -n tailing-sidecar-system -o jsonpath="{.items[0].metadata.name}") \
+		tailing-sidecar-0 -n tailing-sidecar-system --tail 5
 
 # Deploy cert-manager
 deploy-cert-manager:
