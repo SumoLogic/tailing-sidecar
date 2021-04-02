@@ -285,6 +285,19 @@ spec:
         - containerPort: 9443
           name: webhook-server
           protocol: TCP
+        startupProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /add-tailing-sidecars-v1-pod
+            port: 9443
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /add-tailing-sidecars-v1-pod
+            port: 9443
+          initialDelaySeconds: 1
+          periodSeconds: 10
         resources:
           {{- toYaml .Values.operator.resources | nindent 10 }}
         volumeMounts:
