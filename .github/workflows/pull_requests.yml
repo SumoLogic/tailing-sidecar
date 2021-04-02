@@ -50,6 +50,7 @@ jobs:
   test-without-helm:
     name: Test resources created without Helm chart
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
@@ -98,6 +99,7 @@ jobs:
   test-helm-chart:
     name: Test Helm chart
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
@@ -146,6 +148,7 @@ jobs:
   test-helm-chart-with-cert-manager:
     name: Test Helm chart with cert-manager
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
