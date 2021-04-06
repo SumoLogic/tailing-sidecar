@@ -10,7 +10,7 @@ function wait_for_pod() {
   do
     get="$(kubectl get pods -n $namespace $pod)"
     if [[ ! $get =~ $state ]]; then
-      echo "Waiting for pod $pod in $i interation"
+      echo "Waiting for pod $pod in $i iteration"
       sleep 1
     else
       echo "Found pod $pod"
@@ -25,8 +25,8 @@ function wait_for_all_pods_running() {
 
   for i in $(seq 0 $time)
   do
-    pods="$(kubectl get pods -n $namespace | tail -n +2 | wc -l)"
     running_pods="$(kubectl get pods -n $namespace | grep Running | wc -l)"
+    pods="$(kubectl get pods -n $namespace | tail -n +2 | wc -l)"
     if [[ $pods -eq $running_pods ]]; then
       echo "All Pods are in Running state"
       break
