@@ -290,12 +290,22 @@ spec:
             scheme: HTTPS
             path: /add-tailing-sidecars-v1-pod
             port: 9443
+            httpHeaders:
+            - name: Accept
+              value: application/json
+            - name: Content-Type
+              value: application/json
           periodSeconds: 3
         livenessProbe:
           httpGet:
             scheme: HTTPS
             path: /add-tailing-sidecars-v1-pod
             port: 9443
+            httpHeaders:
+            - name: Accept
+              value: application/json
+            - name: Content-Type
+              value: application/json
           initialDelaySeconds: 1
           periodSeconds: 10
         resources:
