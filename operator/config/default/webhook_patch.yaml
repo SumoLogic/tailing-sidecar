@@ -5,7 +5,7 @@ metadata:
 webhooks:
 - clientConfig:
   name: tailing-sidecar.sumologic.com
-  reinvocationPolicy: IfNeeded
+  reinvocationPolicy: Never
   ## enable the example below to limit to namespaces with specific labels only
   # namespaceSelector:
   #   matchLabels:

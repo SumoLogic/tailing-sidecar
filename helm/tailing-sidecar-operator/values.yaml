@@ -26,7 +26,7 @@ sidecar:
 # e.g. https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#mutatingwebhookconfiguration-v1-admissionregistration-k8s-io
 webhook:
   failurePolicy: Ignore
-  reinvocationPolicy: IfNeeded
+  reinvocationPolicy: Never
   
   objectSelector: {}
     # matchLabels:
