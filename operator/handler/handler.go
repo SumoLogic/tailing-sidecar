@@ -63,6 +63,10 @@ type PodExtender struct {
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
 func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admission.Response {
+	if req.Operation == "" {
+		return admission.Allowed("Received startupProbe/livenessProbe")
+	}
+
 	if req.Operation == admv1.Delete {
 		// eliminates hanging kubectl apply -f command
 		// kube-apiserver server waits for response from operator on DELETE request
