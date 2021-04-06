@@ -9,6 +9,7 @@ readonly NAMESPACE="tailing-sidecar-system"
 readonly TIME=60
 
 wait_for_all_pods_running ${NAMESPACE} ${TIME}
+kubectl describe pods -n ${NAMESPACE}
 
 # Check Pod logs
 readonly POD="pod-with-annotations"

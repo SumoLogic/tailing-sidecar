@@ -9,11 +9,11 @@ readonly NAMESPACE="tailing-sidecar-system"
 readonly TIME=300
 
 wait_for_all_pods_running ${NAMESPACE} ${TIME}
-
-readonly POD="pod-with-annotations"
-wait_for_pod ${NAMESPACE} ${POD} ${TIME}
+kubectl describe pods -n ${NAMESPACE}
 
 # Check Pod logs
+readonly POD="pod-with-annotations"
+wait_for_pod ${NAMESPACE} ${POD} ${TIME}
 [[ $(kubectl logs ${POD} tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 [[ $(kubectl logs ${POD} named-sidecar -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 [[ $(kubectl logs ${POD} tailing-sidecar-1 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
