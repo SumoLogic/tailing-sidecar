@@ -53,7 +53,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v1.5.4
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
@@ -113,7 +113,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v1.5.4
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
@@ -173,7 +173,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v1.5.4
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
