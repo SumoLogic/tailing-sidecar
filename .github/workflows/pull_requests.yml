@@ -10,7 +10,7 @@ jobs:
   markdownlint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
@@ -22,7 +22,7 @@ jobs:
   yamllint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: install yamllint
         run: pip install yamllint
       - name: yamllint
@@ -35,7 +35,7 @@ jobs:
       matrix:
         go: [ '1.16', '1.15', '1.14' ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Setup go
         uses: actions/setup-go@v2
         with:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: imranismail/setup-kustomize@v1
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: imranismail/setup-kustomize@v1
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: imranismail/setup-kustomize@v1
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
