@@ -29,10 +29,9 @@ const (
 	configRawWithContainer = 3 // e.g. tailing-sidecar: <container-name0>:<volume-name0>:<path-to-tail0>
 	configPredefined       = 1 // e.g. tailing-sidecar: <config-name0>
 
-	volumeIndex     = 0
-	fileIndex       = 1
-	containerIndex  = 0
-	configNameIndex = 0
+	volumeIndex        = 0
+	fileIndex          = 1
+	containerNameIndex = 0
 
 	volumeFileSeparator = ":"
 	configSeparator     = ";"
@@ -40,28 +39,33 @@ const (
 	sidecarAnnotation = "tailing-sidecar"
 )
 
+type sidecarConfig struct {
+	name string
+	spec tailingsidecarv1.SidecarSpec
+}
+
 // getConfigs gets configurations from TailingSidecars and annotations
-func getConfigs(annotations map[string]string, tailingSidecars []tailingsidecarv1.TailingSidecarConfig) []tailingsidecarv1.SidecarSpec {
+func getConfigs(annotations map[string]string, tailingSidecars []tailingsidecarv1.TailingSidecarConfig) []sidecarConfig {
 	annotation, ok := annotations[sidecarAnnotation]
 	if !ok {
-		return []tailingsidecarv1.SidecarSpec{}
+		return nil
 	}
 
 	if annotation == "" {
 		handlerLog.Info("Empty tailing-sidecar annotation",
 			"annotation", annotation)
-		return []tailingsidecarv1.SidecarSpec{}
+		return nil
 	}
 
-	sidecarConfigs := joinTailingSidecarConfigs(tailingSidecars)
+	sidecarSpecs := joinTailingSidecarSpecs(tailingSidecars)
 
-	configs := parseAnnotation(annotation, sidecarConfigs)
+	configs := combineConfigs(annotation, sidecarSpecs)
 	return configs
 }
 
-// parseAnnotation parses configurations from 'tailing-sidecar' annotation and joins them with configurations from TailingSidecars
-func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecarv1.SidecarSpec) []tailingsidecarv1.SidecarSpec {
-	configs := make([]tailingsidecarv1.SidecarSpec, 0)
+// combineConfigs parses configurations from 'tailing-sidecar' annotation and joins them with configurations from TailingSidecarConfigs
+func combineConfigs(annotation string, sidecarSpecs map[string]tailingsidecarv1.SidecarSpec) []sidecarConfig {
+	configs := make([]sidecarConfig, 0)
 	configElements := strings.Split(annotation, configSeparator)
 
 	for _, configElement := range configElements {
@@ -71,30 +75,38 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 
 		switch len(nonEmptyConfigParts) {
 		case configRaw:
-			config := tailingsidecarv1.SidecarSpec{
-				Path: configParts[fileIndex],
-				VolumeMount: corev1.VolumeMount{
-					Name: configParts[volumeIndex],
+			config := sidecarConfig{
+				spec: tailingsidecarv1.SidecarSpec{
+					Path: configParts[fileIndex],
+					VolumeMount: corev1.VolumeMount{
+						Name: configParts[volumeIndex],
+					},
 				},
 			}
 			configs = append(configs, config)
 		case configRawWithContainer:
-			config := tailingsidecarv1.SidecarSpec{
-				Container: configParts[containerIndex],
-				VolumeMount: corev1.VolumeMount{
-					Name: configParts[containerIndex+1],
+			config := sidecarConfig{
+				name: configParts[containerNameIndex],
+				spec: tailingsidecarv1.SidecarSpec{
+					VolumeMount: corev1.VolumeMount{
+						Name: configParts[containerNameIndex+1],
+					},
+					Path: configParts[containerNameIndex+2],
 				},
-				Path: configParts[containerIndex+2],
 			}
 			configs = append(configs, config)
 		case configPredefined:
-			if _, ok := sidecarConfigs[configParts[configNameIndex]]; !ok {
+			if _, ok := sidecarSpecs[configParts[containerNameIndex]]; !ok {
 				handlerLog.Info("Missing configuration in TailingSidecarConfig configurations",
-					"configuration name", configParts[configNameIndex],
+					"configuration name", configParts[containerNameIndex],
 				)
 				continue
 			}
-			configs = append(configs, sidecarConfigs[configParts[configNameIndex]])
+			config := sidecarConfig{
+				name: configParts[containerNameIndex],
+				spec: sidecarSpecs[configParts[containerNameIndex]],
+			}
+			configs = append(configs, config)
 		default:
 			handlerLog.Info("Incorrect configuration",
 				"annotation", annotation)
@@ -103,15 +115,15 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 	return configs
 }
 
-// joinTailingSidecarConfigs joins configurations defined in TailingSidecarConfig resources
-func joinTailingSidecarConfigs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) map[string]tailingsidecarv1.SidecarSpec {
-	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarSpec, len(tailingSidecars))
+// joinTailingSidecarSpecs joins configurations defined in TailingSidecarConfig resources
+func joinTailingSidecarSpecs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) map[string]tailingsidecarv1.SidecarSpec {
+	sidecarSpecs := make(map[string]tailingsidecarv1.SidecarSpec, len(tailingSidecars))
 	for _, tailitailinSidecar := range tailingSidecars {
-		for name, config := range tailitailinSidecar.Spec.SidecarSpecs {
-			sidecarConfigs[name] = config
+		for name, spec := range tailitailinSidecar.Spec.SidecarSpecs {
+			sidecarSpecs[name] = spec
 		}
 	}
-	return sidecarConfigs
+	return sidecarSpecs
 }
 
 // removeEmptyConfigs removes empty elements from configuration e.g. when there is ":" in annotation
@@ -127,18 +139,18 @@ func removeEmptyConfigs(configParts []string) []string {
 
 // validateConfigs validates configurations
 // checks if container names provided in configurations have unique names
-func validateConfigs(configs []tailingsidecarv1.SidecarSpec) error {
+func validateConfigs(configs []sidecarConfig) error {
 	containerNames := make(map[string]interface{})
 	namesCount := 0
 	for _, config := range configs {
-		if config.Container != "" {
-			containerNames[config.Container] = nil
+		if config.name != "" {
+			containerNames[config.name] = nil
 			namesCount++
 		}
 	}
 
 	if len(containerNames) != namesCount {
-		return fmt.Errorf("names for tailing sidecars must be unique")
+		return fmt.Errorf("names for tailing sidecar containers must be unique")
 	}
 	return nil
 }

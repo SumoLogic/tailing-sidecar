@@ -138,7 +138,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	if err != nil {
 		handlerLog.Error(err,
 			"Incorrect configuration",
-			"config", configs,
+			"configs", configs,
 		)
 		return err
 	}
@@ -163,7 +163,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 
 	for _, config := range configs {
 
-		err := prepareVolume(pod.Spec.Containers, &config.VolumeMount)
+		err := prepareVolume(pod.Spec.Containers, &config.spec.VolumeMount)
 		if err != nil {
 			handlerLog.Error(err,
 				"Failed to prepare volume",
@@ -177,18 +177,16 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 		if isSidecarAvailable(pod.Spec.Containers, config) {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
-				"Path", config.Path,
-				"volume", config.VolumeMount,
-				"container", config.Container,
+				"config", config,
 			)
 			continue
 		}
 
 		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarsCount)
-		if config.Container == "" {
-			config.Container = fmt.Sprintf(sidecarContainerName, sidecarsCount)
+		if config.name == "" {
+			config.name = fmt.Sprintf(sidecarContainerName, sidecarsCount)
 		}
-		hostPath := fmt.Sprintf("%s/%s", hostPathDir, config.Container)
+		hostPath := fmt.Sprintf("%s/%s", hostPathDir, config.name)
 
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
@@ -203,11 +201,11 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
-			Name:  config.Container,
+			Name:  config.name,
 			Env: []corev1.EnvVar{
 				{
 					Name:  sidecarEnvPath,
-					Value: config.Path,
+					Value: config.spec.Path,
 				},
 				{
 					Name:  sidecarEnvMarker,
@@ -215,7 +213,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 				},
 			},
 			VolumeMounts: []corev1.VolumeMount{
-				config.VolumeMount,
+				config.spec.VolumeMount,
 				{
 					Name:      volumeName,
 					MountPath: hostPathMountPath,
@@ -247,16 +245,16 @@ func validateContainers(containers []corev1.Container) error {
 }
 
 // removeDeletedSidecars removes deleted tailing sidecar containers from Pod specification
-func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarSpec) []corev1.Container {
+func removeDeletedSidecars(containers []corev1.Container, configs []sidecarConfig) []corev1.Container {
 	podContainers := make([]corev1.Container, 0)
 	for _, container := range containers {
 		if !isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) {
 			podContainers = append(podContainers, container)
 		} else {
 			for _, config := range configs {
-				if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
-					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
-					isVolumeMountAvailable(container.VolumeMounts, config.VolumeMount) {
+				if ((config.name == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.name == container.Name) &&
+					isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.spec.Path) &&
+					isVolumeMountAvailable(container.VolumeMounts, config.spec.VolumeMount) {
 					podContainers = append(podContainers, container)
 				}
 			}
@@ -295,12 +293,12 @@ func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container)
 }
 
 // isSidecarAvailable checks if tailing sidecar container with given configuration exists in Pod specification
-func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarSpec) bool {
+func isSidecarAvailable(containers []corev1.Container, config sidecarConfig) bool {
 	for _, container := range containers {
-		if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
-			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
+		if ((config.name == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.name == container.Name) &&
+			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.spec.Path) &&
 			isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) &&
-			isVolumeMountAvailable(container.VolumeMounts, config.VolumeMount) {
+			isVolumeMountAvailable(container.VolumeMounts, config.spec.VolumeMount) {
 			return true
 		}
 	}
