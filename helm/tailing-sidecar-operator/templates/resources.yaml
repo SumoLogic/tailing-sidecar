@@ -79,8 +79,8 @@ spec:
                     - name
                     type: object
                 type: object
-              description: Configs contains configurations for tailing sidecars, map
-                key indicates name of configuration which can be used in annotation
+              description: SidecarSpecs contains specifications for tailing sidecars,
+                map key indicates name of configuration which can be used in annotation
               type: object
           type: object
         status:
