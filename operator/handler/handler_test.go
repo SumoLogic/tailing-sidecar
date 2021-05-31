@@ -436,7 +436,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system-different",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -530,7 +530,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -649,7 +649,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -743,7 +743,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig0": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -774,7 +774,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig2": {
 							Path: "/var/log/example1.log",
 							VolumeMount: corev1.VolumeMount{
@@ -872,7 +872,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -968,7 +968,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1063,7 +1063,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig1": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1165,7 +1165,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example0.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1293,7 +1293,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1396,7 +1396,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1491,7 +1491,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
@@ -1677,7 +1677,7 @@ var _ = Describe("handler", func() {
 					Namespace: "tailing-sidecar-system",
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					Configs: map[string]tailingsidecarv1.SidecarSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example0.log",
 							VolumeMount: corev1.VolumeMount{

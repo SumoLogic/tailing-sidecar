@@ -107,7 +107,7 @@ func parseAnnotation(annotation string, sidecarConfigs map[string]tailingsidecar
 func joinTailingSidecarConfigs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) map[string]tailingsidecarv1.SidecarSpec {
 	sidecarConfigs := make(map[string]tailingsidecarv1.SidecarSpec, len(tailingSidecars))
 	for _, tailitailinSidecar := range tailingSidecars {
-		for name, config := range tailitailinSidecar.Spec.Configs {
+		for name, config := range tailitailinSidecar.Spec.SidecarSpecs {
 			sidecarConfigs[name] = config
 		}
 	}
