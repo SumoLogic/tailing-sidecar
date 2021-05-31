@@ -4,7 +4,7 @@ projectName: operator
 repo: github.com/SumoLogic/tailing-sidecar/operator
 resources:
 - group: tailing-sidecar
-  kind: TailingSidecar
+  kind: TailingSidecarConfig
   version: v1
 version: 3-alpha
 plugins:

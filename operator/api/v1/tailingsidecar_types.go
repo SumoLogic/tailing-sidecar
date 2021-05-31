@@ -30,8 +30,8 @@ type SidecarConfig struct {
 	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
 }
 
-// TailingSidecarSpec defines the desired state of TailingSidecar
-type TailingSidecarSpec struct {
+// TailingSidecarConfigSpec defines the desired state of TailingSidecarConfig
+type TailingSidecarConfigSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
@@ -40,8 +40,8 @@ type TailingSidecarSpec struct {
 	Configs map[string]SidecarConfig `json:"configs,omitempty"`
 }
 
-// TailingSidecarStatus defines the observed state of TailingSidecar
-type TailingSidecarStatus struct {
+// TailingSidecarConfigStatus defines the observed state of TailingSidecarConfig
+type TailingSidecarConfigStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -49,24 +49,24 @@ type TailingSidecarStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// TailingSidecar is the Schema for the tailingsidecars API
-type TailingSidecar struct {
+// TailingSidecarConfig is the Schema for the tailingsidecars API
+type TailingSidecarConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   TailingSidecarSpec   `json:"spec,omitempty"`
-	Status TailingSidecarStatus `json:"status,omitempty"`
+	Spec   TailingSidecarConfigSpec   `json:"spec,omitempty"`
+	Status TailingSidecarConfigStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// TailingSidecarList contains a list of TailingSidecar
-type TailingSidecarList struct {
+// TailingSidecarConfigList contains a list of TailingSidecarConfig
+type TailingSidecarConfigList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []TailingSidecar `json:"items"`
+	Items           []TailingSidecarConfig `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&TailingSidecar{}, &TailingSidecarList{})
+	SchemeBuilder.Register(&TailingSidecarConfig{}, &TailingSidecarConfigList{})
 }

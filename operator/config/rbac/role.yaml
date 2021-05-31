@@ -9,7 +9,7 @@ rules:
 - apiGroups:
   - tailing-sidecar.sumologic.com
   resources:
-  - tailingsidecars
+  - tailingsidecarconfigs
   verbs:
   - create
   - delete
@@ -21,7 +21,7 @@ rules:
 - apiGroups:
   - tailing-sidecar.sumologic.com
   resources:
-  - tailingsidecars/status
+  - tailingsidecarconfigs/status
   verbs:
   - get
   - patch

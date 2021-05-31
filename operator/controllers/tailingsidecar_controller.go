@@ -27,27 +27,27 @@ import (
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 )
 
-// TailingSidecarReconciler reconciles a TailingSidecar object
-type TailingSidecarReconciler struct {
+// TailingSidecarConfigReconciler reconciles a TailingSidecarConfig object
+type TailingSidecarConfigReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecars,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecars/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecarconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecarconfigs/status,verbs=get;update;patch
 
-func (r *TailingSidecarReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *TailingSidecarConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	_ = r.Log.WithValues("tailingsidecar", req.NamespacedName)
+	_ = r.Log.WithValues("tailingsidecarconfigs", req.NamespacedName)
 
 	// your logic here
 
 	return ctrl.Result{}, nil
 }
 
-func (r *TailingSidecarReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *TailingSidecarConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&tailingsidecarv1.TailingSidecar{}).
+		For(&tailingsidecarv1.TailingSidecarConfig{}).
 		Complete(r)
 }
