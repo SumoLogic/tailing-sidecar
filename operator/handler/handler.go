@@ -247,7 +247,7 @@ func validateContainers(containers []corev1.Container) error {
 }
 
 // removeDeletedSidecars removes deleted tailing sidecar containers from Pod specification
-func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarConfig) []corev1.Container {
+func removeDeletedSidecars(containers []corev1.Container, configs []tailingsidecarv1.SidecarSpec) []corev1.Container {
 	podContainers := make([]corev1.Container, 0)
 	for _, container := range containers {
 		if !isSidecarEnvAvailable(container.Env, sidecarEnvMarker, sidecarEnvMarkerVal) {
@@ -295,7 +295,7 @@ func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container)
 }
 
 // isSidecarAvailable checks if tailing sidecar container with given configuration exists in Pod specification
-func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarConfig) bool {
+func isSidecarAvailable(containers []corev1.Container, config tailingsidecarv1.SidecarSpec) bool {
 	for _, container := range containers {
 		if ((config.Container == "" && strings.HasPrefix(container.Name, sidecarContainerPrefix)) || config.Container == container.Name) &&
 			isSidecarEnvAvailable(container.Env, sidecarEnvPath, config.Path) &&
