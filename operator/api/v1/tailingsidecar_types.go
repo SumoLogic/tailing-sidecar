@@ -24,7 +24,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-type SidecarConfig struct {
+type SidecarSpec struct {
 	Container   string             `json:"container,omitempty"`
 	Path        string             `json:"path,omitempty"`
 	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
@@ -37,7 +37,7 @@ type TailingSidecarConfigSpec struct {
 
 	// Configs contains configurations for tailing sidecars,
 	// map key indicates name of configuration which can be used in annotation
-	Configs map[string]SidecarConfig `json:"configs,omitempty"`
+	Configs map[string]SidecarSpec `json:"configs,omitempty"`
 }
 
 // TailingSidecarConfigStatus defines the observed state of TailingSidecarConfig
