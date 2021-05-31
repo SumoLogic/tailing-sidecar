@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
   creationTimestamp: null
-  name: tailingsidecars.tailing-sidecar.sumologic.com
+  name: tailingsidecarconfigs.tailing-sidecar.sumologic.com
 spec:
   group: tailing-sidecar.sumologic.com
   names:
-    kind: TailingSidecar
-    listKind: TailingSidecarList
-    plural: tailingsidecars
-    singular: tailingsidecar
+    kind: TailingSidecarConfig
+    listKind: TailingSidecarConfigList
+    plural: tailingsidecarconfigs
+    singular: tailingsidecarconfig
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: TailingSidecar is the Schema for the tailingsidecars API
+      description: TailingSidecarConfig is the Schema for the tailingsidecars API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
         metadata:
           type: object
         spec:
-          description: TailingSidecarSpec defines the desired state of TailingSidecar
+          description: TailingSidecarConfigSpec defines the desired state of TailingSidecarConfig
           properties:
             configs:
               additionalProperties:
@@ -86,7 +86,7 @@ spec:
               type: object
           type: object
         status:
-          description: TailingSidecarStatus defines the observed state of TailingSidecar
+          description: TailingSidecarConfigStatus defines the observed state of TailingSidecarConfig
           type: object
       type: object
   version: v1

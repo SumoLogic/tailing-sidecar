@@ -64,7 +64,7 @@ var _ = Describe("handler", func() {
 
 	ctx := context.Background()
 
-	Context("PodExtender.Handle without TailingSidecar CRD installed", func() {
+	Context("PodExtender.Handle without TailingSidecarConfig CRD installed", func() {
 		k8sClient, err := client.New(cfg, client.Options{Scheme: scheme.Scheme})
 		It("creates a new client", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -134,7 +134,7 @@ var _ = Describe("handler", func() {
 			}
 
 			resp := podExtender.Handle(ctx, request)
-			It("returns empty patch and Internal Server Error as TailingSidecar CRD needs to be available", func() {
+			It("returns empty patch and Internal Server Error as TailingSidecarConfig CRD needs to be available", func() {
 				Expect(resp.Allowed).To(BeFalse())
 				Expect(resp.Patches).To(BeEmpty())
 				Expect(resp.Result.Code).Should(Equal(int32(http.StatusInternalServerError)))
@@ -144,7 +144,7 @@ var _ = Describe("handler", func() {
 
 	Context("PodExtender.Handle", func() {
 		err = tailingsidecarv1.AddToScheme(scheme.Scheme)
-		It("adds TailingSidecar to scheme", func() {
+		It("adds TailingSidecarConfig to scheme", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
@@ -429,13 +429,13 @@ var _ = Describe("handler", func() {
 			})
 		})
 
-		When("Pod with TailingSidecar in different namespace", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+		When("Pod with TailingSidecarConfig in different namespace", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system-different",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -518,18 +518,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with existing tailing sidecar", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -636,19 +636,19 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
 		})
 
 		When("Pod with tailing sidecar configuration containing missing volume", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -731,18 +731,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with configuration in TailingSidecars", func() {
-			tailingSidecar1 := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar1 := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-1",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig0": {
 							Path: "/varconfig/log/example2.log",
@@ -768,12 +768,12 @@ var _ = Describe("handler", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
-			tailingSidecar2 := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar2 := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-2",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig2": {
 							Path: "/var/log/example1.log",
@@ -855,23 +855,23 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar1)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar2)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with raw and predefined configurations is created", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -955,19 +955,19 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
 		})
 
 		When("Pod with named sidecars", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -1051,18 +1051,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with named and not named sidecars", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig1": {
 							Path: "/varconfig/log/example2.log",
@@ -1153,18 +1153,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Update Pod with one named sidecars and add not named", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example0.log",
@@ -1281,18 +1281,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
-		When("Pod with TailingSidecar containing the same names in config but only one is in use", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+		When("Pod with TailingSidecarConfig containing the same names in config but only one is in use", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -1384,18 +1384,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with configurations containing the same names for tailing sidecar containers", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -1479,18 +1479,18 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 
 		When("Pod with configuration containing name of existing container", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example2.log",
@@ -1566,7 +1566,7 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -1671,12 +1671,12 @@ var _ = Describe("handler", func() {
 		})
 
 		When("Update Pod and change volumeMount configuration", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecar{
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "tailing-sidecar-in-pod-namespace",
 					Namespace: "tailing-sidecar-system",
 				},
-				Spec: tailingsidecarv1.TailingSidecarSpec{
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					Configs: map[string]tailingsidecarv1.SidecarConfig{
 						"sidecarconfig": {
 							Path: "/varconfig/log/example0.log",
@@ -1795,7 +1795,7 @@ var _ = Describe("handler", func() {
 			})
 
 			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecar", func() {
+			It("deletes TailingSidecarConfig", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
