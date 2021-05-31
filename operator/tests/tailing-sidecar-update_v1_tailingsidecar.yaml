@@ -4,7 +4,7 @@ metadata:
   name: tailingsidecar-sample
 spec:
   configs:
-    sidecarconfig2:
+    sidecar-2:
       volumeMount: 
         name: varlogconfig
         mountPath: /varconfig-new-dir/log

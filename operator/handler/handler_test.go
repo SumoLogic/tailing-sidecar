@@ -531,7 +531,7 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"tailing-sidecar-0": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
@@ -559,7 +559,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig"
+								"tailing-sidecar": "tailing-sidecar-0"
 							  }
 							},
 							"status": {},
@@ -744,7 +744,7 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig0": {
+						"tailing-sidecar-0": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
@@ -752,7 +752,7 @@ var _ = Describe("handler", func() {
 								ReadOnly:  true,
 							},
 						},
-						"sidecarconfig1": {
+						"tailing-sidecar-1": {
 							Path: "/var/log/example0.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlog",
@@ -775,7 +775,7 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig2": {
+						"tailing-sidecar-2": {
 							Path: "/var/log/example1.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlog",
@@ -803,7 +803,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig0;sidecarconfig1;sidecarconfig2"
+								"tailing-sidecar": "tailing-sidecar-0;tailing-sidecar-1;tailing-sidecar-2"
 							  }
 							},
 							"status": {},
@@ -873,7 +873,7 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"tailing-sidecar-0": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
@@ -902,7 +902,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig;varlog:/var/log/example0.log;varlog:/var/log/example1.log"
+								"tailing-sidecar": "tailing-sidecar-0;varlog:/var/log/example0.log;varlog:/var/log/example1.log"
 							  }
 							},
 							"status": {},
@@ -969,13 +969,12 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"test-container2": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
 							},
-							Container: "test-container2",
 						},
 					},
 				},
@@ -998,7 +997,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig;test-container0:varlog:/var/log/example0.log;test-container1:varlog:/var/log/example1.log"
+								"tailing-sidecar": "test-container2;test-container0:varlog:/var/log/example0.log;test-container1:varlog:/var/log/example1.log"
 							  }
 							},
 							"status": {},
@@ -1064,16 +1063,8 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig1": {
+						"test-container-2": {
 							Path: "/varconfig/log/example2.log",
-							VolumeMount: corev1.VolumeMount{
-								Name:      "varlogconfig",
-								MountPath: "/varconfig/log",
-							},
-							Container: "test-container2",
-						},
-						"sidecarconfig2": {
-							Path: "/varconfig/log/example3.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
@@ -1100,7 +1091,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig1;sidecarconfig2;test-container0:varlog:/var/log/example0.log;varlog:/var/log/example1.log"
+								"tailing-sidecar": "test-container-2;test-container0:varlog:/var/log/example0.log;varlog:/var/log/example1.log"
 							  }
 							},
 							"status": {},
@@ -1143,7 +1134,7 @@ var _ = Describe("handler", func() {
 				Expect(resp.Allowed).To(BeTrue())
 				Expect(resp.Patches).NotTo(BeEmpty())
 
-				expectedPatches := loadJSONPatches("testdata/patch_with_4_named_not_named_tailing_sidecars.json")
+				expectedPatches := loadJSONPatches("testdata/patch_with_3_named_not_named_tailing_sidecars.json")
 
 				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
 
@@ -1166,13 +1157,12 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"test-container": {
 							Path: "/varconfig/log/example0.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
 							},
-							Container: "test-container",
 						},
 					},
 				},
@@ -1195,7 +1185,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig;varlog:/var/log/example1.log"
+								"tailing-sidecar": "test-container;varlog:/var/log/example1.log"
 							  }
 							},
 							"status": {},
@@ -1286,109 +1276,6 @@ var _ = Describe("handler", func() {
 			})
 		})
 
-		When("Pod with TailingSidecarConfig containing the same names in config but only one is in use", func() {
-			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "tailing-sidecar-in-pod-namespace",
-					Namespace: "tailing-sidecar-system",
-				},
-				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
-					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
-							Path: "/varconfig/log/example2.log",
-							VolumeMount: corev1.VolumeMount{
-								Name:      "varlogconfig",
-								MountPath: "/varconfig/log",
-							},
-							Container: "test-container2",
-						},
-						"sidecarconfig2": {
-							Path: "/varconfig/log/example2.log",
-							VolumeMount: corev1.VolumeMount{
-								Name:      "varlogconfig",
-								MountPath: "/varconfig/log",
-							},
-							Container: "test-container2",
-						},
-					},
-				},
-			}
-
-			err = k8sClient.Create(ctx, tailingSidecar)
-			It("creates a Tailingsidecar with configuration", func() {
-				Expect(err).ToNot(HaveOccurred())
-			})
-
-			request := admission.Request{
-				AdmissionRequest: admv1.AdmissionRequest{
-					Operation: admv1.Create,
-					Object: runtime.RawExtension{
-						Raw: []byte(`{
-							"apiVersion": "v1",
-							"kind": "Pod",
-							"metadata": {
-							  "creationTimestamp": null,
-							  "name": "pod-with-annotations",
-							  "namespace": "tailing-sidecar-system",
-							  "annotations": {
-								"tailing-sidecar": "sidecarconfig;test-container0:varlog:/var/log/example0.log;test-container1:varlog:/var/log/example1.log"
-							  }
-							},
-							"status": {},
-							"spec": {
-							  "containers": [
-								{
-								  "name": "count",
-								  "image": "busybox",
-								   "resources": {},
-								  "volumeMounts": [
-									{
-									  "name": "varlog",
-									  "mountPath": "/var/log"
-									},
-									{
-									  "name": "varlogconfig",
-									  "mountPath": "/varconfig/log"
-									}
-								  ]
-								}
-							  ],
-							  "volumes": [
-								{
-								  "name": "varlog",
-								  "emptyDir": {}
-								},
-								{
-								  "name": "varlogconfig",
-								  "emptyDir": {}
-								}
-							  ]
-							}
-						  }`),
-					},
-				},
-			}
-
-			resp := podExtender.Handle(ctx, request)
-			It("returns patch with tailing sidecar containers", func() {
-				Expect(resp.Allowed).To(BeTrue())
-				Expect(resp.Patches).NotTo(BeEmpty())
-
-				expectedPatches := loadJSONPatches("testdata/patch_with_3_named_tailing_sidecars.json")
-
-				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
-
-				for _, patch := range resp.Patches {
-					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
-				}
-			})
-
-			err = k8sClient.Delete(ctx, tailingSidecar)
-			It("deletes TailingSidecarConfig", func() {
-				Expect(err).ToNot(HaveOccurred())
-			})
-		})
-
 		When("Pod with configurations containing the same names for tailing sidecar containers", func() {
 			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
 				ObjectMeta: metav1.ObjectMeta{
@@ -1397,28 +1284,19 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"test-container": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
 							},
-							Container: "test-container2",
-						},
-						"sidecarconfig2": {
-							Path: "/varconfig/log/example2.log",
-							VolumeMount: corev1.VolumeMount{
-								Name:      "varlogconfig",
-								MountPath: "/varconfig/log",
-							},
-							Container: "test-container2",
 						},
 					},
 				},
 			}
 
 			err = k8sClient.Create(ctx, tailingSidecar)
-			It("creates a Tailingsidecar with configuration", func() {
+			It("creates a TailingSidecarConfig with configuration", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
@@ -1434,7 +1312,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig;sidecarconfig2"
+								"tailing-sidecar": "test-container;test-container:varlogconfig:/varconfig/log/example2.log"
 							  }
 							},
 							"status": {},
@@ -1492,13 +1370,12 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"test-container": {
 							Path: "/varconfig/log/example2.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
 							},
-							Container: "test-container",
 						},
 					},
 				},
@@ -1521,7 +1398,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig"
+								"tailing-sidecar": "test-container"
 							  }
 							},
 							"status": {},
@@ -1678,7 +1555,7 @@ var _ = Describe("handler", func() {
 				},
 				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
 					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
-						"sidecarconfig": {
+						"test-container": {
 							Path: "/varconfig/log/example0.log",
 							VolumeMount: corev1.VolumeMount{
 								Name:             "varlogconfig",
@@ -1686,7 +1563,6 @@ var _ = Describe("handler", func() {
 								ReadOnly:         true,
 								MountPropagation: &mountPropagationBidirectional,
 							},
-							Container: "test-container",
 						},
 					},
 				},
@@ -1709,7 +1585,7 @@ var _ = Describe("handler", func() {
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
-								"tailing-sidecar": "sidecarconfig"
+								"tailing-sidecar": "test-container"
 							  }
 							},
 							"status": {},

@@ -39,8 +39,6 @@ spec:
             configs:
               additionalProperties:
                 properties:
-                  container:
-                    type: string
                   path:
                     type: string
                   volumeMount:

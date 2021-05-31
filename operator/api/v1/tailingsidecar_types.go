@@ -25,7 +25,6 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type SidecarSpec struct {
-	Container   string             `json:"container,omitempty"`
 	Path        string             `json:"path,omitempty"`
 	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
 }
