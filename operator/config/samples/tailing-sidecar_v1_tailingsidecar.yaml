@@ -1,5 +1,5 @@
 apiVersion: tailing-sidecar.sumologic.com/v1
-kind: TailingSidecar
+kind: TailingSidecarConfig
 metadata:
   name: tailingsidecar-sample
 spec:

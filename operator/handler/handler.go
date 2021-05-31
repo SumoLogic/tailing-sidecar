@@ -115,12 +115,12 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
 func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	// Get TailingSidecars from namespace
-	tailingSidecarList := &tailingsidecarv1.TailingSidecarList{}
-	tailingSidecarListOpts := []client.ListOption{
+	tailingSidecarConfigList := &tailingsidecarv1.TailingSidecarConfigList{}
+	tailingSidecarConfigListOpts := []client.ListOption{
 		client.InNamespace(pod.ObjectMeta.Namespace),
 	}
 
-	if err := e.Client.List(ctx, tailingSidecarList, tailingSidecarListOpts...); err != nil {
+	if err := e.Client.List(ctx, tailingSidecarConfigList, tailingSidecarConfigListOpts...); err != nil {
 		handlerLog.Error(err,
 			"Failed to get list of TailingSidecars in namespace",
 			"namespace", pod.ObjectMeta.Namespace,
@@ -132,7 +132,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
 	// Get configurations from TailingSidecars and annotations
-	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarList.Items)
+	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigList.Items)
 
 	err := validateConfigs(configs)
 	if err != nil {
