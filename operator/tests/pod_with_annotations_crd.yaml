@@ -3,10 +3,9 @@ kind: Pod
 metadata:
   name: pod-with-annotations-crd
   namespace: tailing-sidecar-system
-  annotations:
-    tailing-sidecar: sidecar-1;sidecar-2
   labels:
     app: pod-with-annotations-crd
+    tailing-sidecar: "true"
 spec:
   containers:
   - name: count

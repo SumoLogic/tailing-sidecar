@@ -28,6 +28,8 @@ import (
 	guuid "github.com/google/uuid"
 	admv1 "k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -80,8 +82,13 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		return admission.Errored(http.StatusBadRequest, err)
 	}
 
-	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; !ok {
-		return admission.Allowed("missing tailing-sidecar annotation, tailing sidecars not added")
+	tailingSidecarConfigs, err := e.getTailingSidecarConfigs(ctx, pod.ObjectMeta.Labels)
+	if err != nil {
+		return admission.Errored(http.StatusInternalServerError, err)
+	}
+
+	if _, ok := pod.ObjectMeta.Annotations[sidecarAnnotation]; !ok && len(tailingSidecarConfigs) == 0 {
+		return admission.Allowed("Configuration for Tailing Sidecar Operator is not provided")
 	}
 
 	handlerLog.Info("Handling request for Pod",
@@ -91,7 +98,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		"Operation", req.Operation,
 	)
 
-	if err := e.extendPod(ctx, pod); err != nil {
+	if err := e.extendPod(ctx, pod, tailingSidecarConfigs); err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
 
@@ -113,38 +120,19 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
-func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
-	// Get TailingSidecars from namespace
-	tailingSidecarConfigList := &tailingsidecarv1.TailingSidecarConfigList{}
-	tailingSidecarConfigListOpts := []client.ListOption{
-		client.InNamespace(pod.ObjectMeta.Namespace),
-	}
-
-	if err := e.Client.List(ctx, tailingSidecarConfigList, tailingSidecarConfigListOpts...); err != nil {
-		handlerLog.Error(err,
-			"Failed to get list of TailingSidecars in namespace",
-			"namespace", pod.ObjectMeta.Namespace,
-		)
-		return err
-	}
-
+func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) error {
 	// Get number of existing tailing sidecars
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
 	// Get configurations from TailingSidecars and annotations
-	configs := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigList.Items)
-
-	err := validateConfigs(configs)
+	configs, err := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
 	if err != nil {
-		handlerLog.Error(err,
-			"Incorrect configuration",
-			"configs", configs,
-		)
+		handlerLog.Error(err, "Incorrect configuration")
 		return err
 	}
 
 	if len(configs) == 0 && sidecarsCount == 0 {
-		handlerLog.Info("Missing configuration for Pod",
+		handlerLog.Info("Pod does not need to be configured",
 			"Name", pod.ObjectMeta.Name,
 			"Namespace", pod.ObjectMeta.Namespace,
 			"GenerateName", pod.ObjectMeta.GenerateName,
@@ -228,6 +216,30 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 	pod.Spec.Containers = append(podContainers, containers...)
 	pod.Spec.Volumes = filterUnusedVolumes(pod.Spec.Volumes, pod.Spec.Containers)
 	return nil
+}
+
+func (e PodExtender) getTailingSidecarConfigs(ctx context.Context, podLabels map[string]string) ([]tailingsidecarv1.TailingSidecarConfig, error) {
+	tailingSidecarConfigList := &tailingsidecarv1.TailingSidecarConfigList{}
+	tailingSidecarConfigListOpts := []client.ListOption{}
+
+	if err := e.Client.List(ctx, tailingSidecarConfigList, tailingSidecarConfigListOpts...); err != nil {
+		handlerLog.Error(err, "Failed to get list of TailingSidecarConfigs")
+		return nil, err
+	}
+
+	tailingSidcarConfigs := make([]tailingsidecarv1.TailingSidecarConfig, 0)
+	for _, tailingSidcarConfig := range tailingSidecarConfigList.Items {
+		selector, err := metav1.LabelSelectorAsSelector(tailingSidcarConfig.Spec.PodSelector)
+		if err != nil {
+			return nil, fmt.Errorf("invalid label selector in TailingSidecarConfig: %v", err)
+		}
+		// TailingSidecarConfig with a nil or empty selector should match nothing
+		if selector.Empty() || !selector.Matches(labels.Set(podLabels)) {
+			continue
+		}
+		tailingSidcarConfigs = append(tailingSidcarConfigs, tailingSidcarConfig)
+	}
+	return tailingSidcarConfigs, nil
 }
 
 // validateContainers validates containers

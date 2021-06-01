@@ -1,0 +1,83 @@
+[
+        {
+                "op": "add",
+                "path": "/spec/volumes/2",
+                "value": {
+                        "hostPath": {
+                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/sidecar-1",
+                                "type": "DirectoryOrCreate"
+                        },
+                        "name": "volume-sidecar-0"
+                }
+        },
+        {
+                "op": "add",
+                "path": "/spec/volumes/3",
+                "value": {
+                        "hostPath": {
+                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/sidecar-2",
+                                "type": "DirectoryOrCreate"
+                        },
+                        "name": "volume-sidecar-1"
+                }
+        },
+        {
+                "op": "add",
+                "path": "/spec/containers/1",
+                "value": {
+                        "env": [
+                                {
+                                        "name": "PATH_TO_TAIL",
+                                        "value": "/varconfig/log/example2.log"
+                                },
+                                {
+                                        "name": "TAILING_SIDECAR",
+                                        "value": "true"
+                                }
+                        ],
+                        "image": "tailing-sidecar-image:test",
+                        "name": "sidecar-1",
+                        "resources": {},
+                        "volumeMounts": [
+                                {
+                                        "mountPath": "/varconfig/log",
+                                        "name": "varlogconfig",
+                                        "readOnly": true
+                                },
+                                {
+                                        "mountPath": "/tailing-sidecar/var",
+                                        "name": "volume-sidecar-0"
+                                }
+                        ]
+                }
+        },
+        {
+                "op": "add",
+                "path": "/spec/containers/2",
+                "value": {
+                        "env": [
+                                {
+                                        "name": "PATH_TO_TAIL",
+                                        "value": "/var/log/example1.log"
+                                },
+                                {
+                                        "name": "TAILING_SIDECAR",
+                                        "value": "true"
+                                }
+                        ],
+                        "image": "tailing-sidecar-image:test",
+                        "name": "sidecar-2",
+                        "resources": {},
+                        "volumeMounts": [
+                                {
+                                        "mountPath": "/var/log",
+                                        "name": "varlog"
+                                },
+                                {
+                                        "mountPath": "/tailing-sidecar/var",
+                                        "name": "volume-sidecar-1"
+                                }
+                        ]
+                }
+        }
+]

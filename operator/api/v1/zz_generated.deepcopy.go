@@ -21,6 +21,7 @@ limitations under the License.
 package v1
 
 import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -108,6 +109,11 @@ func (in *TailingSidecarConfigSpec) DeepCopyInto(out *TailingSidecarConfigSpec) 
 		for key, val := range *in {
 			(*out)[key] = *val.DeepCopy()
 		}
+	}
+	if in.PodSelector != nil {
+		in, out := &in.PodSelector, &out.PodSelector
+		*out = new(metav1.LabelSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
