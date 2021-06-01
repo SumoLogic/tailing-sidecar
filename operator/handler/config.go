@@ -27,7 +27,6 @@ import (
 const (
 	configRaw              = 2 // e.g. tailing-sidecar: <volume-name0>:<path-to-tail0>
 	configRawWithContainer = 3 // e.g. tailing-sidecar: <container-name0>:<volume-name0>:<path-to-tail0>
-	configPredefined       = 1 // e.g. tailing-sidecar: <config-name0>
 
 	volumeIndex        = 0
 	fileIndex          = 1
@@ -45,7 +44,23 @@ type sidecarConfig struct {
 }
 
 // getConfigs gets configurations from TailingSidecars and annotations
-func getConfigs(annotations map[string]string, tailingSidecars []tailingsidecarv1.TailingSidecarConfig) []sidecarConfig {
+func getConfigs(annotations map[string]string, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
+	crConfigs, err := convertTailingSidecarConfigs(tailingSidecarConfigs)
+	if err != nil {
+		return nil, err
+	}
+
+	configs := parseAnnotation(annotations)
+	configs = append(configs, crConfigs...)
+
+	if err = validateConfigs(configs); err != nil {
+		return nil, err
+	}
+	return configs, nil
+}
+
+// parseAnnotation parses configurations from 'tailing-sidecar' annotation
+func parseAnnotation(annotations map[string]string) []sidecarConfig {
 	annotation, ok := annotations[sidecarAnnotation]
 	if !ok {
 		return nil
@@ -57,14 +72,6 @@ func getConfigs(annotations map[string]string, tailingSidecars []tailingsidecarv
 		return nil
 	}
 
-	sidecarSpecs := joinTailingSidecarSpecs(tailingSidecars)
-
-	configs := combineConfigs(annotation, sidecarSpecs)
-	return configs
-}
-
-// combineConfigs parses configurations from 'tailing-sidecar' annotation and joins them with configurations from TailingSidecarConfigs
-func combineConfigs(annotation string, sidecarSpecs map[string]tailingsidecarv1.SidecarSpec) []sidecarConfig {
 	configs := make([]sidecarConfig, 0)
 	configElements := strings.Split(annotation, configSeparator)
 
@@ -95,35 +102,34 @@ func combineConfigs(annotation string, sidecarSpecs map[string]tailingsidecarv1.
 				},
 			}
 			configs = append(configs, config)
-		case configPredefined:
-			if _, ok := sidecarSpecs[configParts[containerNameIndex]]; !ok {
-				handlerLog.Info("Missing configuration in TailingSidecarConfig configurations",
-					"configuration name", configParts[containerNameIndex],
-				)
-				continue
-			}
-			config := sidecarConfig{
-				name: configParts[containerNameIndex],
-				spec: sidecarSpecs[configParts[containerNameIndex]],
-			}
-			configs = append(configs, config)
 		default:
-			handlerLog.Info("Incorrect configuration",
+			handlerLog.Info("Incorrect format of 'tailing-sidecar' annotation",
 				"annotation", annotation)
 		}
 	}
 	return configs
 }
 
-// joinTailingSidecarSpecs joins configurations defined in TailingSidecarConfig resources
-func joinTailingSidecarSpecs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) map[string]tailingsidecarv1.SidecarSpec {
-	sidecarSpecs := make(map[string]tailingsidecarv1.SidecarSpec, len(tailingSidecars))
+// convertTailingSidecarConfigs converts configurations defined in TailingSidecarConfigs to sidecarConfig
+func convertTailingSidecarConfigs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
+	sidecarNames := make(map[string]struct{}, len(tailingSidecars))
+	configs := make([]sidecarConfig, len(tailingSidecars))
+
 	for _, tailitailinSidecar := range tailingSidecars {
 		for name, spec := range tailitailinSidecar.Spec.SidecarSpecs {
-			sidecarSpecs[name] = spec
+			if _, ok := sidecarNames[name]; ok {
+				return nil, fmt.Errorf("not unique names for tailing sidecar containers in TailingSidecarConfigs, name: %s", name)
+			}
+			sidecarNames[name] = struct{}{}
+
+			config := sidecarConfig{
+				name: name,
+				spec: spec,
+			}
+			configs = append(configs, config)
 		}
 	}
-	return sidecarSpecs
+	return configs, nil
 }
 
 // removeEmptyConfigs removes empty elements from configuration e.g. when there is ":" in annotation
@@ -150,7 +156,7 @@ func validateConfigs(configs []sidecarConfig) error {
 	}
 
 	if len(containerNames) != namesCount {
-		return fmt.Errorf("names for tailing sidecar containers must be unique")
+		return fmt.Errorf("names for tailing sidecar containers must be unique, configs: %+v", configs)
 	}
 	return nil
 }

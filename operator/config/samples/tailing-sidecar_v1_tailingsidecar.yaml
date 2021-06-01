@@ -3,6 +3,9 @@ kind: TailingSidecarConfig
 metadata:
   name: tailingsidecar-sample
 spec:
+  podSelector:
+    matchLabels:
+      tailing-sidecar: "true"
   configs:
     sidecar-1:
       volumeMount:

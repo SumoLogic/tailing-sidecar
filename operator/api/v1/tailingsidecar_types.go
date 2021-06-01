@@ -37,6 +37,9 @@ type TailingSidecarConfigSpec struct {
 	// SidecarSpecs contains specifications for tailing sidecars,
 	// map key indicates name of configuration which can be used in annotation
 	SidecarSpecs map[string]SidecarSpec `json:"configs,omitempty"`
+
+	// PodSelector selects Pods to which this tailing sidecar configuration applies.
+	PodSelector *metav1.LabelSelector `json:"podSelector,omitempty"`
 }
 
 // TailingSidecarConfigStatus defines the observed state of TailingSidecarConfig
