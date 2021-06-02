@@ -3,6 +3,7 @@ kind: TailingSidecarConfig
 metadata:
   name: tailingsidecar-sample
 spec:
+  annotationsPrefix: tailing-sidecar.sumologic.com
   podSelector:
     matchLabels:
       tailing-sidecar: "true"
@@ -12,3 +13,6 @@ spec:
         name: varlogconfig
         mountPath: /varconfig-new-dir/log
       path: /varconfig-new-dir/log/example2.log
+      annotations:
+        sourceCategory: sourceCategory-2
+        annotation-2: "true"

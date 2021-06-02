@@ -38,6 +38,7 @@ wait_for_pod ${NAMESPACE} ${DAEMONSET_POD_NAME} ${TIME}
 # Test Pod with configuration in CRD
 readonly POD_WITH_CRD="pod-with-annotations-crd"
 wait_for_pod ${NAMESPACE} ${POD_WITH_CRD} ${TIME}
+[[ $(kubectl logs ${POD_WITH_CRD} sidecar-0 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 [[ $(kubectl logs ${POD_WITH_CRD} sidecar-1 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 [[ $(kubectl logs ${POD_WITH_CRD} sidecar-2 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -ne 5 ]] && exit 1
 

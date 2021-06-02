@@ -25,7 +25,13 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type SidecarSpec struct {
-	Path        string             `json:"path,omitempty"`
+	// Annotations defines tailing sidecar container annotations.
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Path defines path to a file containing logs to tail within a tailing sidecar container.
+	Path string `json:"path,omitempty"`
+
+	// VolumeMount describes a mounting of a volume within a tailing sidecar container.
 	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
 }
 
@@ -34,8 +40,11 @@ type TailingSidecarConfigSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// SidecarSpecs contains specifications for tailing sidecars,
-	// map key indicates name of configuration which can be used in annotation
+	// AnnotationsPrefix defines prefix for per container annotations.
+	AnnotationsPrefix string `json:"annotationsPrefix,omitempty"`
+
+	// SidecarSpecs defines specifications for tailing sidecar containers,
+	// map key indicates name of tailing sidecar container
 	SidecarSpecs map[string]SidecarSpec `json:"configs,omitempty"`
 
 	// PodSelector selects Pods to which this tailing sidecar configuration applies.
