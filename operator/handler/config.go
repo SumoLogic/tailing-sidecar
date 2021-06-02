@@ -39,8 +39,9 @@ const (
 )
 
 type sidecarConfig struct {
-	name string
-	spec tailingsidecarv1.SidecarSpec
+	annotationsPrefix string
+	name              string
+	spec              tailingsidecarv1.SidecarSpec
 }
 
 // getConfigs gets configurations from TailingSidecars and annotations
@@ -111,20 +112,21 @@ func parseAnnotation(annotations map[string]string) []sidecarConfig {
 }
 
 // convertTailingSidecarConfigs converts configurations defined in TailingSidecarConfigs to sidecarConfig
-func convertTailingSidecarConfigs(tailingSidecars []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
-	sidecarNames := make(map[string]struct{}, len(tailingSidecars))
-	configs := make([]sidecarConfig, len(tailingSidecars))
+func convertTailingSidecarConfigs(tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
+	sidecarNames := make(map[string]struct{}, len(tailingSidecarConfigs))
+	configs := make([]sidecarConfig, len(tailingSidecarConfigs))
 
-	for _, tailitailinSidecar := range tailingSidecars {
-		for name, spec := range tailitailinSidecar.Spec.SidecarSpecs {
+	for _, tailitailinSidecarConfig := range tailingSidecarConfigs {
+		for name, spec := range tailitailinSidecarConfig.Spec.SidecarSpecs {
 			if _, ok := sidecarNames[name]; ok {
 				return nil, fmt.Errorf("not unique names for tailing sidecar containers in TailingSidecarConfigs, name: %s", name)
 			}
 			sidecarNames[name] = struct{}{}
 
 			config := sidecarConfig{
-				name: name,
-				spec: spec,
+				annotationsPrefix: tailitailinSidecarConfig.Spec.AnnotationsPrefix,
+				name:              name,
+				spec:              spec,
 			}
 			configs = append(configs, config)
 		}

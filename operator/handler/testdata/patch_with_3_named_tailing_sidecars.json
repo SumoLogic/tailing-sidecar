@@ -1,6 +1,16 @@
 [
     {
         "op": "add",
+        "path": "/metadata/annotations/tailing-sidecar.sumologic.com~1test-container-2.annotation-1",
+        "value": "annotation-1"
+    },
+    {
+        "op": "add",
+        "path": "/metadata/annotations/tailing-sidecar.sumologic.com~1test-container-2.sourceCategory",
+        "value": "sourceCategory-1"
+    },
+    {
+        "op": "add",
         "path": "/spec/containers/1",
         "value": {
             "env": [

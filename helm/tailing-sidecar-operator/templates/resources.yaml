@@ -34,14 +34,24 @@ spec:
           spec:
             description: TailingSidecarConfigSpec defines the desired state of TailingSidecarConfig
             properties:
+              annotationsPrefix:
+                description: AnnotationsPrefix defines prefix for per container annotations.
+                type: string
               configs:
                 additionalProperties:
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: string
+                      description: Annotations defines tailing sidecar container annotations.
+                      type: object
                     path:
+                      description: Path defines path to a file containing logs to
+                        tail within a tailing sidecar container.
                       type: string
                     volumeMount:
-                      description: VolumeMount describes a mounting of a Volume within
-                        a container.
+                      description: VolumeMount describes a mounting of a volume within
+                        a tailing sidecar container.
                       properties:
                         mountPath:
                           description: Path within the container at which the volume
@@ -77,8 +87,8 @@ spec:
                       - name
                       type: object
                   type: object
-                description: SidecarSpecs contains specifications for tailing sidecars,
-                  map key indicates name of configuration which can be used in annotation
+                description: SidecarSpecs defines specifications for tailing sidecar
+                  containers, map key indicates name of tailing sidecar container
                 type: object
               podSelector:
                 description: PodSelector selects Pods to which this tailing sidecar

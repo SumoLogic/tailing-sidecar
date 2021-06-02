@@ -3,19 +3,34 @@ kind: TailingSidecarConfig
 metadata:
   name: tailingsidecar-sample
 spec:
+  annotationsPrefix: tailing-sidecar.sumologic.com
   podSelector:
     matchLabels:
       tailing-sidecar: "true"
   configs:
+    sidecar-0:
+      volumeMount:
+        name: varlog
+        mountPath: /var/log
+      path: /var/log/example0.log
+      annotations:
+        sourceCategory: sourceCategory-0
+        annotation-0: "true"
     sidecar-1:
       volumeMount:
         name: varlog
         mountPath: /var/log
       path: /var/log/example1.log
+      annotations:
+        sourceCategory: sourceCategory-1
+        annotation-1: "true"
     sidecar-2:
-      volumeMount: 
+      volumeMount:
         name: varlogconfig
         mountPath: /varconfig-new-dir/log
         readOnly: true
         mountPropagation: HostToContainer
       path: /varconfig-new-dir/log/example2.log
+      annotations:
+        sourceCategory: sourceCategory-2
+        annotation-2: "true"

@@ -197,6 +197,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			},
 		}
 		containers = append(containers, container)
+		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
 		sidecarsCount++
 	}
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)

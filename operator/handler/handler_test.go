@@ -1003,6 +1003,10 @@ var _ = Describe("handler", func() {
 								Name:      "varlogconfig",
 								MountPath: "/varconfig/log",
 							},
+							Annotations: map[string]string{
+								"sourceCategory": "sourceCategory-1",
+								"annotation-1":   "annotation-1",
+							},
 						},
 					},
 				},
