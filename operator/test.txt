@@ -1,0 +1,5 @@
+b, err := json.MarshalIndent(resp.Patches, "", "  ")
+				if err != nil {
+					fmt.Println("error:", err)
+				}
+				fmt.Print(string(b))

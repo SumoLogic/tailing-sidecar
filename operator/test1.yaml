@@ -1,0 +1,326 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/podIP: 10.1.37.93/32
+    cni.projectcalico.org/podIPs: 10.1.37.93/32
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"app":"pod-with-annotations-crd","tailing-sidecar":"true"},"name":"pod-with-annotations-crd","namespace":"tailing-sidecar-system"},"spec":{"containers":[{"args":["/bin/sh","-c","i=0; while true; do\n  echo \"example0: $i $(date)\" \u003e\u003e /var/log/example0.log;\n  echo \"example1: $i $(date)\" \u003e\u003e /var/log/example1.log;\n  echo \"example2: $i $(date)\" \u003e\u003e /varconfig/log/example2.log;\n  i=$((i+1));\n  sleep 1;\ndone\n"],"image":"busybox","name":"count","volumeMounts":[{"mountPath":"/var/log","name":"varlog"},{"mountPath":"/varconfig/log","name":"varlogconfig"}]}],"volumes":[{"emptyDir":{},"name":"varlog"},{"emptyDir":{},"name":"varlogconfig"}]}}
+    tailing-sidecar.sumologic.com/sidecar-0.annotation-0: "true"
+    tailing-sidecar.sumologic.com/sidecar-0.path: /var/log/example0.log
+    tailing-sidecar.sumologic.com/sidecar-0.sourceCategory: sourceCategory-0
+    tailing-sidecar.sumologic.com/sidecar-0.volumeMount: name=varlog readonly=false
+      mountPath=/var/log
+    tailing-sidecar.sumologic.com/sidecar-1.annotation-1: "true"
+    tailing-sidecar.sumologic.com/sidecar-1.path: /var/log/example1.log
+    tailing-sidecar.sumologic.com/sidecar-1.sourceCategory: sourceCategory-1
+    tailing-sidecar.sumologic.com/sidecar-1.volumeMount: name=varlog readonly=false
+      mountPath=/var/log
+    tailing-sidecar.sumologic.com/sidecar-2.annotation-2: "true"
+    tailing-sidecar.sumologic.com/sidecar-2.path: /varconfig-new-dir/log/example2.log
+    tailing-sidecar.sumologic.com/sidecar-2.sourceCategory: sourceCategory-2
+    tailing-sidecar.sumologic.com/sidecar-2.volumeMount: name=varlogconfig readonly=false
+      mountPath=/varconfig-new-dir/log mountPropagation=HostToContainer
+  creationTimestamp: "2021-06-04T10:37:58Z"
+  labels:
+    app: pod-with-annotations-crd
+    tailing-sidecar: "true"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+          f:tailing-sidecar: {}
+      f:spec:
+        f:containers:
+          k:{"name":"count"}:
+            .: {}
+            f:args: {}
+            f:image: {}
+            f:imagePullPolicy: {}
+            f:name: {}
+            f:resources: {}
+            f:terminationMessagePath: {}
+            f:terminationMessagePolicy: {}
+            f:volumeMounts:
+              .: {}
+              k:{"mountPath":"/var/log"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+              k:{"mountPath":"/varconfig/log"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+        f:dnsPolicy: {}
+        f:enableServiceLinks: {}
+        f:restartPolicy: {}
+        f:schedulerName: {}
+        f:securityContext: {}
+        f:terminationGracePeriodSeconds: {}
+        f:volumes:
+          .: {}
+          k:{"name":"varlog"}:
+            .: {}
+            f:emptyDir: {}
+            f:name: {}
+          k:{"name":"varlogconfig"}:
+            .: {}
+            f:emptyDir: {}
+            f:name: {}
+    manager: kubectl-client-side-apply
+    operation: Update
+    time: "2021-06-04T10:37:58Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:cni.projectcalico.org/podIP: {}
+          f:cni.projectcalico.org/podIPs: {}
+    manager: calico
+    operation: Update
+    time: "2021-06-04T10:37:59Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:conditions:
+          k:{"type":"ContainersReady"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Initialized"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Ready"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+        f:containerStatuses: {}
+        f:hostIP: {}
+        f:phase: {}
+        f:podIP: {}
+        f:podIPs:
+          .: {}
+          k:{"ip":"10.1.37.93"}:
+            .: {}
+            f:ip: {}
+        f:startTime: {}
+    manager: kubelet
+    operation: Update
+    time: "2021-06-04T10:38:08Z"
+  name: pod-with-annotations-crd
+  namespace: tailing-sidecar-system
+  resourceVersion: "13515"
+  selfLink: /api/v1/namespaces/tailing-sidecar-system/pods/pod-with-annotations-crd
+  uid: fe9bc383-16fe-4385-8d54-8aa765dbffd1
+spec:
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - |
+      i=0; while true; do
+        echo "example0: $i $(date)" >> /var/log/example0.log;
+        echo "example1: $i $(date)" >> /var/log/example1.log;
+        echo "example2: $i $(date)" >> /varconfig/log/example2.log;
+        i=$((i+1));
+        sleep 1;
+      done
+    image: busybox
+    imagePullPolicy: Always
+    name: count
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog
+    - mountPath: /varconfig/log
+      name: varlogconfig
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-gstfx
+      readOnly: true
+  - env:
+    - name: PATH_TO_TAIL
+      value: /var/log/example0.log
+    - name: TAILING_SIDECAR
+      value: "true"
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imagePullPolicy: Always
+    name: sidecar-0
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog
+    - mountPath: /tailing-sidecar/var
+      name: volume-sidecar-0
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-gstfx
+      readOnly: true
+  - env:
+    - name: PATH_TO_TAIL
+      value: /var/log/example1.log
+    - name: TAILING_SIDECAR
+      value: "true"
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imagePullPolicy: Always
+    name: sidecar-1
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog
+    - mountPath: /tailing-sidecar/var
+      name: volume-sidecar-1
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-gstfx
+      readOnly: true
+  - env:
+    - name: PATH_TO_TAIL
+      value: /varconfig-new-dir/log/example2.log
+    - name: TAILING_SIDECAR
+      value: "true"
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imagePullPolicy: Always
+    name: sidecar-2
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /varconfig-new-dir/log
+      mountPropagation: HostToContainer
+      name: varlogconfig
+    - mountPath: /tailing-sidecar/var
+      name: volume-sidecar-2
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-gstfx
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: sumologic-tailing-sidecar
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - emptyDir: {}
+    name: varlog
+  - emptyDir: {}
+    name: varlogconfig
+  - name: default-token-gstfx
+    secret:
+      defaultMode: 420
+      secretName: default-token-gstfx
+  - hostPath:
+      path: /var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations-crd/sidecar-0
+      type: DirectoryOrCreate
+    name: volume-sidecar-0
+  - hostPath:
+      path: /var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations-crd/sidecar-1
+      type: DirectoryOrCreate
+    name: volume-sidecar-1
+  - hostPath:
+      path: /var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations-crd/sidecar-2
+      type: DirectoryOrCreate
+    name: volume-sidecar-2
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-04T10:37:58Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-04T10:38:08Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-04T10:38:08Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-04T10:37:58Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://af7dabffa693a0f8c1021fa6ede89c3dc4718dfcf67cfa6c6388a2e526be43c5
+    image: docker.io/library/busybox:latest
+    imageID: docker.io/library/busybox@sha256:b5fc1d7b2e4ea86a06b0cf88de915a2c43a99a00b6b3c0af731e5f4c07ae8eff
+    lastState: {}
+    name: count
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-04T10:38:06Z"
+  - containerID: containerd://1711e9c81f9bd66ef02d509d2a09691b12d4566743b20727625dd1b9431f94af
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imageID: localhost:32000/sumologic/tailing-sidecar@sha256:0122027067627de2bc0a60d5dab3fd81538f423d96ecaa7893082ecc2d91a30c
+    lastState: {}
+    name: sidecar-0
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-04T10:38:06Z"
+  - containerID: containerd://a6025b352fc3a3af29ce63849a8a3fb1220553b63f92ae946676e91547930a32
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imageID: localhost:32000/sumologic/tailing-sidecar@sha256:0122027067627de2bc0a60d5dab3fd81538f423d96ecaa7893082ecc2d91a30c
+    lastState: {}
+    name: sidecar-1
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-04T10:38:06Z"
+  - containerID: containerd://9ae31c747aa1959f7c1d976465163d45d0b66f3354af5dc1dfc31ecee701de7c
+    image: localhost:32000/sumologic/tailing-sidecar:latest
+    imageID: localhost:32000/sumologic/tailing-sidecar@sha256:0122027067627de2bc0a60d5dab3fd81538f423d96ecaa7893082ecc2d91a30c
+    lastState: {}
+    name: sidecar-2
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-04T10:38:07Z"
+  hostIP: 10.0.2.15
+  phase: Running
+  podIP: 10.1.37.93
+  podIPs:
+  - ip: 10.1.37.93
+  qosClass: BestEffort
+  startTime: "2021-06-04T10:37:58Z"
