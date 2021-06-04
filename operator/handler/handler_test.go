@@ -31,7 +31,7 @@ import (
 	"gomodules.xyz/jsonpatch/v2"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
-	admv1 "k8s.io/api/admission/v1beta1"
+	admv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -50,7 +50,7 @@ func TestPodExtender(t *testing.T) {
 }
 
 var _ = Describe("handler", func() {
-	logf.SetLogger(zap.LoggerTo(GinkgoWriter, true))
+	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 	mountPropagationBidirectional := corev1.MountPropagationBidirectional
 
 	testEnv := &envtest.Environment{

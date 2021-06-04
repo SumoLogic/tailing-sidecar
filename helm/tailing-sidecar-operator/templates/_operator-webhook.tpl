@@ -2,13 +2,15 @@
 {{- $altNames := list ( printf "%s.%s" (include "tailing-sidecar-operator.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "tailing-sidecar-operator.fullname" .) .Release.Namespace ) -}}
 {{- $ca := genCA "tailing-sidecar-operator-ca" 365 -}}
 {{- $cert := genSignedCert ( include "tailing-sidecar-operator.fullname" . ) nil $altNames 365 $ca -}}
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: tailing-sidecar-mutating-webhook-configuration
   namespace: {{ .Release.Namespace }}
 webhooks:
-- clientConfig:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
     caBundle: {{ $ca.Cert | b64enc }}
     service:
       name: {{ include "tailing-sidecar-operator.fullname" . }}
@@ -26,12 +28,14 @@ webhooks:
     - ""
     apiVersions:
     - v1
+    - v1beta1
     operations:
     - CREATE
     - UPDATE
     - DELETE
     resources:
     - pods
+  sideEffects: None
 ---
 apiVersion: v1
 kind: Secret
