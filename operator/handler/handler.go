@@ -26,7 +26,7 @@ import (
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 	guuid "github.com/google/uuid"
-	admv1 "k8s.io/api/admission/v1beta1"
+	admv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -36,7 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
-// +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update;delete,versions=v1,name=tailing-sidecar.sumologic.com
+// +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update;delete,versions=v1,name=tailing-sidecar.sumologic.com,sideEffects=none,admissionReviewVersions={v1,v1beta1}
 
 const (
 	sidecarEnvPath      = "PATH_TO_TAIL"

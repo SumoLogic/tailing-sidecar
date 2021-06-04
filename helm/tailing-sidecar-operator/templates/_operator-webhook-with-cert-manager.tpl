@@ -1,5 +1,5 @@
 {{- define "tailing-sidecar-operator.webhookWithCertManager" }}
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
@@ -7,7 +7,10 @@ metadata:
   name: tailing-sidecar-mutating-webhook-configuration
   namespace: {{ .Release.Namespace }}
 webhooks:
-- clientConfig:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
     caBundle: Cg==
     service:
       name: {{ include "tailing-sidecar-operator.fullname" . }}
@@ -31,8 +34,9 @@ webhooks:
     - DELETE
     resources:
     - pods
+  sideEffects: None
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   labels:
@@ -48,7 +52,7 @@ spec:
     name: tailing-sidecar-selfsigned-issuer
   secretName: webhook-server-cert
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   labels:

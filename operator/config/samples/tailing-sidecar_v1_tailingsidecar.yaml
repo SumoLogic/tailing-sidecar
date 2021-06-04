@@ -16,6 +16,6 @@ spec:
       volumeMount: 
         name: varlogconfig
         mountPath: /varconfig-new-dir/log
-        readonly: true
+        readOnly: true
         mountPropagation: HostToContainer
       path: /varconfig-new-dir/log/example2.log
