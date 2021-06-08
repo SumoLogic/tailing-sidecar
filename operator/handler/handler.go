@@ -25,7 +25,6 @@ import (
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
-	guuid "github.com/google/uuid"
 	admv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -46,16 +45,12 @@ const (
 	sidecarContainerName   = "tailing-sidecar-%d"
 	sidecarContainerPrefix = "tailing-sidecar-"
 
-	hostPathDirPath      = "/var/log/tailing-sidecar-fluentbit/%s/%s"
-	hostPathVolumeName   = "volume-sidecar-%d"
-	hostPathVolumePrefix = "volume-sidecar-"
-	hostPathMountPath    = "/tailing-sidecar/var"
+	sidecarVolumeName   = "volume-sidecar-%d"
+	sidecarVolumePrefix = "volume-sidecar-"
+	sidecarMountPath    = "/tailing-sidecar/var"
 )
 
-var (
-	handlerLog   = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender")
-	hostPathType = corev1.HostPathDirectoryOrCreate
-)
+var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender")
 
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
@@ -147,8 +142,6 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 	)
 
 	containers := make([]corev1.Container, 0)
-	hostPathDir := getHostPath(pod)
-
 	for _, config := range configs {
 
 		err := prepareVolume(pod.Spec.Containers, &config.spec.VolumeMount)
@@ -170,21 +163,16 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			continue
 		}
 
-		volumeName := fmt.Sprintf(hostPathVolumeName, sidecarsCount)
+		volumeName := fmt.Sprintf(sidecarVolumeName, sidecarsCount)
 		if config.name == "" {
 			config.name = fmt.Sprintf(sidecarContainerName, sidecarsCount)
 		}
-		hostPath := fmt.Sprintf("%s/%s", hostPathDir, config.name)
 
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
 				Name: volumeName,
 				VolumeSource: corev1.VolumeSource{
-					HostPath: &corev1.HostPathVolumeSource{
-						Path: hostPath,
-						Type: &hostPathType,
-					},
-				},
+					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
 		container := corev1.Container{
@@ -204,7 +192,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 				config.spec.VolumeMount,
 				{
 					Name:      volumeName,
-					MountPath: hostPathMountPath,
+					MountPath: sidecarMountPath,
 				},
 			},
 		}
@@ -281,7 +269,7 @@ func removeDeletedSidecars(containers []corev1.Container, configs []sidecarConfi
 func filterUnusedVolumes(volumes []corev1.Volume, containers []corev1.Container) []corev1.Volume {
 	podVolumes := make([]corev1.Volume, 0)
 	for _, volume := range volumes {
-		if !strings.HasPrefix(volume.Name, hostPathVolumePrefix) {
+		if !strings.HasPrefix(volume.Name, sidecarVolumePrefix) {
 			// name of volumes assigned to tailing sidecar starts with 'volume-sidecar' prefix
 			// when volumes starts with different prefix it should not be filtered out
 			podVolumes = append(podVolumes, volume)
@@ -364,12 +352,4 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 		}
 	}
 	return tailingSidecars
-}
-
-// getHostPath returns path to host path directory for Fluent Bit database
-func getHostPath(pod *corev1.Pod) string {
-	if pod.ObjectMeta.Namespace != "" && pod.ObjectMeta.Name != "" {
-		return fmt.Sprintf(hostPathDirPath, pod.ObjectMeta.Namespace, pod.ObjectMeta.Name)
-	}
-	return fmt.Sprintf(hostPathDirPath, strings.TrimRight(pod.GenerateName, "-"), guuid.New().String())
 }

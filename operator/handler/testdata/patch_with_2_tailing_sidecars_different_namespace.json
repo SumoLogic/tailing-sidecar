@@ -3,10 +3,7 @@
                 "op": "add",
                 "path": "/spec/volumes/2",
                 "value": {
-                        "hostPath": {
-                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/sidecar-1",
-                                "type": "DirectoryOrCreate"
-                        },
+                        "emptyDir": {},
                         "name": "volume-sidecar-0"
                 }
         },
@@ -14,10 +11,7 @@
                 "op": "add",
                 "path": "/spec/volumes/3",
                 "value": {
-                        "hostPath": {
-                                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/sidecar-2",
-                                "type": "DirectoryOrCreate"
-                        },
+                        "emptyDir": {},
                         "name": "volume-sidecar-1"
                 }
         },

@@ -90,10 +90,7 @@
         "op": "add",
         "path": "/spec/volumes/2",
         "value": {
-            "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container-3",
-                "type": "DirectoryOrCreate"
-            },
+            "emptyDir": {},
             "name": "volume-sidecar-0"
         }
     },
@@ -101,10 +98,7 @@
         "op": "add",
         "path": "/spec/volumes/3",
         "value": {
-            "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container-1",
-                "type": "DirectoryOrCreate"
-            },
+            "emptyDir": {},
             "name": "volume-sidecar-1"
         }
     },
@@ -112,10 +106,7 @@
         "op": "add",
         "path": "/spec/volumes/4",
         "value": {
-            "hostPath": {
-                "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container-2",
-                "type": "DirectoryOrCreate"
-            },
+            "emptyDir": {},
             "name": "volume-sidecar-2"
         }
     }

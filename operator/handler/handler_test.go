@@ -622,10 +622,7 @@ var _ = Describe("handler", func() {
 								},
 								{
 									"name": "volume-sidecar-0",
-									"hostPath": {
-									  "path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
-									  "type": "DirectoryOrCreate"
-									}
+									"emptyDir": {}
 								}
 							  ]
 							}
@@ -1293,11 +1290,7 @@ var _ = Describe("handler", func() {
 								},
 								{
 								  "name": "volume-sidecar-0",
-								  "hostPath":
-								  {
-									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container",
-									"type": "DirectoryOrCreate"
-								  }
+								  "emptyDir": {}
 								}
 							  ]
 							}
@@ -1582,11 +1575,7 @@ var _ = Describe("handler", func() {
 								},
 								{
 								  "name": "volume-sidecar-0",
-								  "hostPath":
-								  {
-									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/tailing-sidecar-0",
-									"type": "DirectoryOrCreate"
-								  }
+								  "emptyDir": {}
 								}
 							  ]
 							}
@@ -1711,11 +1700,7 @@ var _ = Describe("handler", func() {
 								},
 								{
 								  "name": "volume-sidecar-0",
-								  "hostPath":
-								  {
-									"path": "/var/log/tailing-sidecar-fluentbit/tailing-sidecar-system/pod-with-annotations/test-container",
-									"type": "DirectoryOrCreate"
-								  }
+								  "emptyDir": {}
 								}
 							  ]
 							}
