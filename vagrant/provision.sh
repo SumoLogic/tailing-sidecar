@@ -18,7 +18,7 @@ apt-get install --yes docker-ce docker-ce-cli containerd.io
 usermod -aG docker vagrant
 
 # Install k8s
-snap install microk8s --classic --channel=1.19/stable
+snap install microk8s --classic --channel=1.20/stable
 microk8s.status --wait-ready
 ufw allow in on cbr0
 ufw allow out on cbr0
