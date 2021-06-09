@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-with-annotations-crd
+  name: pod-with-tailing-sidecar-config
   namespace: tailing-sidecar-system
   labels:
-    app: pod-with-annotations-crd
+    app: pod-with-tailing-sidecar-config
     tailing-sidecar: "true"
 spec:
   containers:
