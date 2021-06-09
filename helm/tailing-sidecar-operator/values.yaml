@@ -19,6 +19,12 @@ sidecar:
     repository: ghcr.io/sumologic/tailing-sidecar
     tag: 0.3.0
 
+kubeRbacProxy:
+  image:
+    pullPolicy: IfNotPresent
+    repository: gcr.io/kubebuilder/kube-rbac-proxy
+    tag: v0.5.0
+
 # Configuration for MutatingWebhook which is used by tailing sidecar operator
 # for details please see Kubernetes API Reference Docs
 # e.g. https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#mutatingwebhookconfiguration-v1-admissionregistration-k8s-io
