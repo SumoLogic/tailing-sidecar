@@ -87,7 +87,7 @@ jobs:
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
-      - name: Deploy example with configuration in CRD
+      - name: Deploy example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
@@ -98,7 +98,7 @@ jobs:
       - name: Deploy examples update
         working-directory: ./operator
         run: make deploy-examples-update
-      - name: Deploy update for example with configuration in CRD
+      - name: Deploy update for example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr-update
       - name: Wait for logs to be generated
@@ -145,7 +145,7 @@ jobs:
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
-      - name: Deploy example with configuration in CRD
+      - name: Deploy example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
@@ -158,7 +158,7 @@ jobs:
       - name: Deploy examples update
         working-directory: ./operator
         run: make deploy-examples-update
-      - name: Deploy update for example with configuration in CRD
+      - name: Deploy update for example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr-update
       - name: Wait for logs to be generated
@@ -208,7 +208,7 @@ jobs:
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
-      - name: Deploy example with configuration in CRD
+      - name: Deploy example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
@@ -221,7 +221,7 @@ jobs:
       - name: Deploy examples update
         working-directory: ./operator
         run: make deploy-examples-update
-      - name: Deploy update for example with configuration in CRD
+      - name: Deploy update for example with configuration in CR
         working-directory: ./operator
         run: make deploy-example-with-cr-update
       - name: Wait for logs to be generated
