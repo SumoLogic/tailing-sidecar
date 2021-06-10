@@ -11,7 +11,6 @@ mdl:
 		README.md \
 		sidecar/README.md \
 		operator/README.md \
-		operator/docs \
 		dev/releasing.md
 
 yamllint:
