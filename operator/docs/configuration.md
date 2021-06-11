@@ -45,8 +45,8 @@ in available [pod-with-tailing-sidecar-config.yaml](../examples/pod_with_tailing
 To try example configuration use following commands:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/main/operator/config/samples/tailing-sidecar_v1_tailingsidecar.yaml
-kubectl apply -f https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/main/operator/examples/pod_with_tailing_sidecar_config.yaml
+kubectl apply -f https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.5/operator/config/samples/tailing-sidecar_v1_tailingsidecar.yaml
+kubectl apply -f https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.5/operator/examples/pod_with_tailing_sidecar_config.yaml
 ```
 
 For details related to `TailingSidecarConfig` definition please see subsections below.
