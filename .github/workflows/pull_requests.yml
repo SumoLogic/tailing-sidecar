@@ -67,7 +67,7 @@ jobs:
 
   create-resources-with-sidecars:
     name: Create resources with sidecars
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
@@ -112,7 +112,7 @@ jobs:
 
   test-helm-chart:
     name: Test Helm chart
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
@@ -157,7 +157,7 @@ jobs:
 
   test-helm-chart-with-cert-manager:
     name: Test Helm chart with cert-manager
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: imranismail/setup-kustomize@v1
