@@ -68,6 +68,9 @@ jobs:
             --agents 1
             --no-lb
             --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+            --kubeconfig-update-default=true
+            --kubeconfig-switch-context=true
+
 
       - name: Build and push tailing sidecar image
         working-directory: ./sidecar
