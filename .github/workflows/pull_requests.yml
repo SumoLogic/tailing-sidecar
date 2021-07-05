@@ -49,27 +49,21 @@ jobs:
 
   test-without-helm:
     name: Test resources created without Helm chart
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2.3.4
       - uses: imranismail/setup-kustomize@v1
-      - name: Create network
-        run: docker network create k3d-cluster-network --subnet=172.22.0.0/16 --gateway=172.22.0.1
       - uses: AbsaOSS/k3d-action@v1.4.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
         with:
           cluster-name: "test-cluster1"
           use-default-registry: true
-          network: k3d-cluster-network
-          subnet-CIDR: 172.22.0.0/16
           args: >-
             --agents 1
             --no-lb
             --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
-            --kubeconfig-update-default=true
-            --kubeconfig-switch-context=true
 
 
       - name: Build and push tailing sidecar image
