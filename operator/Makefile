@@ -165,6 +165,10 @@ generate: controller-gen
 docker-build: test
 	docker build . -t ${IMG}
 
+# Build the docker image which bases on Red Hat Universal Base Image
+docker-build-ubi: test
+	docker build -t ${IMG} --build-arg VERSION=${VERSION} --build-arg RELEASE_NUMBER=${RELEASE_NUMBER} -f Dockerfile.ubi .
+
 # Push the docker image
 docker-push:
 	docker push ${IMG}
