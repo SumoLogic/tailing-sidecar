@@ -14,6 +14,13 @@ all: build push
 build:
 	docker build --tag $(TAG) --file ${root_dir}sidecar/Dockerfile ${root_dir}sidecar/
 
+build-ubi:
+	docker build \
+		--tag $(TAG) \
+		--build-arg VERSION=${VERSION} \
+		--build-arg RELEASE_NUMBER=${RELEASE_NUMBER} \
+		--file ${root_dir}sidecar/Dockerfile.ubi ${root_dir}sidecar/
+
 run: build
 	docker run --rm -it \
 		-v $(DIR_TO_TAIL):/tmp/host \
