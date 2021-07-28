@@ -11,11 +11,11 @@ ARG RELEASE_NUMBER=${RELEASE_NUMBER}
 
 LABEL name="Tailing Sidecar" \
       maintainer="collection@sumologic.com" \
-      vendor="sumologic" \
+      vendor="Sumo Logic" \
       version=${VERSION} \
       release=${RELEASE_NUMBER} \
-      summary="Tailing Sidecar" \
-      description="Tailing sidecar is a streaming sidecar container which can be used with Tailing Sidecar Operator"
+      summary="UBI based Tailing Sidecar" \
+      description="Tailing sidecar is a streaming sidecar container which can be used with Tailing Sidecar Operator."
 
 ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LICENSE /licenses/LICENSE
 
