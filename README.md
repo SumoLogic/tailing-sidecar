@@ -23,7 +23,7 @@ metadata:
     tailing-sidecar: <sidecar-name-0>:<volume-name-0>:<path-to-tail-0>;<sidecar-name-1>:<volume-name-1>:<path-to-tail-1>
 ```
 
-Tailing Sidecar Operator configuration is described [here](docs/configuration.md).
+Tailing Sidecar Operator configuration is described [here](operator/docs/configuration.md).
 
 ## Tailing Sidecar
 
