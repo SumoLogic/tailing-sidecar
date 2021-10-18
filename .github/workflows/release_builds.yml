@@ -13,7 +13,7 @@ jobs:
   build-sidecar:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Extract tag
         id: extract_tag
         run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/v})"
@@ -40,7 +40,7 @@ jobs:
   build-operator:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Extract tag
         id: extract_tag
         run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/v})"
@@ -67,6 +67,6 @@ jobs:
   push-helm-chart:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Push dev helm chart
         run: make push-helm-chart
