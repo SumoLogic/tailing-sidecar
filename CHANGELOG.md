@@ -25,6 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#215]: https://github.com/SumoLogic/tailing-sidecar/pull/215
 [#237]: https://github.com/SumoLogic/tailing-sidecar/pull/237
 
+## [v0.3.2] - 2022-02-02
+
+- feat: add Dockerfile and Makefile target to build UBI based container image [#193]
+- feat: add Dockerfile and Makefile target to build UBI based sidecar container image [#194]
+- chore: upgrade Golang from 1.16.2 to 1.17.6 [#265]
+- chore: upgrade Fluent Bit from 1.7.2 to 1.8.12 [#266]
+
+[v0.3.2]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.3.2
+[#193]: https://github.com/SumoLogic/tailing-sidecar/pull/193
+[#194]: https://github.com/SumoLogic/tailing-sidecar/pull/194
+[#265]: https://github.com/SumoLogic/tailing-sidecar/pull/265
+[#266]: https://github.com/SumoLogic/tailing-sidecar/pull/266
+
 ## [v0.3.1] - 2021-07-05
 
 - Container image for kube-rbac-proxy configurable in Helm Chart (#172)
