@@ -5,7 +5,7 @@ operator:
   image:
     pullPolicy: IfNotPresent
     repository: ghcr.io/sumologic/tailing-sidecar-operator
-    tag: 0.3.1
+    tag: 0.3.2
   resources:
     limits:
       cpu: 100m
@@ -17,7 +17,7 @@ operator:
 sidecar:
   image:
     repository: ghcr.io/sumologic/tailing-sidecar
-    tag: 0.3.1
+    tag: 0.3.2
 
 kubeRbacProxy:
   image:
