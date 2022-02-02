@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- chore: update Golang from 1.16.5 to 1.17.6 [#212] [#213] [#231] [#232] [#247] [#248] [#256] [#257]
+- chore: update Fluent Bit from 1.7.8 to 1.8.12 [#249] [#261]
+- chore: update k8s.io/apimachinery from 0.21.1 to 0.22.4 [#215] [#237]
+
+[#212]: https://github.com/SumoLogic/tailing-sidecar/pull/212
+[#213]: https://github.com/SumoLogic/tailing-sidecar/pull/213
+[#231]: https://github.com/SumoLogic/tailing-sidecar/pull/232
+[#232]: https://github.com/SumoLogic/tailing-sidecar/pull/232
+[#247]: https://github.com/SumoLogic/tailing-sidecar/pull/247
+[#248]: https://github.com/SumoLogic/tailing-sidecar/pull/248
+[#256]: https://github.com/SumoLogic/tailing-sidecar/pull/256
+[#257]: https://github.com/SumoLogic/tailing-sidecar/pull/257
+[#249]: https://github.com/SumoLogic/tailing-sidecar/pull/249
+[#261]: https://github.com/SumoLogic/tailing-sidecar/pull/261
+[#215]: https://github.com/SumoLogic/tailing-sidecar/pull/215
+[#237]: https://github.com/SumoLogic/tailing-sidecar/pull/237
+
 ## [v0.3.1] - 2021-07-05
 
 - Container image for kube-rbac-proxy configurable in Helm Chart (#172)
