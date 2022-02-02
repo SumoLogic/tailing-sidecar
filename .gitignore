@@ -7,3 +7,6 @@ ubuntu-bionic-18.04-cloudimg-console.log
 sidecar/out_gstdout/out_gstdout.h
 sidecar/out_gstdout/out_gstdout.so
 sidecar/var/
+
+.vscode/*
+!.vscode/snippets.code-snippets
