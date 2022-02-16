@@ -24,8 +24,8 @@ sidecar:
 kubeRbacProxy:
   image:
     pullPolicy: IfNotPresent
-    repository: gcr.io/kubebuilder/kube-rbac-proxy
-    tag: v0.5.0
+    repository: quay.io/brancz/kube-rbac-proxy
+    tag: v0.11.0
 
 # Configuration for MutatingWebhook which is used by tailing sidecar operator
 # for details please see Kubernetes API Reference Docs
