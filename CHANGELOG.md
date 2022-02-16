@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- chore: upgrade kube-rbac-proxy from 0.5.0 to 0.11.0 [#280]
+- chore: change container repository for kube-rbac-proxy to quay.io/brancz/kube-rbac-proxy [#280]
+
+[#280]: https://github.com/SumoLogic/tailing-sidecar/pull/280
+
 ## [v0.5.1] - 2022-02-02
 
 - chore: update Golang from 1.16.5 to 1.17.6 [#212] [#213] [#231] [#232] [#247] [#248] [#256] [#257]
