@@ -55,20 +55,21 @@ jobs:
         with:
           go-version: '1.18'
       - uses: imranismail/setup-kustomize@v2
-      - uses: AbsaOSS/k3d-action@v1.5.0
+      - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
         with:
           cluster-name: "test-cluster"
-          use-default-registry: true
           args: >-
             --agents 1
             --no-lb
-            --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
 
-      - name: Build and push tailing sidecar image
+      - name: Build tailing sidecar image
         working-directory: ./sidecar
-        run: make TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+        run: make build TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Import sidecar image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar:test -c test-cluster
       - name: Change tailing sidecar image in example Pod
         run: sed -i 's/localhost:32000\/sumologic\/tailing-sidecar:latest/registry.localhost:5000\/sumologic\/tailing-sidecar:test/g' sidecar/examples/pod_with_tailing_sidecars.yaml
       - name: Create Pod with sidecars
@@ -82,9 +83,14 @@ jobs:
       - name: Deploy cert-manager
         working-directory: ./operator
         run: make deploy-cert-manager
-      - name: Build, push and deploy tailing sidecar operator
+      - name: Build tailing sidecar operator
         working-directory: ./operator
-        run: make IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
+        run: make docker-build IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
+      - name: Import operator image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar-operator:test -c test-cluster
+      - name: Deploy tailing sidecar operator
+        working-directory: ./operator
+        run: make deploy IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
@@ -119,27 +125,27 @@ jobs:
         with:
           go-version: '1.18'
       - uses: imranismail/setup-kustomize@v2
-      - uses: AbsaOSS/k3d-action@v1.5.0
+      - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
         with:
           cluster-name: "test-cluster"
-          use-default-registry: true
           args: >-
             --agents 1
             --no-lb
-            --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
       - name: Add Helm
         uses: WyriHaximus/github-action-helm3@v3.0.0
-      - name: Build and push tailing sidecar image
+      - name: Build tailing sidecar image
         working-directory: ./sidecar
-        run: make TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+        run: make build TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Import sidecar image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar:test -c test-cluster
       - name: Build tailing sidecar operator
         working-directory: ./operator
         run: make docker-build IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
-      - name: Push tailing sidecar operator
-        working-directory: ./operator
-        run: make docker-push IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
+      - name: Import operator image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar-operator:test -c test-cluster
       - name: Deploy Helm chart
         working-directory: ./helm
         run: helm upgrade --install test-release ./tailing-sidecar-operator -f tests/values.yaml -n tailing-sidecar-system --create-namespace
@@ -183,30 +189,30 @@ jobs:
         with:
           go-version: '1.18'
       - uses: imranismail/setup-kustomize@v2
-      - uses: AbsaOSS/k3d-action@v1.5.0
+      - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
         with:
           cluster-name: "test-cluster"
-          use-default-registry: true
           args: >-
             --agents 1
             --no-lb
-            --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
+            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
       - name: Add Helm
         uses: WyriHaximus/github-action-helm3@v3.0.0
       - name: Deploy cert-manager
         working-directory: ./operator
         run: make deploy-cert-manager
-      - name: Build and push tailing sidecar image
+      - name: Build tailing sidecar image
         working-directory: ./sidecar
-        run: make TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+        run: make build TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
+      - name: Import sidecar image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar:test -c test-cluster
       - name: Build tailing sidecar operator
         working-directory: ./operator
         run: make docker-build IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
-      - name: Push tailing sidecar operator
-        working-directory: ./operator
-        run: make docker-push IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
+      - name: Import operator image to k3d
+        run: k3d image import registry.localhost:5000/sumologic/tailing-sidecar-operator:test -c test-cluster
       - name: Deploy Helm chart
         working-directory: ./helm
         run: helm upgrade --install test-release ./tailing-sidecar-operator -f tests/values.withCertManager.yaml -n tailing-sidecar-system --create-namespace
