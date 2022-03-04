@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM golang:1.17.7 as builder
+FROM golang:1.18rc1 as builder
 
 WORKDIR /workspace
 
