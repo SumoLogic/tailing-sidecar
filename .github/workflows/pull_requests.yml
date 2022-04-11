@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '1.17'
       - name: Run tests for tailing sidecar operator
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '1.17'
       - uses: imranismail/setup-kustomize@v1
@@ -115,7 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '1.17'
       - uses: imranismail/setup-kustomize@v1
@@ -179,7 +179,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '1.17'
       - uses: imranismail/setup-kustomize@v1
