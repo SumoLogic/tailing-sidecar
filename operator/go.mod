@@ -10,7 +10,7 @@ require (
 	gomodules.xyz/jsonpatch/v2 v2.2.0
 	k8s.io/api v0.24.1
 	k8s.io/apimachinery v0.24.1
-	k8s.io/client-go v0.24.0
+	k8s.io/client-go v0.24.1
 	sigs.k8s.io/controller-runtime v0.11.2
 )
 
