@@ -193,6 +193,22 @@ rules:
   verbs:
   - create
   - patch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+- apiGroups:
+  - coordination.k8s.io
+  resourceNames:
+  - 7b555970.sumologic.com
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
