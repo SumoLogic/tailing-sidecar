@@ -114,7 +114,7 @@ func parseAnnotation(annotations map[string]string) []sidecarConfig {
 // convertTailingSidecarConfigs converts configurations defined in TailingSidecarConfigs to sidecarConfig
 func convertTailingSidecarConfigs(tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
 	sidecarNames := make(map[string]struct{}, len(tailingSidecarConfigs))
-	configs := make([]sidecarConfig, len(tailingSidecarConfigs))
+	configs := []sidecarConfig{}
 
 	for _, tailitailinSidecarConfig := range tailingSidecarConfigs {
 		for name, spec := range tailitailinSidecarConfig.Spec.SidecarSpecs {
