@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v0.5.2] - 2022-07-19
 
+- fix(chart): add permissions for leases [#345]
+- fix(operator): prevent the `Failed to prepare volume` error logs [#347]
+- chore: upgrade Fluent Bit from 1.8.12 to 1.9.6
 - chore: upgrade kube-rbac-proxy from 0.5.0 to 0.11.0 [#280]
 - chore: change container repository for kube-rbac-proxy to quay.io/brancz/kube-rbac-proxy [#280]
+- chore: upgrade Golang from 1.17.6 to 1.18.4
 
+[v0.5.2]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.5.2
 [#280]: https://github.com/SumoLogic/tailing-sidecar/pull/280
+[#345]: https://github.com/SumoLogic/tailing-sidecar/pull/345
+[#347]: https://github.com/SumoLogic/tailing-sidecar/pull/347
 
 ## [v0.5.1] - 2022-02-02
 
