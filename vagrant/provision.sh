@@ -18,7 +18,7 @@ apt-get install --yes docker-ce docker-ce-cli containerd.io
 usermod -aG docker vagrant
 
 # Install k8s
-snap install microk8s --classic --channel=1.19/stable
+snap install microk8s --classic --channel=1.23/stable
 microk8s.status --wait-ready
 ufw allow in on cbr0
 ufw allow out on cbr0
@@ -67,7 +67,7 @@ while true; do
 done
 
 # Deploy cert-manager
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.5.0/cert-manager.yaml
 
 # Check if cert-manager is ready
 # NOTICE: kubectl wait is not used due to unexpected errors

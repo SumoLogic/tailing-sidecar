@@ -37,7 +37,7 @@ type TailingSidecarReconciler struct {
 // +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecars,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=tailing-sidecar.sumologic.com,resources=tailingsidecars/status,verbs=get;update;patch
 
-func (r *TailingSidecarReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *TailingSidecarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
 	_ = r.Log.WithValues("tailingsidecar", req.NamespacedName)
 
