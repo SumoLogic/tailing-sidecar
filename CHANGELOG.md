@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.3] - 2022-07-29
+
+- chore: replace deprecated APIs and update dependencies to support Kubernetes 1.23 [#351]
+  - change apiextensions.k8s.io/v1beta1 to apiextensions.k8s.io/v1
+  - change admissionregistration.k8s.io/v1beta1 to admissionregistration.k8s.io/v1
+  - change k8s.io/api/admission/v1beta1 to k8s.io/api/admission/v1
+  - update sigs.k8s.io/controller-tools/cmd/controller-gen to 0.4.1
+  - update sigs.k8s.io/kustomize/kustomize to 3.8.3
+  - update sigs.k8s.io/controller-runtime to v0.8.3
+  - update k8s.io/apimachinery to v0.20.2
+  - update k8s.io/client-go to v0.20.2
+  - update k8s.io/api to v0.20.2
+  - update gomodules.xyz/jsonpatch/v2 to 2.1.0
+  - update github.com/go-logr/logr v0.3.0
+  - adjust code to updated dependencies
+  - change Kuberentes version in Vagrant environment to 1.23
+  - change Cert Manager version in Vagrant environment to v1.5.0
+
+[v0.3.3]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.3.3
+[#351]: https://github.com/SumoLogic/tailing-sidecar/pull/351
+
 ## [v0.5.2] - 2022-07-19
 
 - fix(chart): add permissions for leases [#345]
