@@ -29,4 +29,6 @@ COPY conf/fluent-bit.conf \
   conf/plugins.conf \
   /fluent-bit/etc/
 
+USER nobody
+
 CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf", "--quiet"]
