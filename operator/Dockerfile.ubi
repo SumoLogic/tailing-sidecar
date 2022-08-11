@@ -31,4 +31,6 @@ ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LIC
 WORKDIR /
 COPY --from=builder /workspace/manager .
 
+USER nobody
+
 ENTRYPOINT ["/manager"]
