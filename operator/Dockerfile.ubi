@@ -18,13 +18,17 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 ARG VERSION=${VERSION}
 ARG RELEASE_NUMBER=${RELEASE_NUMBER}
 
+ENV SUMMARY="UBI based Tailing Sidecar Operator" \
+    DESCRIPTION="Tailing Sidecar Operator adds streaming sidecar containers which use tailing sidecar image to Pods."
+
 LABEL name="Tailing Sidecar Operator" \
       maintainer="collection@sumologic.com" \
       vendor="Sumo Logic" \
       version=${VERSION} \
       release=${RELEASE_NUMBER} \
-      summary="UBI based Tailing Sidecar Operator" \
-      description="Tailing Sidecar Operator adds streaming sidecar containers which use tailing sidecar image to Pods."
+      summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$DESCRIPTION"
 
 ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LICENSE /licenses/LICENSE
 
