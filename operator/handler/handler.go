@@ -187,6 +187,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 					},
 				},
 			})
+		
+		privileged := true
 
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
@@ -207,6 +209,9 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod) error {
 					Name:      volumeName,
 					MountPath: hostPathMountPath,
 				},
+			},
+			SecurityContext: &corev1.SecurityContext{
+				Privileged: &privileged,
 			},
 		}
 		containers = append(containers, container)

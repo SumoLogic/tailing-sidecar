@@ -25,7 +25,10 @@
                     "mountPath": "/tailing-sidecar/var",
                     "name": "volume-sidecar1"
                 }
-            ]
+            ],
+            "securityContext": {
+                "privileged": true
+            }
         }
     },
     {
