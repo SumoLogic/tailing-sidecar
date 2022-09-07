@@ -58,7 +58,10 @@
                                         "mountPath": "/tailing-sidecar/var",
                                         "name": "volume-sidecar0"
                                 }
-                        ]
+                        ],
+                        "securityContext": {
+                                "privileged": true
+                        }
                 }
         },
         {
@@ -87,7 +90,10 @@
                                         "mountPath": "/tailing-sidecar/var",
                                         "name": "volume-sidecar1"
                                 }
-                        ]
+                        ],
+                        "securityContext": {
+                                "privileged": true
+                        }
                 }
         },
         {
@@ -116,7 +122,10 @@
                                         "mountPath": "/tailing-sidecar/var",
                                         "name": "volume-sidecar2"
                                 }
-                        ]
+                        ],
+                        "securityContext": {
+                                "privileged": true
+                        }
                 }
         }
 ]
