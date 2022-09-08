@@ -42,3 +42,6 @@ webhook:
 
 certManager:
   enabled: false
+
+scc:
+  create: true
