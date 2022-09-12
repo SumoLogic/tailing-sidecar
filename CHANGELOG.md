@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.4] - 2022-09-12
+
+- fix: fix descriptions and summaries in catalog.redhat.com [#364]
+- fix(chart): add permissions for leases [#371]
+- feat: enable privileged mode for container [#377]
+- feat: add scc configuration [#379]
+
+[v0.3.4]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.3.4
+[#364]: https://github.com/SumoLogic/tailing-sidecar/pull/364
+[#371]: https://github.com/SumoLogic/tailing-sidecar/pull/371
+[#377]: https://github.com/SumoLogic/tailing-sidecar/pull/377
+[#379]: https://github.com/SumoLogic/tailing-sidecar/pull/379
+
 ## [v0.3.3] - 2022-07-29
 
 - chore: replace deprecated APIs and update dependencies to support Kubernetes 1.23 [#351]
