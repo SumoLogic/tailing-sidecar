@@ -37,7 +37,7 @@ usermod -a -G microk8s vagrant
 echo "export KUBECONFIG=/var/snap/microk8s/current/credentials/kubelet.config" >> /home/vagrant/.bashrc
 
 # Install go
-GO_VERSION="1.17.6"
+GO_VERSION="1.18"
 wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
 tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
 rm go${GO_VERSION}.linux-amd64.tar.gz
