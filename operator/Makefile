@@ -172,6 +172,13 @@ docker-build: test
 docker-push:
 	docker push ${IMG}
 
+build-push-multiplatform:
+	docker buildx build \
+		--push \
+		--platform linux/amd64,linux/arm/v7,linux/arm64 \
+		--tag ${IMG} \
+		.
+
 # find or download controller-gen
 # download controller-gen if necessary
 controller-gen:
