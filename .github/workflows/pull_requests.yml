@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '2.7'
       - name: install markdownlint
         run: gem install mdl
       - name: markdownlint check
