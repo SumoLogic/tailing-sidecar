@@ -30,7 +30,6 @@ webhooks:
     - v1
     operations:
     - CREATE
-    - UPDATE
     - DELETE
     resources:
     - pods
