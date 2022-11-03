@@ -31,7 +31,6 @@ webhooks:
     - v1beta1
     operations:
     - CREATE
-    - UPDATE
     - DELETE
     resources:
     - pods
