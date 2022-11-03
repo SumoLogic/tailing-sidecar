@@ -5,20 +5,23 @@
 1. Create the release tag for commit with Helm Chart version change, e.g.
 
    ```bash
-   git tag -a v0.1.0 -m "Release v0.1.0"
+   export VERSION=0.1.0
+   git checkout main
+   git pull
+   git tag -a "v${VERSION}" -m "Release v${VERSION}"
    ```
 
 1. Push the release tag, e.g.
 
    ```bash
-   git push origin v0.1.0
+   git push origin "v${VERSION}"
    ```
 
 1. For major and minor version change prepare release branch, e.g.
 
     ```bash
-    git checkout -b release-v0.1
-    git push origin release-v0.1
+    git checkout -b "release-v${VERSION%.*}"
+    git push origin "release-v${VERSION%.*}"
     ```
 
 1. Cut the release
