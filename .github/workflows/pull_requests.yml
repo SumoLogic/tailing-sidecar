@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '1.18'
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v1.5.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
@@ -118,7 +118,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '1.18'
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v1.5.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
@@ -182,7 +182,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '1.18'
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v1.5.0
         id: single-cluster
         name: Create single k3d Cluster with Registry
