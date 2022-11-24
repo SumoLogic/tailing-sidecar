@@ -21,6 +21,13 @@ run: build
 		--env "PATH_TO_TAIL=/tmp/host/$(FILES_PATTERN)" \
 		--env "LOG_LEVEL=${LOG_LEVEL}" $(TAG)
 
+build-push-multiplatform:
+	docker buildx build \
+		--push \
+		--platform linux/amd64,linux/arm/v7,linux/arm64 \
+		--tag ${IMG} \
+		.
+
 push:
 	docker push $(TAG)
 
