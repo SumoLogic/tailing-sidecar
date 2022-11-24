@@ -51,7 +51,7 @@ jobs:
           go-version: '1.18'
       - name: Extract tag
         id: extract_tag
-        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/v})"
+        run: echo "::set-output name=tag::$(echo $(git describe --tags --always))"
       - name: Print container tag
         run: echo "Running release build for ${{ steps.extract_tag.outputs.tag }}"
 
