@@ -69,6 +69,10 @@ jobs:
       - name: Build and push tailing sidecar operator multiplatform image
         run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./operator
+      - name: Set latest image for tailing sidecar operator	
+        run: docker tag ${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}	
+      - name: Push tailing sidecar operator image with latest tag	
+        run: make docker-push IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
 
   push-helm-chart:
     runs-on: ubuntu-20.04
