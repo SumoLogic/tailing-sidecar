@@ -9,7 +9,7 @@ on:
 env:
   SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
   OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
-  TAG: ${{ github.sha }}
+  LATEST_TAG: "main"
 
 jobs:
   build-sidecar:
@@ -36,6 +36,10 @@ jobs:
       - name: Build and push tailing sidecar multiplatform image
         run: make build-push-multiplatform IMG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar
+      - name: Set latest image for tailing sidecar
+        run: docker tag ${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }} ${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
+      - name: Push tailing sidecar image with latest tag
+        run: make push TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
 
   build-operator:
     runs-on: ubuntu-20.04
