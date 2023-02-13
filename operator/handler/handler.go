@@ -52,11 +52,17 @@ const (
 
 var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender")
 
+type TailingSidecarConfiguration struct {
+	Path string
+	Name string
+}
+
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
-	Client              client.Client
-	TailingSidecarImage string
-	decoder             *admission.Decoder
+	Client                      client.Client
+	TailingSidecarImage         string
+	TailingSidecarConfiguration TailingSidecarConfiguration
+	decoder                     *admission.Decoder
 }
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
@@ -155,6 +161,28 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			continue
 		}
 
+		if e.TailingSidecarConfiguration.Name != "" && e.TailingSidecarConfiguration.Path != "" {
+			addConfig := true
+			for _, volume := range pod.Spec.Volumes {
+				if volume.Name == "tailing-sidecar-inputs" {
+					addConfig = false
+				}
+			}
+
+			if addConfig {
+				pod.Spec.Volumes = append(pod.Spec.Volumes, corev1.Volume{
+					Name: "tailing-sidecar-inputs",
+					VolumeSource: corev1.VolumeSource{
+						ConfigMap: &corev1.ConfigMapVolumeSource{
+							LocalObjectReference: corev1.LocalObjectReference{
+								Name: e.TailingSidecarConfiguration.Name,
+							},
+						},
+					},
+				})
+			}
+		}
+
 		if isSidecarAvailable(pod.Spec.Containers, config) {
 			// Do not add tailing sidecar if tailing sidecar with specific configuration exists
 			handlerLog.Info("Tailing sidecar exists",
@@ -175,6 +203,21 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
+		volumeMounts := []corev1.VolumeMount{
+			config.spec.VolumeMount,
+			{
+				Name:      volumeName,
+				MountPath: sidecarMountPath,
+			},
+		}
+
+		if e.TailingSidecarConfiguration.Name != "" && e.TailingSidecarConfiguration.Path != "" {
+			volumeMounts = append(volumeMounts, corev1.VolumeMount{
+				Name:      "tailing-sidecar-inputs",
+				MountPath: e.TailingSidecarConfiguration.Path,
+			})
+		}
+
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
 			Name:  config.name,
@@ -188,14 +231,9 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					Value: sidecarEnvMarkerVal,
 				},
 			},
-			VolumeMounts: []corev1.VolumeMount{
-				config.spec.VolumeMount,
-				{
-					Name:      volumeName,
-					MountPath: sidecarMountPath,
-				},
-			},
+			VolumeMounts: volumeMounts,
 		}
+
 		containers = append(containers, container)
 		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
 		sidecarsCount++

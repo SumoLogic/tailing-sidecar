@@ -23,7 +23,7 @@ Set tailing sidecar image:
 
 ```bash
 export TAILING_SIDECAR_IMG="<some-registry>/<project-name>:tag"
-sed -i.backup "s#sumologic/tailing-sidecar:latest#${TAILING_SIDECAR_IMG}#g" config/default/manager_patch.yaml
+sed -i.backup "s#=sumologic/tailing-sidecar:latest#=${TAILING_SIDECAR_IMG}#g" config/default/manager_patch.yaml
 ```
 
 Set tailing-sidecar operator image:

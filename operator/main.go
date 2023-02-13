@@ -39,6 +39,10 @@ var (
 	setupLog = ctrl.Log.WithName("setup")
 )
 
+const (
+	tailingSidcarConfigMapPath = "/fluent-bit/etc"
+)
+
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
@@ -50,11 +54,13 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var tailingSidecarImage string
+	var tailingSidecarConfigMapName string
 	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
 	flag.StringVar(&tailingSidecarImage, "tailing-sidecar-image", "sumologic/tailing-sidecar:latest", "tailing sidecar image")
+	flag.StringVar(&tailingSidecarConfigMapName, "tailing-sidecar-config-map", "", "name of configMap with configuration for tailing sidecar image")
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
@@ -85,6 +91,10 @@ func main() {
 		Handler: &handler.PodExtender{
 			Client:              mgr.GetClient(),
 			TailingSidecarImage: tailingSidecarImage,
+			TailingSidecarConfiguration: handler.TailingSidecarConfiguration{
+				Path: tailingSidcarConfigMapPath,
+				Name: tailingSidecarConfigMapName,
+			},
 		},
 	})
 
