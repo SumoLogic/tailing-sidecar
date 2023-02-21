@@ -145,7 +145,7 @@ check-examples-update:
 
 # Deploy cert-manager
 deploy-cert-manager:
-	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 	kubectl wait --for=condition=ready --timeout 300s pod -l "app.kubernetes.io/instance=cert-manager" -n cert-manager
 
 # Generate manifests e.g. CRD, RBAC etc.
