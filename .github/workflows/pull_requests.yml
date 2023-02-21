@@ -98,7 +98,7 @@ jobs:
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
-        run: sleep 5
+        run: sleep 10
       - name: Check logs
         working-directory: ./operator
         run: make test-examples
@@ -160,7 +160,7 @@ jobs:
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
-        run: sleep 5
+        run: sleep 10
       - name: Check Pods
         run: kubectl get pods -n tailing-sidecar-system
       - name: Check logs
@@ -227,7 +227,7 @@ jobs:
         working-directory: ./operator
         run: make deploy-example-with-cr
       - name: Wait for logs to be generated
-        run: sleep 5
+        run: sleep 10
       - name: Check Pods
         run: kubectl get pods -n tailing-sidecar-system
       - name: Check logs
