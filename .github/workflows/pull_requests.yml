@@ -36,7 +36,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.20'
       - name: Run tests for tailing sidecar operator
         working-directory: ./operator
         run: make test
@@ -53,7 +53,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.20'
       - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
@@ -123,7 +123,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.20'
       - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
@@ -187,7 +187,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.20'
       - uses: imranismail/setup-kustomize@v2
       - uses: AbsaOSS/k3d-action@v2.1.0
         id: single-cluster
