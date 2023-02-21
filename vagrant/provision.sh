@@ -67,7 +67,7 @@ while true; do
 done
 
 # Deploy cert-manager
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 
 # Check if cert-manager is ready
 # NOTICE: kubectl wait is not used due to unexpected errors
