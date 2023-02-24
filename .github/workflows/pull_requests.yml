@@ -135,7 +135,7 @@ jobs:
             --no-lb
             --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
       - name: Add Helm
-        uses: WyriHaximus/github-action-helm3@v3.0.0
+        uses: WyriHaximus/github-action-helm3@v3.0.1
       - name: Build tailing sidecar image
         working-directory: ./sidecar
         run: make build TAG=registry.localhost:5000/sumologic/tailing-sidecar:test
@@ -199,7 +199,7 @@ jobs:
             --no-lb
             --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
       - name: Add Helm
-        uses: WyriHaximus/github-action-helm3@v3.0.0
+        uses: WyriHaximus/github-action-helm3@v3.0.1
       - name: Deploy cert-manager
         working-directory: ./operator
         run: make deploy-cert-manager
