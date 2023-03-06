@@ -419,8 +419,6 @@ spec:
               value: application/json
             - name: Content-Type
               value: application/json
-          tcpSocket:
-            port: 12800
 {{- if .Values.operator.livenessProbe}}
 {{ toYaml .Values.operator.livenessProbe | indent 10 }}
 {{ else }}
