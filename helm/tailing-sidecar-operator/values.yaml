@@ -17,7 +17,7 @@ operator:
   livenessProbe: {}
     # tcpSocket:
     #   port: 12800
-    # initialDelaySeconds: 15
+    # initialDelaySeconds: 1
     # periodSeconds: 20
   startupProbe: {}
     # periodSeconds: 3
