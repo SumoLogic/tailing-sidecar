@@ -15,8 +15,6 @@ operator:
       cpu: 100m
       memory: 20Mi
   livenessProbe: {}
-    # tcpSocket:
-    #   port: 12800
     # initialDelaySeconds: 1
     # periodSeconds: 20
   startupProbe: {}
