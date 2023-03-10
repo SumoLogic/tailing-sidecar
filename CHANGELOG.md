@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-- chore: support custom livenessProbe and startupProbe configurations.[#484]
+## [Unreleased]
+
+- feat: add support for configuring livenessProbe and startupProbe [#484]
+
+[Unreleased]: https://github.com/SumoLogic/tailing-sidecar/compare/v0.5.6...main
+[#484]: https://github.com/SumoLogic/tailing-sidecar/pull/484
 
 ## [v0.5.6] - 2023-01-09
 
