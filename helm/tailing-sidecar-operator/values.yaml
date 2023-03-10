@@ -14,6 +14,11 @@ operator:
     requests:
       cpu: 100m
       memory: 20Mi
+  livenessProbe: {}
+    # initialDelaySeconds: 1
+    # periodSeconds: 20
+  startupProbe: {}
+    # periodSeconds: 3
 
 sidecar:
   image:

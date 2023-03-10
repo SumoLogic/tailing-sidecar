@@ -404,7 +404,11 @@ spec:
               value: application/json
             - name: Content-Type
               value: application/json
+{{- if .Values.operator.startupProbe}}
+{{ toYaml .Values.operator.startupProbe | indent 10 }}
+{{ else }}
           periodSeconds: 3
+{{ end }}
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -415,8 +419,12 @@ spec:
               value: application/json
             - name: Content-Type
               value: application/json
+{{- if .Values.operator.livenessProbe}}
+{{ toYaml .Values.operator.livenessProbe | indent 10 }}
+{{ else }}
           initialDelaySeconds: 1
           periodSeconds: 10
+{{ end }}
         resources:
           {{- toYaml .Values.operator.resources | nindent 10 }}
         volumeMounts:
