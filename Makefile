@@ -17,6 +17,10 @@ yamllint:
 	yamllint -c .yamllint.yaml \
 		operator/examples/
 
+login-ecr:
+	aws ecr-public get-login-password --region us-east-1 \
+	| docker login --username AWS --password-stdin $(ECR_URL)
+
 build-push-deploy: build-push-sidecar build-push-deploy-operator
 
 build-push-sidecar:
