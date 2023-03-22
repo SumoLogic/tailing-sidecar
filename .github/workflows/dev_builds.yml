@@ -10,8 +10,8 @@ env:
   SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
   OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
   ECR_URL: public.ecr.aws/sumologic
-  SIDECAR_IMAGE_ECR: "${{ env.ECR_URL }}/sumologic/tailing-sidecar"
-  OPERATOR_IMAGE_ECR: "${{ env.ECR_URL }}/sumologic/tailing-sidecar-operator"
+  SIDECAR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar"
+  OPERATOR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar-operator"
   LATEST_TAG: "main"
 
 jobs:
