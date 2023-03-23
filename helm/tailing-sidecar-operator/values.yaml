@@ -4,7 +4,7 @@ nameOverride: ""
 operator:
   image:
     pullPolicy: IfNotPresent
-    repository: ghcr.io/sumologic/tailing-sidecar-operator
+    repository: public.ecr.aws/sumologic/tailing-sidecar-operator
     # Overrides the image tag whose default is the Helm Chart appVersion.
     tag: ""
   resources:
@@ -22,7 +22,7 @@ operator:
 
 sidecar:
   image:
-    repository: ghcr.io/sumologic/tailing-sidecar
+    repository: public.ecr.aws/sumologic/tailing-sidecar
     # Overrides the image tag whose default is the Helm Chart appVersion.
     tag: ""
 
