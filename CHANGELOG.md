@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - feat: add support for configuring livenessProbe and startupProbe [#484]
+- chore: change container registry to public ECR [#500]
 
 [Unreleased]: https://github.com/SumoLogic/tailing-sidecar/compare/v0.5.6...main
 [#484]: https://github.com/SumoLogic/tailing-sidecar/pull/484
+[#500]: https://github.com/SumoLogic/tailing-sidecar/pull/500
 
 ## [v0.5.6] - 2023-01-09
 
