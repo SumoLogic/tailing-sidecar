@@ -5,12 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v0.6.0] - 2023-03-23
 
 - feat: add support for configuring livenessProbe and startupProbe [#484]
 - chore: change container registry to public ECR [#500]
 
-[Unreleased]: https://github.com/SumoLogic/tailing-sidecar/compare/v0.5.6...main
+[v0.6.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.6.0
 [#484]: https://github.com/SumoLogic/tailing-sidecar/pull/484
 [#500]: https://github.com/SumoLogic/tailing-sidecar/pull/500
 
