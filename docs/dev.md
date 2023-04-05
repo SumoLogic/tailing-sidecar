@@ -8,7 +8,7 @@ Development builds are created on each merge to `main` branch.
 
 ### Container Images
 
-Container images for [tailing sidecar](../sidecar) and [tailing sidecar operator](../operator) are pushed to 
+Container images for [tailing sidecar](../sidecar) and [tailing sidecar operator](../operator) are pushed to
 Github Container Registry. The latest development images have `main` tag.
 
 To pull the latest tailing sidecar image use:
