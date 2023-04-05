@@ -1,8 +1,12 @@
-# Development Builds
+# Development
+
+This document contains information helpful for developers.
+
+## Development Builds
 
 Development builds are created on each merge to `main` branch.
 
-## Container Images
+### Container Images
 
 Container images for [tailing sidecar](../sidecar) and [tailing sidecar operator](../operator) are pushed to 
 Github Container Registry. The latest development images have `main` tag.
@@ -19,7 +23,7 @@ To pull the latest tailing sidecar operator image use:
 docker pull ghcr.io/sumologic/tailing-sidecar-operator:main
 ```
 
-## Helm Charts
+### Helm Charts
 
 Helm Charts are available on [gh-pages](https://github.com/SumoLogic/tailing-sidecar/tree/gh-pages) branch.
 Development Helm Charts are stored in [dev](https://github.com/SumoLogic/tailing-sidecar/tree/gh-pages/dev) directory.
