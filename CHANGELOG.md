@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.7.0] - 2023-04-05
+
+- build(deps): bump fluent/fluent-bit from 1.9.9 to 2.0.10 in /sidecar [#492]
+
+[v0.7.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.7.0
+[#492]: https://github.com/SumoLogic/tailing-sidecar/pull/492
+
 ## [v0.6.0] - 2023-03-23
 
 - feat: add support for configuring livenessProbe and startupProbe [#484]
