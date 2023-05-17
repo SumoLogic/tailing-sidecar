@@ -22,7 +22,7 @@ func ReadConfig(configPath string) (Config, error) {
 		},
 	}
 
-	content, err := os.Readfile(configPath)
+	content, err := os.ReadFile(configPath)
 	if err != nil {
 		return config, err
 	}
