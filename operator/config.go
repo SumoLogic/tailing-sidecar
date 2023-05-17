@@ -22,17 +22,13 @@ func ReadConfig(configPath string) (Config, error) {
 		},
 	}
 
-	f, err := os.Open(configPath)
+	content, err := os.Readfile(configPath)
 	if err != nil {
 		return config, err
 	}
-	defer f.Close()
-
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&config)
-
-	if err != nil && err.Error() == "EOF" {
-		return config, nil
+	err = yaml.Unmarshal(content, &config)
+	if err != nil {
+		return config, err
 	}
 	return config, err
 }
