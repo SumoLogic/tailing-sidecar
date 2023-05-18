@@ -50,14 +50,39 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var tailingSidecarImage string
+	var configPath string
+	var config Config
+	var err error
+
 	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.StringVar(&tailingSidecarImage, "tailing-sidecar-image", "sumologic/tailing-sidecar:latest", "tailing sidecar image")
+	flag.StringVar(&tailingSidecarImage, "tailing-sidecar-image", "", "tailing sidecar image")
+	flag.StringVar(&configPath, "config", "", "Path to the configuration file")
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
+
+	if configPath != "" {
+		config, err = ReadConfig(configPath)
+
+		if err != nil {
+			setupLog.Error(err, "unable to read configuration", "configPath", configPath)
+			os.Exit(1)
+		}
+	} else {
+		config = Config{}
+	}
+
+	if err := config.Validate(); err != nil {
+		setupLog.Error(err, "configuration error", "configPath", configPath)
+		os.Exit(1)
+	}
+
+	if tailingSidecarImage != "" {
+		config.Sidecar.Image = tailingSidecarImage
+	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:             scheme,
@@ -84,7 +109,7 @@ func main() {
 	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
 		Handler: &handler.PodExtender{
 			Client:              mgr.GetClient(),
-			TailingSidecarImage: tailingSidecarImage,
+			TailingSidecarImage: config.Sidecar.Image,
 		},
 	})
 
