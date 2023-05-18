@@ -34,7 +34,7 @@ sidecar:
     - command`,
 			expected: Config{
 				Sidecar: SidecarConfig{
-					Image:    "sumologic/tailing-sidecar:latest",
+					Image: "sumologic/tailing-sidecar:latest",
 				},
 			},
 			expectedError: nil,
