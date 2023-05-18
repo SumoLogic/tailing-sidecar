@@ -91,6 +91,8 @@ jobs:
       - name: Deploy tailing sidecar operator
         working-directory: ./operator
         run: make deploy IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
+      - name: Check service
+        run: kubectl get service
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
@@ -157,6 +159,8 @@ jobs:
         run: |
           kubectl wait --for=condition=available --timeout 300s deploy -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
+      - name: Check service
+        run: kubectl get service
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
@@ -228,6 +232,8 @@ jobs:
         run: |
           kubectl wait --for=condition=available --timeout 300s deploy -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
+      - name: Check service
+        run: kubectl get service
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
