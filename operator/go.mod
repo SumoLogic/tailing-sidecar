@@ -7,7 +7,7 @@ require (
 	github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.27.6
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	gomodules.xyz/jsonpatch/v2 v2.2.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.26.3
