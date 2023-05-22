@@ -92,7 +92,10 @@ jobs:
         working-directory: ./operator
         run: make deploy IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
       - name: Check service
-        run: kubectl describe service -n tailing-sidecar-system
+        run: |
+          kubectl describe service -n tailing-sidecar-system
+          kubectl get pod -n tailing-sidecar-system
+          kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
@@ -160,7 +163,10 @@ jobs:
           kubectl wait --for=condition=available --timeout 300s deploy -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
       - name: Check service
-        run: kubectl describe service -n tailing-sidecar-system
+        run: |
+          kubectl describe service -n tailing-sidecar-system
+          kubectl get pod -n tailing-sidecar-system
+          kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
@@ -233,7 +239,10 @@ jobs:
           kubectl wait --for=condition=available --timeout 300s deploy -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
       - name: Check service
-        run: kubectl describe service -n tailing-sidecar-system
+        run: |
+          kubectl describe service -n tailing-sidecar-system
+          kubectl get pod -n tailing-sidecar-system
+          kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
