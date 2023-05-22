@@ -93,6 +93,7 @@ jobs:
         run: make deploy IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
       - name: Check service
         run: |
+          sleep 10
           kubectl describe service -n tailing-sidecar-system
           kubectl get pod -n tailing-sidecar-system
           kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system --ignore-errors=true
@@ -164,6 +165,7 @@ jobs:
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
       - name: Check service
         run: |
+          sleep 10
           kubectl describe service -n tailing-sidecar-system
           kubectl get pod -n tailing-sidecar-system
           kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system --ignore-errors=true
@@ -240,6 +242,7 @@ jobs:
           kubectl wait --for=condition=ready     --timeout 300s pod   -l app.kubernetes.io/name=tailing-sidecar-operator -n tailing-sidecar-system
       - name: Check service
         run: |
+          sleep 10
           kubectl describe service -n tailing-sidecar-system
           kubectl get pod -n tailing-sidecar-system
           kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system --ignore-errors=true
