@@ -97,7 +97,7 @@ jobs:
           kubectl describe service -n tailing-sidecar-system
           kubectl get pod -n tailing-sidecar-system
           kubectl logs -l app.kubernetes.io/name=tailing-sidecar-operator --all-containers=true -n tailing-sidecar-system --ignore-errors=true
-          kubectl -n tailing-sidecar-system port-forward service/test-release-tailing-sidecar-operator 9000:443 & sleep 5 && curl https://localhost:9000/add-tailing-sidecars-v1-pod --insecure
+          kubectl -n tailing-sidecar-system port-forward service/tailing-sidecar-webhook-service 9000:443 & sleep 5 && curl https://localhost:9000/add-tailing-sidecars-v1-pod --insecure
       - name: Deploy examples
         working-directory: ./operator
         run: make deploy-examples
