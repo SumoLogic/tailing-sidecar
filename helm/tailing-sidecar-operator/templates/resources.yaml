@@ -368,6 +368,8 @@ spec:
     metadata:
       labels:
         {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
       - args:
@@ -384,7 +386,7 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
-        - --tailing-sidecar-image={{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}
+        - --config=/tailing-sidecar/config/config.yaml
         command:
         - /manager
         image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag | default .Chart.AppVersion }}
@@ -431,6 +433,9 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
+        - mountPath: /tailing-sidecar/config
+          name: config
+          readOnly: true
       serviceAccountName: tailing-sidecar-service-account
       terminationGracePeriodSeconds: 10
       volumes:
@@ -438,3 +443,6 @@ spec:
         secret:
           defaultMode: 420
           secretName: webhook-server-cert
+      - name: config
+        configMap:
+          name: {{ template "tailing-sidecar-operator.configMap.name" . }}

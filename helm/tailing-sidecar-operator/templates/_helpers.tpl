@@ -49,3 +49,10 @@ Selector labels
 app.kubernetes.io/name: {{ include "tailing-sidecar-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Configmap name
+*/}}
+{{- define "tailing-sidecar-operator.configMap.name" -}}
+{{- printf "%s-%s" .Release.Name "operator-config" | trunc 63 | trimSuffix "-" }}
+{{- end }}

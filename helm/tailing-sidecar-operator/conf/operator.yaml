@@ -1,0 +1,2 @@
+sidecar:
+  image: {{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}
