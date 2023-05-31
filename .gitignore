@@ -10,3 +10,9 @@ sidecar/var/
 
 .vscode/*
 !.vscode/snippets.code-snippets
+
+# Kuttl test artifact dir
+tests/_build
+
+.kubeconfig
+kubeconfig

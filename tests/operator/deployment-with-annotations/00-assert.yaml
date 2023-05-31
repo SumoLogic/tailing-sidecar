@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-with-annotations
+status:
+  replicas: 1
+  readyReplicas: 1
+---
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+collectors:
+- selector: app=deployment-with-annotations
+commands:
+  - script: "[ $(kubectl logs -l app=deployment-with-annotations -c tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"
+  - script: "[ $(kubectl logs -l app=deployment-with-annotations -c tailing-sidecar-1 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"
