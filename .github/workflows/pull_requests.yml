@@ -6,6 +6,9 @@ on:
       - main
       - 'release-v[0-9]+.[0-9]+'
 
+env:
+  DOCKER_BUILDKIT: 1
+
 jobs:
   markdownlint:
     runs-on: ubuntu-20.04
