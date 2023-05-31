@@ -1,0 +1,17 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestSuite
+artifactsDir: ./tests/_build/artifacts/
+testDirs:
+  - ./tests/sidecar/
+  - ./tests/operator/
+timeout: 150
+parallel: 4
+startKIND: true
+kindNodeCache: true
+kindContainers:
+  - registry.localhost:5000/sumologic/tailing-sidecar-operator:test
+  - registry.localhost:5000/sumologic/tailing-sidecar:test
+commands: 
+  - command: make -C ./operator deploy-cert-manager
+  - command: make -C ./operator deploy IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test" TAILING_SIDECAR_IMG="registry.localhost:5000/sumologic/tailing-sidecar:test"
+  - command: kubectl wait --for=condition=ready --timeout 300s pod -l control-plane=tailing-sidecar-operator -n tailing-sidecar-system

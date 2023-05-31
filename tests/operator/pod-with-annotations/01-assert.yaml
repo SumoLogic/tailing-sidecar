@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-annotations-updated
+status:
+  phase: Running
+---
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+collectors:
+- pod: pod-with-annotations-updated
+commands:
+  - script: "[ $(kubectl logs pod-with-annotations-updated tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"
+  - script: "[ $(kubectl logs pod-with-annotations-updated named-sidecar -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"
+  - script: "[ $(kubectl logs pod-with-annotations-updated tailing-sidecar-1 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"

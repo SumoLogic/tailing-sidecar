@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-annotations
+  annotations:
+    tailing-sidecar: varlog:/var/log/example0.log;named-container:varlog:/var/log/example1.log
+  labels:
+    app: pod-with-annotations
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "example0: $i $(date)" >> /var/log/example0.log;
+        echo "example1: $i $(date)" >> /var/log/example1.log;
+        echo "example2: $i $(date)" >> /varconfig/log/example2.log;
+        echo "example3: $i $(date)" >> /var/log/example3.log;
+        i=$((i+1));
+        sleep 1;
+      done
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+    - name: varlogconfig
+      mountPath: /varconfig/log
+  volumes:
+  - name: varlog
+    emptyDir: {}
+  - name: varlogconfig
+    emptyDir: {}
+

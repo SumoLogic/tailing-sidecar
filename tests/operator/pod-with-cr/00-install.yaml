@@ -1,0 +1,71 @@
+apiVersion: tailing-sidecar.sumologic.com/v1
+kind: TailingSidecarConfig
+metadata:
+  name: tailingsidecar-sample
+spec:
+  annotationsPrefix: tailing-sidecar.sumologic.com
+  podSelector:
+    matchLabels:
+      tailing-sidecar: "true"
+  configs:
+    sidecar-0:
+      volumeMount:
+        name: varlog
+        mountPath: /var/log
+      path: /var/log/example0.log
+      annotations:
+        sourceCategory: sourceCategory-0
+        annotation-0: "true"
+    sidecar-1:
+      volumeMount:
+        name: varlog
+        mountPath: /var/log
+      path: /var/log/example1.log
+      annotations:
+        sourceCategory: sourceCategory-1
+        annotation-1: "true"
+    sidecar-2:
+      volumeMount:
+        name: varlogconfig
+        mountPath: /varconfig-new-dir/log
+        readOnly: true
+        mountPropagation: HostToContainer
+      path: /varconfig-new-dir/log/example2.log
+      annotations:
+        sourceCategory: sourceCategory-2
+        annotation-2: "true"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-tailing-sidecar-config
+  labels:
+    app: pod-with-tailing-sidecar-config
+    tailing-sidecar: "true"
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "example0: $i $(date)" >> /var/log/example0.log;
+        echo "example1: $i $(date)" >> /var/log/example1.log;
+        echo "example2: $i $(date)" >> /varconfig/log/example2.log;
+        i=$((i+1));
+        sleep 1;
+      done
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+    - name: varlogconfig
+      mountPath: /varconfig/log
+  volumes:
+  - name: varlog
+    emptyDir: {}
+  - name: varlogconfig
+    emptyDir: {}

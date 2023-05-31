@@ -1,6 +1,7 @@
 NAMESPACE ?= tailing-sidecar-system
 RELEASE ?= tailing-sidecar
 HELM_CHART ?= helm/tailing-sidecar-operator
+KUTTL_CONFIG ?= kuttl-test.yaml
 
 all: markdownlint yamllint
 
@@ -20,6 +21,22 @@ yamllint:
 login-ecr:
 	aws ecr-public get-login-password --region us-east-1 \
 	| docker login --username AWS --password-stdin $(ECR_URL)
+
+.PHONY: e2e
+e2e: IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
+e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/tailing-sidecar:test"
+e2e:
+	$(MAKE) -C ./sidecar build TAG=$(TAILING_SIDECAR_IMG)
+	$(MAKE) -C ./operator docker-build IMG=$(IMG) TAILING_SIDECAR_IMG=$(TAILING_SIDECAR_IMG)
+	kubectl-kuttl test --config $(KUTTL_CONFIG)
+
+.PHONY: e2e-helm
+e2e-helm: KUTTL_CONFIG = kuttl-test-helm.yaml
+e2e-helm: e2e
+
+.PHONY: e2e-helm-certmanager
+e2e-helm-certmanager: KUTTL_CONFIG = kuttl-test-helm-certmanager.yaml
+e2e-helm-certmanager: e2e
 
 build-push-deploy: build-push-sidecar build-push-deploy-operator
 

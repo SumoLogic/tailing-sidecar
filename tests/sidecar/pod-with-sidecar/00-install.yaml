@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-with-tailling-sidecars
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "example1: $i $(date)" >> /var/log/example1.log;
+        echo "example2: $i $(date)" >> /var/log/example2.log;
+        i=$((i+1));
+        sleep 1;
+      done
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+  - name: sidecar1
+    image: ghcr.io/sumologic/tailing-sidecar:latest
+    env:
+    - name: PATH_TO_TAIL
+      value: /var/log/example1.log
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+    - name: volume-sidecar-1
+      mountPath: /tailing-sidecar/var
+  - name: sidecar2
+    image: ghcr.io/sumologic/tailing-sidecar:latest
+    env:
+    - name: PATH_TO_TAIL
+      value: /var/log/example2.log
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+    - name: volume-sidecar-2
+      mountPath: /tailing-sidecar/var
+  volumes:
+  - name: varlog
+    emptyDir: {}
+  - name: volume-sidecar-1
+    hostPath:
+      path: /var/log/sidecar1
+      type: DirectoryOrCreate
+  - name: volume-sidecar-2
+    hostPath:
+      path: /var/log/sidecar2
+      type: DirectoryOrCreate
