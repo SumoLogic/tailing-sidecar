@@ -70,7 +70,7 @@ var _ = Describe("handler", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		decoder, err := admission.NewDecoder(scheme.Scheme)
+		decoder := admission.NewDecoder(scheme.Scheme)
 		It("creates decoder without any errors", func() {
 			Expect(err).ToNot(HaveOccurred())
 
@@ -153,7 +153,7 @@ var _ = Describe("handler", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		decoder, err := admission.NewDecoder(scheme.Scheme)
+		decoder := admission.NewDecoder(scheme.Scheme)
 		It("creates decoder without any errors", func() {
 			Expect(err).ToNot(HaveOccurred())
 
