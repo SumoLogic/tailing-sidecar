@@ -27,7 +27,7 @@ RUN apt-get update && \
 RUN find /dpkg/ -type d -empty -delete && \
     rm -r /dpkg/usr/share/doc/
 
-FROM fluent/fluent-bit:2.0.11
+FROM fluent/fluent-bit:2.1.6
 ENV LOG_LEVEL=warning
 
 # Copy the libraries from the extractor stage into root
