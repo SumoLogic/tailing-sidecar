@@ -108,8 +108,9 @@ func main() {
 
 	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
 		Handler: &handler.PodExtender{
-			Client:              mgr.GetClient(),
-			TailingSidecarImage: config.Sidecar.Image,
+			Client:                  mgr.GetClient(),
+			TailingSidecarImage:     config.Sidecar.Image,
+			TailingSidecarResources: config.Sidecar.Resources,
 		},
 	})
 

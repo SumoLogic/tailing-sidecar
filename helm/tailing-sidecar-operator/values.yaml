@@ -25,6 +25,15 @@ sidecar:
     repository: public.ecr.aws/sumologic/tailing-sidecar
     # Overrides the image tag whose default is the Helm Chart appVersion.
     tag: ""
+  # Configuration for sidecar compute resource requirements.
+  # Those are the default resources settings and can be overrides by TailingSidecarConfig
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
 
 kubeRbacProxy:
   image:

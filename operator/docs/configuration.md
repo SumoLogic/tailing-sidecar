@@ -72,10 +72,12 @@ For details related to `TailingSidecarConfig` definition please see subsections 
 
 ### SidecarSpec
 
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| annotations | Annotations defines tailing sidecar container annotations. Tailing sidecar annotations are added in following form `<annotationsPrefix>/<tailing-sidecar-containter-name>.<annotation-key>:<annotation-value>`| map\[string\]string |
-| path | Path defines path to a file containing logs to tail within a tailing sidecar container. | string |
-| volumeMount | VolumeMount describes a mounting of a volume within a tailing sidecar container. This volume joins tailing sidecar container with container containing logs to tail and provide access to file with logs.| [corev1.VolumeMount][corev1.VolumeMount] |
-
+| Field       | Description                                                                                                                                                                                                     | Scheme |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------ |
+| annotations | Annotations defines tailing sidecar container annotations. Tailing sidecar annotations are added in following form `<annotationsPrefix>/<tailing-sidecar-containter-name>.<annotation-key>:<annotation-value>`  | map\[string\]string |
+| path        | Path defines path to a file containing logs to tail within a tailing sidecar container.                                                                                                                         | string |
+| volumeMount | VolumeMount describes a mounting of a volume within a tailing sidecar container. This volume joins tailing sidecar container with container containing logs to tail and provide access to file with logs.       | [corev1.VolumeMount][corev1.VolumeMount] |
+| resources   | resources describes the compute resource requirements for a tailing sidecar container.  | [corev1.ResourceRequirements][corev1.ResourceRequirements] |
 [corev1.VolumeMount]: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volumemount-v1-core
+[corev1.ResourceRequirements]: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#resourcerequirements-v1-core
+

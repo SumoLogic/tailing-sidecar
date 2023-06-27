@@ -54,9 +54,10 @@ var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender
 
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
-	Client              client.Client
-	TailingSidecarImage string
-	decoder             *admission.Decoder
+	Client                  client.Client
+	TailingSidecarImage     string
+	TailingSidecarResources corev1.ResourceRequirements
+	decoder                 *admission.Decoder
 }
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
@@ -120,7 +121,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
 	// Get configurations from TailingSidecars and annotations
-	configs, err := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
+	configs, err := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs, e.TailingSidecarResources)
 	if err != nil {
 		handlerLog.Error(err, "Incorrect configuration")
 		return err
@@ -195,6 +196,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					MountPath: sidecarMountPath,
 				},
 			},
+			Resources: config.spec.Resources,
 		}
 		containers = append(containers, container)
 		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
@@ -225,6 +227,18 @@ func (e PodExtender) getTailingSidecarConfigs(ctx context.Context, podLabels map
 		// TailingSidecarConfig with a nil or empty selector should match nothing
 		if selector.Empty() || !selector.Matches(labels.Set(podLabels)) {
 			continue
+		}
+		for k, v := range tailingSidcarConfig.Spec.SidecarSpecs {
+			if v.Resources.Requests != nil && v.Resources.Limits != nil {
+				continue
+			}
+			if v.Resources.Requests == nil {
+				v.Resources.Requests = e.TailingSidecarResources.Requests
+			}
+			if v.Resources.Limits == nil {
+				v.Resources.Limits = e.TailingSidecarResources.Limits
+			}
+			tailingSidcarConfig.Spec.SidecarSpecs[k] = v
 		}
 		tailingSidcarConfigs = append(tailingSidcarConfigs, tailingSidcarConfig)
 	}

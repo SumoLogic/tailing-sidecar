@@ -3,7 +3,9 @@ package main
 import (
 	"os"
 
-	"gopkg.in/yaml.v3"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	"sigs.k8s.io/yaml"
 )
 
 type Config struct {
@@ -11,7 +13,8 @@ type Config struct {
 }
 
 type SidecarConfig struct {
-	Image string `yaml:"image,omitempty"`
+	Image     string                      `yaml:"image,omitempty"`
+	Resources corev1.ResourceRequirements `yaml:"resources,omitempty"`
 }
 
 func ReadConfig(configPath string) (Config, error) {
@@ -19,6 +22,16 @@ func ReadConfig(configPath string) (Config, error) {
 	config := Config{
 		Sidecar: SidecarConfig{
 			Image: "sumologic/tailing-sidecar:latest",
+			Resources: corev1.ResourceRequirements{
+				Limits: corev1.ResourceList{
+					corev1.ResourceCPU:    resource.MustParse("500m"),
+					corev1.ResourceMemory: resource.MustParse("500Mi"),
+				},
+				Requests: corev1.ResourceList{
+					corev1.ResourceCPU:    resource.MustParse("100m"),
+					corev1.ResourceMemory: resource.MustParse("200Mi"),
+				},
+			},
 		},
 	}
 

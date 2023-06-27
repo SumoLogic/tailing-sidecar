@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 func TestReadConfig(t *testing.T) {
@@ -21,6 +23,16 @@ func TestReadConfig(t *testing.T) {
 			expected: Config{
 				Sidecar: SidecarConfig{
 					Image: "sumologic/tailing-sidecar:latest",
+					Resources: corev1.ResourceRequirements{
+						Limits: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("500m"),
+							corev1.ResourceMemory: resource.MustParse("500Mi"),
+						},
+						Requests: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("100m"),
+							corev1.ResourceMemory: resource.MustParse("200Mi"),
+						},
+					},
 				},
 			},
 			expectedError: nil,
@@ -35,6 +47,16 @@ sidecar:
 			expected: Config{
 				Sidecar: SidecarConfig{
 					Image: "sumologic/tailing-sidecar:latest",
+					Resources: corev1.ResourceRequirements{
+						Limits: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("500m"),
+							corev1.ResourceMemory: resource.MustParse("500Mi"),
+						},
+						Requests: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("100m"),
+							corev1.ResourceMemory: resource.MustParse("200Mi"),
+						},
+					},
 				},
 			},
 			expectedError: nil,
@@ -43,10 +65,27 @@ sidecar:
 			name: "overwrite defaults",
 			content: `
 sidecar:
-  image: my-new-image`,
+  image: my-new-image
+  resources:
+    limits:
+      cpu: 400m
+      memory: 400Mi
+    requests:
+      cpu: 20m
+      memory: 20Mi`,
 			expected: Config{
 				Sidecar: SidecarConfig{
 					Image: "my-new-image",
+					Resources: corev1.ResourceRequirements{
+						Limits: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("400m"),
+							corev1.ResourceMemory: resource.MustParse("400Mi"),
+						},
+						Requests: corev1.ResourceList{
+							corev1.ResourceCPU:    resource.MustParse("20m"),
+							corev1.ResourceMemory: resource.MustParse("20Mi"),
+						},
+					},
 				},
 			},
 			expectedError: nil,

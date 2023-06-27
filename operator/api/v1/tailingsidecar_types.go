@@ -33,6 +33,9 @@ type SidecarSpec struct {
 
 	// VolumeMount describes a mounting of a volume within a tailing sidecar container.
 	VolumeMount corev1.VolumeMount `json:"volumeMount,omitempty"`
+
+	// Resources describes the compute resource requirements.
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 // TailingSidecarConfigSpec defines the desired state of TailingSidecarConfig
