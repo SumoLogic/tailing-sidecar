@@ -165,6 +165,14 @@ var _ = Describe("handler", func() {
 			decoder:             decoder,
 		}
 
+		podExtenderWithConfiguration := PodExtender{
+			Client:              k8sClient,
+			TailingSidecarImage: "tailing-sidecar-image:test",
+			decoder:             decoder,
+			ConfigMapName:       "my-config-map",
+			ConfigMountPath:     "my-custom-path",
+		}
+
 		namespace1 := &corev1.Namespace{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: "tailing-sidecar-system",
@@ -509,6 +517,100 @@ var _ = Describe("handler", func() {
 				Expect(resp.Patches).NotTo(BeEmpty())
 
 				expectedPatches := loadJSONPatches("testdata/patch_with_2_tailing_sidecars.json")
+
+				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
+
+				for _, patch := range resp.Patches {
+					Expect(isExpectedPatch(expectedPatches, patch)).To(BeTrue(), "cannot find patch in expected patches, patch: %+v", patch)
+				}
+			})
+
+			err = k8sClient.Delete(ctx, tailingSidecar)
+			It("deletes TailingSidecarConfig", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+
+		When("Pod with TailingSidecarConfig with configuration without PodSelector", func() {
+			tailingSidecar := &tailingsidecarv1.TailingSidecarConfig{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "tailing-sidecar-in-pod-namespace",
+					Namespace: "tailing-sidecar-system-different",
+				},
+				Spec: tailingsidecarv1.TailingSidecarConfigSpec{
+					SidecarSpecs: map[string]tailingsidecarv1.SidecarSpec{
+						"sidecar": {
+							Path: "/varconfig/log/example2.log",
+							VolumeMount: corev1.VolumeMount{
+								Name:      "varlogconfig",
+								MountPath: "/varconfig/log",
+							},
+						},
+					},
+				},
+			}
+
+			err = k8sClient.Create(ctx, tailingSidecar)
+			It("creates a Tailingsidecar with configuration", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+
+			request := admission.Request{
+				AdmissionRequest: admv1.AdmissionRequest{
+					Operation: admv1.Create,
+					Object: runtime.RawExtension{
+						Raw: []byte(`{
+							"apiVersion": "v1",
+							"kind": "Pod",
+							"metadata": {
+							  "creationTimestamp": null,
+							  "name": "pod-with-annotations",
+							  "namespace": "tailing-sidecar-system",
+							  "annotations": {
+								"tailing-sidecar": "varlog:/var/log/example0.log;varlog:/var/log/example1.log"
+							  }
+							},
+							"status": {},
+							"spec": {
+							  "containers": [
+								{
+								  "name": "count",
+								  "image": "busybox",
+								  "resources": {},
+								  "volumeMounts": [
+									{
+									  "name": "varlog",
+									  "mountPath": "/var/log"
+									},
+									{
+									  "name": "varlogconfig",
+									  "mountPath": "/varconfig/log"
+									}
+								  ]
+								}
+							  ],
+							  "volumes": [
+								{
+								  "name": "varlog",
+								  "emptyDir": {}
+								},
+								{
+								  "name": "varlogconfig",
+								  "emptyDir": {}
+								}
+							  ]
+							}
+						  }`),
+					},
+				},
+			}
+
+			resp := podExtenderWithConfiguration.Handle(ctx, request)
+			It("returns patch with tailing sidecar containers for custom configuration handler", func() {
+				Expect(resp.Allowed).To(BeTrue())
+				Expect(resp.Patches).NotTo(BeEmpty())
+
+				expectedPatches := loadJSONPatches("testdata/patch_with_2_tailing_sidecars_with_configuration.json")
 
 				Expect(len(resp.Patches)).Should(Equal(len(expectedPatches)))
 

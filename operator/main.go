@@ -110,6 +110,8 @@ func main() {
 			Client:                  mgr.GetClient(),
 			TailingSidecarImage:     config.Sidecar.Image,
 			TailingSidecarResources: config.Sidecar.Resources,
+			ConfigMapName:           config.Sidecar.Config.ConfigMapName,
+			ConfigMountPath:         config.Sidecar.Config.MountPath,
 		},
 	})
 

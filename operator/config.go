@@ -19,12 +19,18 @@ type Config struct {
 type SidecarConfig struct {
 	Image     string                      `yaml:"image,omitempty"`
 	Resources corev1.ResourceRequirements `yaml:"resources,omitempty"`
+	Config    SidecarConfigConfig         `yaml:"config,omitempty"`
 }
 
 type LeaderElectionConfig struct {
 	LeaseDuration Duration `yaml:"leaseDuration,omitempty"`
 	RenewDeadline Duration `yaml:"renewDeadline,omitempty"`
 	RetryPeriod   Duration `yaml:"retryPeriod,omitempty"`
+}
+
+type SidecarConfigConfig struct {
+	ConfigMapName string `yaml:"configMapName,omitempty"`
+	MountPath     string `yaml:"mountPath,omitempty"`
 }
 
 // Duration sigs.k8s.io/yaml not support time.Duration:https://github.com/kubernetes-sigs/yaml/issues/64
