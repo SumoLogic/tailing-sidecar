@@ -44,6 +44,11 @@ sidecar:
       cpu: 100m
       memory: 200Mi
 
+  # Overrides the sidecar configuration
+  config:
+    configMapName:
+    mountPath:
+
 kubeRbacProxy:
   image:
     pullPolicy: IfNotPresent
