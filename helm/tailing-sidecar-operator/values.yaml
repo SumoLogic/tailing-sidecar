@@ -47,7 +47,7 @@ sidecar:
   # Overrides the sidecar configuration
   config:
     configMapName:
-    mountPath:
+    mountPath: /fluent-bit/etc/
 
 kubeRbacProxy:
   image:
