@@ -48,3 +48,18 @@ The generated certificate is valid for 365 days after issuing, i.e. after chart 
 
 If you have [cert-manager](https://cert-manager.io/) installed in your cluster,
 you can make the chart use it for certificate management by setting the property `certManager.enabled` to `true`.
+
+### Overriding Tailing Sidecar configuration
+
+In order to override tailing sidecar configuration, the following properties may be used:
+
+```yaml
+sidecar:
+  config:
+    configMapName: custom-configmap-name
+    mountPath: /fluent-bit/etc/
+```
+
+The above configuration is going to mount `custom-configmap-name` configMap as `/fluent-bit/etc/` directory.
+
+**The configmap has to exist in every namespace the oparator is being used.**
