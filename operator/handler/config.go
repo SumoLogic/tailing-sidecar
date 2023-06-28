@@ -45,13 +45,13 @@ type sidecarConfig struct {
 }
 
 // getConfigs gets configurations from TailingSidecars and annotations
-func getConfigs(annotations map[string]string, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig, resources corev1.ResourceRequirements) ([]sidecarConfig, error) {
+func getConfigs(annotations map[string]string, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) ([]sidecarConfig, error) {
 	crConfigs, err := convertTailingSidecarConfigs(tailingSidecarConfigs)
 	if err != nil {
 		return nil, err
 	}
 
-	configs := parseAnnotation(annotations, resources)
+	configs := parseAnnotation(annotations)
 	configs = append(configs, crConfigs...)
 
 	if err = validateConfigs(configs); err != nil {
@@ -61,7 +61,7 @@ func getConfigs(annotations map[string]string, tailingSidecarConfigs []tailingsi
 }
 
 // parseAnnotation parses configurations from 'tailing-sidecar' annotation
-func parseAnnotation(annotations map[string]string, resources corev1.ResourceRequirements) []sidecarConfig {
+func parseAnnotation(annotations map[string]string) []sidecarConfig {
 	annotation, ok := annotations[sidecarAnnotation]
 	if !ok {
 		return nil
@@ -89,7 +89,6 @@ func parseAnnotation(annotations map[string]string, resources corev1.ResourceReq
 					VolumeMount: corev1.VolumeMount{
 						Name: configParts[volumeIndex],
 					},
-					Resources: resources,
 				},
 			}
 			configs = append(configs, config)
@@ -100,8 +99,7 @@ func parseAnnotation(annotations map[string]string, resources corev1.ResourceReq
 					VolumeMount: corev1.VolumeMount{
 						Name: configParts[containerNameIndex+1],
 					},
-					Path:      configParts[containerNameIndex+2],
-					Resources: resources,
+					Path: configParts[containerNameIndex+2],
 				},
 			}
 			configs = append(configs, config)

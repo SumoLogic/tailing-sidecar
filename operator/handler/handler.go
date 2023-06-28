@@ -121,7 +121,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
 	// Get configurations from TailingSidecars and annotations
-	configs, err := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs, e.TailingSidecarResources)
+	configs, err := getConfigs(pod.ObjectMeta.Annotations, tailingSidecarConfigs)
 	if err != nil {
 		handlerLog.Error(err, "Incorrect configuration")
 		return err
@@ -176,6 +176,13 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
+		if config.spec.Resources.Requests != nil {
+			config.spec.Resources.Requests = e.TailingSidecarResources.Requests
+		}
+		if config.spec.Resources.Limits != nil {
+			config.spec.Resources.Limits = e.TailingSidecarResources.Limits
+		}
+
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
 			Name:  config.name,
@@ -227,18 +234,6 @@ func (e PodExtender) getTailingSidecarConfigs(ctx context.Context, podLabels map
 		// TailingSidecarConfig with a nil or empty selector should match nothing
 		if selector.Empty() || !selector.Matches(labels.Set(podLabels)) {
 			continue
-		}
-		for k, v := range tailingSidcarConfig.Spec.SidecarSpecs {
-			if v.Resources.Requests != nil && v.Resources.Limits != nil {
-				continue
-			}
-			if v.Resources.Requests == nil {
-				v.Resources.Requests = e.TailingSidecarResources.Requests
-			}
-			if v.Resources.Limits == nil {
-				v.Resources.Limits = e.TailingSidecarResources.Limits
-			}
-			tailingSidcarConfig.Spec.SidecarSpecs[k] = v
 		}
 		tailingSidcarConfigs = append(tailingSidcarConfigs, tailingSidcarConfig)
 	}

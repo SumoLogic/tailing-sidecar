@@ -102,8 +102,8 @@ teardown-examples:
 	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
 	kubectl delete -n tailing-sidecar-system daemonset daemonset-with-annotations
 	kubectl delete -n tailing-sidecar-system TailingSidecarConfig tailingsidecar-sample
-	kubectl delete -f examples/cr_with_resources.yaml
-	kubectl delete -f examples/pod_with_tailing_sidecar_config_resources.yaml
+	kubectl delete -n tailing-sidecar-system pod pod-with-tailing-sidecar-config-resources
+	kubectl delete -n tailing-sidecar-system TailingSidecarConfig tailingsidecar-sample
 
 # Check if logs from resources created with make deploy-examples have proper content
 test-examples:
