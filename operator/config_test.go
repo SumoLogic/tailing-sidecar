@@ -100,8 +100,9 @@ sidecar:
 
 			_, err = file.WriteString(tt.content)
 			require.NoError(t, err)
-
-			config, err := ReadConfig(file.Name(), GetDefaultConfig())
+			config := GetDefaultConfig()
+			err = ReadConfig(file.Name(), &config)
+			require.NoError(t, err)
 
 			if tt.expectedError != nil {
 				require.Error(t, tt.expectedError, err)
@@ -115,7 +116,8 @@ sidecar:
 }
 
 func TestReadConfigInvalidFile(t *testing.T) {
-	_, err := ReadConfig("non-existing-file", GetDefaultConfig())
+	config := GetDefaultConfig()
+	err := ReadConfig("non-existing-file", &config)
 	require.Error(t, err)
 	require.EqualError(t, err, "open non-existing-file: no such file or directory")
 }
