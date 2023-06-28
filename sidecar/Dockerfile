@@ -6,7 +6,7 @@ RUN make all
 
 # Manually upgrade libc and zlib to address https://www.cve.org/CVERecord?id=CVE-2022-37434 and https://www.cve.org/CVERecord?id=CVE-2021-3999
 # TODO: Revert this after fluent-bit 1.9.9 is released
-FROM debian:bullseye-slim as deb-extractor
+FROM debian:bookworm-slim as deb-extractor
 
 # We download all debs locally then extract them into a directory we can use as the root for distroless.
 # This is directly copied from Fluent Bit's upstream Dockerfile
