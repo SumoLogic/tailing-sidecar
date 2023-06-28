@@ -48,6 +48,8 @@ const (
 	sidecarVolumeName   = "volume-sidecar-%d"
 	sidecarVolumePrefix = "volume-sidecar-"
 	sidecarMountPath    = "/tailing-sidecar/var"
+
+	sidecarConfigurationName = "tailing-sidecar-configuration"
 )
 
 var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender")
@@ -196,7 +198,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 
 		if e.ConfigMapName != "" && e.ConfigMountPath != "" {
 			volumeMounts = append(volumeMounts, corev1.VolumeMount{
-				Name:      "tailing-sidecar-configuration",
+				Name:      sidecarConfigurationName,
 				MountPath: e.ConfigMountPath,
 			})
 		}
@@ -238,7 +240,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 	if e.ConfigMapName != "" && e.ConfigMountPath != "" {
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
-				Name: "tailing-sidecar-configuration",
+				Name: sidecarConfigurationName,
 				VolumeSource: corev1.VolumeSource{
 					ConfigMap: &corev1.ConfigMapVolumeSource{
 						LocalObjectReference: corev1.LocalObjectReference{
