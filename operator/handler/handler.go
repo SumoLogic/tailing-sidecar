@@ -176,10 +176,11 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
-		if config.spec.Resources.Requests != nil {
+		// check if sidecar need add default resources
+		if config.spec.Resources.Requests == nil {
 			config.spec.Resources.Requests = e.TailingSidecarResources.Requests
 		}
-		if config.spec.Resources.Limits != nil {
+		if config.spec.Resources.Limits == nil {
 			config.spec.Resources.Limits = e.TailingSidecarResources.Limits
 		}
 

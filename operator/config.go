@@ -19,21 +19,7 @@ type SidecarConfig struct {
 
 func ReadConfig(configPath string) (Config, error) {
 	// Set default values
-	config := Config{
-		Sidecar: SidecarConfig{
-			Image: "sumologic/tailing-sidecar:latest",
-			Resources: corev1.ResourceRequirements{
-				Limits: corev1.ResourceList{
-					corev1.ResourceCPU:    resource.MustParse("500m"),
-					corev1.ResourceMemory: resource.MustParse("500Mi"),
-				},
-				Requests: corev1.ResourceList{
-					corev1.ResourceCPU:    resource.MustParse("100m"),
-					corev1.ResourceMemory: resource.MustParse("200Mi"),
-				},
-			},
-		},
-	}
+	config := GetDefaultConfig()
 
 	content, err := os.ReadFile(configPath)
 	if err != nil {
@@ -48,4 +34,22 @@ func ReadConfig(configPath string) (Config, error) {
 
 func (c *Config) Validate() error {
 	return nil
+}
+
+func GetDefaultConfig() Config {
+	return Config{
+		Sidecar: SidecarConfig{
+			Image: "sumologic/tailing-sidecar:latest",
+			Resources: corev1.ResourceRequirements{
+				Limits: corev1.ResourceList{
+					corev1.ResourceCPU:    resource.MustParse("500m"),
+					corev1.ResourceMemory: resource.MustParse("500Mi"),
+				},
+				Requests: corev1.ResourceList{
+					corev1.ResourceCPU:    resource.MustParse("100m"),
+					corev1.ResourceMemory: resource.MustParse("200Mi"),
+				},
+			},
+		},
+	}
 }

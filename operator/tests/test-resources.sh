@@ -18,10 +18,10 @@ fi
 if [ $(kubectl get pod ${POD} -n ${NAMESPACE} -o jsonpath='{.spec.containers[?(@.name=="sidecar-1")].resources.requests.memory}') != "100Mi" ];then
   exit 1
 fi
-if [ $(kubectl get pod ${POD} -n ${NAMESPACE} -o jsonpath='{.spec.containers[?(@.name=="sidecar-1")].resources.limits.cpu}') != "200m" ];then
+if [ $(kubectl get pod ${POD} -n ${NAMESPACE} -o jsonpath='{.spec.containers[?(@.name=="sidecar-1")].resources.limits.cpu}') != "500m" ];then
   exit 1
 fi
-if [ $(kubectl get pod ${POD} -n ${NAMESPACE} -o jsonpath='{.spec.containers[?(@.name=="sidecar-1")].resources.limits.memory}') != "200Mi" ];then
+if [ $(kubectl get pod ${POD} -n ${NAMESPACE} -o jsonpath='{.spec.containers[?(@.name=="sidecar-1")].resources.limits.memory}') != "500Mi" ];then
   exit 1
 fi
 

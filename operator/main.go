@@ -64,6 +64,7 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
+	config = GetDefaultConfig()
 	if configPath != "" {
 		config, err = ReadConfig(configPath)
 
@@ -71,8 +72,6 @@ func main() {
 			setupLog.Error(err, "unable to read configuration", "configPath", configPath)
 			os.Exit(1)
 		}
-	} else {
-		config = Config{}
 	}
 
 	if err := config.Validate(); err != nil {
