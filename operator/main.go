@@ -66,8 +66,7 @@ func main() {
 
 	config = GetDefaultConfig()
 	if configPath != "" {
-		config, err = ReadConfig(configPath)
-
+		config, err = ReadConfig(configPath, config)
 		if err != nil {
 			setupLog.Error(err, "unable to read configuration", "configPath", configPath)
 			os.Exit(1)

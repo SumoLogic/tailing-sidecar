@@ -17,19 +17,16 @@ type SidecarConfig struct {
 	Resources corev1.ResourceRequirements `yaml:"resources,omitempty"`
 }
 
-func ReadConfig(configPath string) (Config, error) {
-	// Set default values
-	config := GetDefaultConfig()
-
+func ReadConfig(configPath string, defaultConfig Config) (Config, error) {
 	content, err := os.ReadFile(configPath)
 	if err != nil {
-		return config, err
+		return defaultConfig, err
 	}
-	err = yaml.Unmarshal(content, &config)
+	err = yaml.Unmarshal(content, &defaultConfig)
 	if err != nil {
-		return config, err
+		return defaultConfig, err
 	}
-	return config, err
+	return defaultConfig, err
 }
 
 func (c *Config) Validate() error {
