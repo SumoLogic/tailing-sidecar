@@ -78,6 +78,8 @@ deploy-examples:
 	kubectl apply -f examples/deployment_with_annotations.yaml
 	kubectl apply -f examples/daemonset_with_annotations.yaml
 	kubectl apply -f examples/pod_without_annotations.yaml
+	kubectl apply -f examples/cr_with_resources.yaml
+	kubectl apply -f examples/pod_with_tailing_sidecar_config_resources.yaml
 
 # Deploy examples update
 deploy-examples-update:
@@ -100,10 +102,16 @@ teardown-examples:
 	kubectl delete -n tailing-sidecar-system deployment deployment-with-annotations
 	kubectl delete -n tailing-sidecar-system daemonset daemonset-with-annotations
 	kubectl delete -n tailing-sidecar-system TailingSidecarConfig tailingsidecar-sample
+	kubectl delete -n tailing-sidecar-system pod pod-with-tailing-sidecar-config-resources
+	kubectl delete -n tailing-sidecar-system TailingSidecarConfig tailingsidecar-sample
 
 # Check if logs from resources created with make deploy-examples have proper content
 test-examples:
 	tests/test.sh
+
+# Check if sidecar has configured resources
+test-examples-resources:
+	tests/test-resources.sh
 
 # Check if logs from resources created with make deploy-examples-update have proper content
 test-examples-update:

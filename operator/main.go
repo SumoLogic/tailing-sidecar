@@ -64,15 +64,10 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
-	if configPath != "" {
-		config, err = ReadConfig(configPath)
-
-		if err != nil {
-			setupLog.Error(err, "unable to read configuration", "configPath", configPath)
-			os.Exit(1)
-		}
-	} else {
-		config = Config{}
+	config = GetDefaultConfig()
+	if configPath != "" && ReadConfig(configPath, &config) != nil {
+		setupLog.Error(err, "unable to read configuration", "configPath", configPath)
+		os.Exit(1)
 	}
 
 	if err := config.Validate(); err != nil {
@@ -108,8 +103,9 @@ func main() {
 
 	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
 		Handler: &handler.PodExtender{
-			Client:              mgr.GetClient(),
-			TailingSidecarImage: config.Sidecar.Image,
+			Client:                  mgr.GetClient(),
+			TailingSidecarImage:     config.Sidecar.Image,
+			TailingSidecarResources: config.Sidecar.Resources,
 		},
 	})
 

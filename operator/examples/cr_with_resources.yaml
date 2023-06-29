@@ -2,17 +2,18 @@ apiVersion: tailing-sidecar.sumologic.com/v1
 kind: TailingSidecarConfig
 metadata:
   name: tailingsidecar-sample
+  namespace: tailing-sidecar-system
 spec:
   annotationsPrefix: tailing-sidecar.sumologic.com
   podSelector:
     matchLabels:
-      tailing-sidecar: "true"
+      tailing-sidecar-resource: "true"
   configs:
-    sidecar-2:
-      volumeMount: 
-        name: varlogconfig
-        mountPath: /varconfig-new-dir/log
-      path: /varconfig-new-dir/log/example2.log
+    sidecar-1:
+      volumeMount:
+        name: varlog
+        mountPath: /var/log
+      path: /var/log/example0.log
       annotations:
         sourceCategory: sourceCategory-2
         annotation-2: "true"
@@ -20,6 +21,3 @@ spec:
         requests:
           cpu: 100m
           memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi

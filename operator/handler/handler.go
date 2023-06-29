@@ -54,9 +54,10 @@ var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender
 
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
-	Client              client.Client
-	TailingSidecarImage string
-	decoder             *admission.Decoder
+	Client                  client.Client
+	TailingSidecarImage     string
+	TailingSidecarResources corev1.ResourceRequirements
+	decoder                 *admission.Decoder
 }
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
@@ -175,6 +176,14 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
+		// check if sidecar need add default resources
+		if config.spec.Resources.Requests == nil {
+			config.spec.Resources.Requests = e.TailingSidecarResources.Requests
+		}
+		if config.spec.Resources.Limits == nil {
+			config.spec.Resources.Limits = e.TailingSidecarResources.Limits
+		}
+
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
 			Name:  config.name,
@@ -195,6 +204,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					MountPath: sidecarMountPath,
 				},
 			},
+			Resources: config.spec.Resources,
 		}
 		containers = append(containers, container)
 		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
