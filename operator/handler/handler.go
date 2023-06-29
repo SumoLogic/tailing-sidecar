@@ -60,13 +60,13 @@ var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender
 
 // PodExtender extends Pods by tailling sidecar containers
 type PodExtender struct {
-	Client              client.Client
-	TailingSidecarImage string
+	Client                  client.Client
+	TailingSidecarImage     string
 	TailingSidecarResources corev1.ResourceRequirements
-	decoder             *admission.Decoder
-	ConfigMapName       string
-	ConfigMapNamespace  string
-	ConfigMountPath     string
+	decoder                 *admission.Decoder
+	ConfigMapName           string
+	ConfigMapNamespace      string
+	ConfigMountPath         string
 }
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
@@ -297,18 +297,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					Value: sidecarEnvMarkerVal,
 				},
 			},
-<<<<<<< HEAD
-			VolumeMounts: []corev1.VolumeMount{
-				config.spec.VolumeMount,
-				{
-					Name:      volumeName,
-					MountPath: sidecarMountPath,
-				},
-			},
-			Resources: config.spec.Resources,
-=======
 			VolumeMounts: volumeMounts,
->>>>>>> a2da724 (feat(operator): expose sidecar configuration)
+			Resources:    config.spec.Resources,
 		}
 		containers = append(containers, container)
 		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
