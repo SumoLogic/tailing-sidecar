@@ -3,8 +3,9 @@ sidecar:
   resources:
     {{- .Values.sidecar.resources | toYaml | nindent 4 }}
   config:
-    configMapName: {{ .Values.sidecar.config.configMapName }}
+    name: {{ template "tailing-sidecar.configMap.name" . }}
     mountPath: {{ .Values.sidecar.config.mountPath }}
+    namespace: {{ .Release.Namespace }}
 leaderElection:
   leaseDuration: {{ .Values.operator.leaderElection.leaseDuration }}
   renewDeadline: {{ .Values.operator.leaderElection.renewDeadline }}

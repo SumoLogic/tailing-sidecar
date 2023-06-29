@@ -46,8 +46,15 @@ sidecar:
 
   # Overrides the sidecar configuration
   config:
-    configMapName:
     mountPath: /fluent-bit/etc/
+    # map of files which are going to be created in mountPath
+    # for example to create three empty files:
+    #
+    # content:
+    #  fluent-bit.conf: |
+    #  parsers.conf: |
+    #  plugins.conf
+    content: {}
 
 kubeRbacProxy:
   image:

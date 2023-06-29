@@ -112,6 +112,7 @@ func main() {
 			TailingSidecarResources: config.Sidecar.Resources,
 			ConfigMapName:           config.Sidecar.Config.ConfigMapName,
 			ConfigMountPath:         config.Sidecar.Config.MountPath,
+			ConfigMapNamespace:      config.Sidecar.Config.NamespaceName,
 		},
 	})
 

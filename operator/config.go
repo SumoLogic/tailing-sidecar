@@ -29,8 +29,9 @@ type LeaderElectionConfig struct {
 }
 
 type SidecarConfigConfig struct {
-	ConfigMapName string `yaml:"configMapName,omitempty"`
+	ConfigMapName string `yaml:"name,omitempty"`
 	MountPath     string `yaml:"mountPath,omitempty"`
+	NamespaceName string `yaml:"namespace,omitempty"`
 }
 
 // Duration sigs.k8s.io/yaml not support time.Duration:https://github.com/kubernetes-sigs/yaml/issues/64
