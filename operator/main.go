@@ -19,6 +19,7 @@ package main
 import (
 	"flag"
 	"os"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -85,6 +86,9 @@ func main() {
 		Port:               9443,
 		LeaderElection:     enableLeaderElection,
 		LeaderElectionID:   "7b555970.sumologic.com",
+		LeaseDuration:      (*time.Duration)(&config.LeaderElection.LeaseDuration),
+		RenewDeadline:      (*time.Duration)(&config.LeaderElection.RenewDeadline),
+		RetryPeriod:        (*time.Duration)(&config.LeaderElection.RetryPeriod),
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
