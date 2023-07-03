@@ -10,11 +10,11 @@ sidecar:
 
   resources:
     limits:
-      cpu: ""
-      memory: ""
+      cpu: "0"
+      memory: "0"
     requests:
-      cpu: ""
-      memory: ""
+      cpu: "0"
+      memory: "0"
 
   config:
     content:
