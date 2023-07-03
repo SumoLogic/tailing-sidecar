@@ -76,79 +76,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	}
 
 	if req.Operation == admv1.Delete {
-		// eliminates hanging kubectl apply -f command
-		// kube-apiserver server waits for response from operator on DELETE request
-		pod := &corev1.Pod{}
-		err := e.decoder.DecodeRaw(req.OldObject, pod)
-		if err != nil {
-			return admission.Allowed(fmt.Sprintf("Error ocurred (%v); %s", err, deletionMessage))
-		}
-
-		// Do not try to remove configMap in main namespace
-		if req.Namespace == e.ConfigMapNamespace {
-			return admission.Allowed(deletionMessage)
-		}
-
-		volumes := pod.Spec.Volumes
-
-		ret := true
-		for _, v := range volumes {
-			if v.Name == sidecarConfigurationName {
-				ret = false
-			}
-		}
-
-		if ret {
-			return admission.Allowed(deletionMessage)
-		}
-
-		key := types.NamespacedName{
-			Namespace: req.Namespace,
-			Name:      e.ConfigMapName,
-		}
-		configMap := corev1.ConfigMap{}
-		err = e.Client.Get(ctx, key, &configMap)
-		if err != nil {
-			if strings.Contains(err.Error(), "not found") {
-				return admission.Allowed(deletionMessage)
-			}
-			return admission.Allowed(fmt.Sprintf("Error while getting configMap to clean up (%v); %s", err, deletionMessage))
-		}
-
-		podList := &corev1.PodList{}
-
-		listOptions := []client.ListOption{
-			client.InNamespace(req.Namespace),
-		}
-		err = e.Client.List(ctx, podList, listOptions...)
-		if err != nil {
-			return admission.Allowed(fmt.Sprintf("Error while getting list of pods (%v); %s", err, deletionMessage))
-		}
-
-		configMapUsed := false
-		for _, p := range podList.Items {
-			// skip current pod
-			if p.Name == pod.Name && p.Namespace == pod.Namespace {
-				continue
-			}
-
-			for _, volume := range p.Spec.Volumes {
-				if volume.ConfigMap != nil && volume.ConfigMap.Name == e.ConfigMapName {
-					configMapUsed = true
-					return admission.Allowed(deletionMessage)
-				}
-			}
-			if configMapUsed {
-				return admission.Allowed(deletionMessage)
-			}
-		}
-
-		err = e.Client.Delete(ctx, &configMap)
-		if err != nil {
-			return admission.Allowed(fmt.Sprintf("Error while cleaning up configMap (%v); %s", err, deletionMessage))
-		}
-
-		return admission.Allowed(deletionMessage)
+		return e.handleDelete(ctx, req)
 	}
 
 	pod := &corev1.Pod{}
@@ -522,4 +450,85 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 		}
 	}
 	return tailingSidecars
+}
+
+// handle pod deletion:
+// - remove sidecar configmap if it is not used by any pod in the req namespace
+func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) admission.Response {
+	// eliminates hanging kubectl apply -f command
+	// kube-apiserver server waits for response from operator on DELETE request
+	pod := &corev1.Pod{}
+	err := e.decoder.DecodeRaw(req.OldObject, pod)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error ocurred (%v); %s", err, deletionMessage))
+	}
+
+	// do not try to remove exemplar configMap
+	if req.Namespace == e.ConfigMapNamespace {
+		return admission.Allowed(deletionMessage)
+	}
+
+	// check if theres is sidecar configuration configMap in the namespace
+	volumes := pod.Spec.Volumes
+	ret := true
+	for _, v := range volumes {
+		if v.Name == sidecarConfigurationName {
+			ret = false
+		}
+	}
+	if ret {
+		return admission.Allowed(deletionMessage)
+	}
+
+	// get sidecar configmap from the namespace
+	key := types.NamespacedName{
+		Namespace: req.Namespace,
+		Name:      e.ConfigMapName,
+	}
+	configMap := corev1.ConfigMap{}
+	err = e.Client.Get(ctx, key, &configMap)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return admission.Allowed(deletionMessage)
+		}
+		return admission.Allowed(fmt.Sprintf("Error while getting configMap to clean up (%v); %s", err, deletionMessage))
+	}
+
+	// check if the configMap is used by any pod in the namespace
+	podList := &corev1.PodList{}
+
+	listOptions := []client.ListOption{
+		client.InNamespace(req.Namespace),
+	}
+	err = e.Client.List(ctx, podList, listOptions...)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error while getting list of pods (%v); %s", err, deletionMessage))
+	}
+
+	configMapUsed := false
+	for _, p := range podList.Items {
+		// skip current pod as it is going to be removed anyway
+		if p.Name == pod.Name && p.Namespace == pod.Namespace {
+			continue
+		}
+
+		// check if sidecar configuration is attached to the p pod
+		for _, volume := range p.Spec.Volumes {
+			if volume.ConfigMap != nil && volume.ConfigMap.Name == e.ConfigMapName {
+				configMapUsed = true
+				return admission.Allowed(deletionMessage)
+			}
+		}
+		if configMapUsed {
+			return admission.Allowed(deletionMessage)
+		}
+	}
+
+	// delete configMap as it is not used by any pod
+	err = e.Client.Delete(ctx, &configMap)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error while cleaning up configMap (%v); %s", err, deletionMessage))
+	}
+
+	return admission.Allowed(deletionMessage)
 }
