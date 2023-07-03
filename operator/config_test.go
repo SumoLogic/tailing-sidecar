@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
@@ -34,6 +35,11 @@ func TestReadConfig(t *testing.T) {
 						},
 					},
 				},
+				LeaderElection: LeaderElectionConfig{
+					LeaseDuration: Duration(time.Second * 137),
+					RenewDeadline: Duration(time.Second * 107),
+					RetryPeriod:   Duration(time.Second * 26),
+				},
 			},
 			expectedError: nil,
 		},
@@ -58,6 +64,11 @@ sidecar:
 						},
 					},
 				},
+				LeaderElection: LeaderElectionConfig{
+					LeaseDuration: Duration(time.Second * 137),
+					RenewDeadline: Duration(time.Second * 107),
+					RetryPeriod:   Duration(time.Second * 26),
+				},
 			},
 			expectedError: nil,
 		},
@@ -72,7 +83,11 @@ sidecar:
       memory: 400Mi
     requests:
       cpu: 20m
-      memory: 20Mi`,
+      memory: 20Mi
+leaderElection:
+  leaseDuration: 10s
+  renewDeadline: 10s
+  retryPeriod: 10s`,
 			expected: Config{
 				Sidecar: SidecarConfig{
 					Image: "my-new-image",
@@ -86,6 +101,11 @@ sidecar:
 							corev1.ResourceMemory: resource.MustParse("20Mi"),
 						},
 					},
+				},
+				LeaderElection: LeaderElectionConfig{
+					LeaseDuration: Duration(time.Second * 10),
+					RenewDeadline: Duration(time.Second * 10),
+					RetryPeriod:   Duration(time.Second * 10),
 				},
 			},
 			expectedError: nil,

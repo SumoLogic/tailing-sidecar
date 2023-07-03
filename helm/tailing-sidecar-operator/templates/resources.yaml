@@ -443,7 +443,9 @@ spec:
           name: https
       - args:
         - --metrics-addr=127.0.0.1:8080
+        {{- if .Values.operator.leaderElection.enabled }}
         - --enable-leader-election
+        {{- end }}
         - --config=/tailing-sidecar/config/config.yaml
         command:
         - /manager

@@ -2,3 +2,7 @@ sidecar:
   image: {{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}
   resources:
     {{- .Values.sidecar.resources | toYaml | nindent 4 }}
+leaderElection:
+  leaseDuration: {{ .Values.operator.leaderElection.leaseDuration }}
+  renewDeadline: {{ .Values.operator.leaderElection.renewDeadline }}
+  retryPeriod: {{ .Values.operator.leaderElection.retryPeriod }}
