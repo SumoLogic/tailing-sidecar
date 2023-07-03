@@ -7,6 +7,13 @@ sidecar:
   image:
     repository: registry.localhost:5000/sumologic/tailing-sidecar
     tag: test
+  resources:
+    limits:
+      cpu: ""
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
 
 certManager:
   enabled: true

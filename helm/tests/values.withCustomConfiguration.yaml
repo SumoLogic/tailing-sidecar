@@ -8,6 +8,14 @@ sidecar:
     repository: registry.localhost:5000/sumologic/tailing-sidecar
     tag: test
 
+  resources:
+    limits:
+      cpu: ""
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
+
   config:
     content:
       fluent-bit.conf: |
