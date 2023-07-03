@@ -2,8 +2,8 @@ apiVersion: kuttl.dev/v1beta1
 kind: TestSuite
 artifactsDir: ./tests/_build/artifacts/
 testDirs:
-  - ./tests/sidecar/
-  - ./tests/operator/
+  - ./tests/modified/sidecar/
+  - ./tests/modified/operator/
 timeout: 150
 parallel: 4
 startKIND: true

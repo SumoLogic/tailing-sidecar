@@ -29,9 +29,9 @@ type LeaderElectionConfig struct {
 }
 
 type SidecarConfigConfig struct {
-	ConfigMapName string `yaml:"name,omitempty"`
-	MountPath     string `yaml:"mountPath,omitempty"`
-	NamespaceName string `yaml:"namespace,omitempty"`
+	Name      string `yaml:"name,omitempty"`
+	MountPath string `yaml:"mountPath,omitempty"`
+	Namespace string `yaml:"namespace,omitempty"`
 }
 
 // Duration sigs.k8s.io/yaml not support time.Duration:https://github.com/kubernetes-sigs/yaml/issues/64
@@ -67,6 +67,7 @@ func ReadConfig(configPath string, config *Config) error {
 	if err != nil {
 		return err
 	}
+
 	err = yaml.Unmarshal(content, config)
 	if err != nil {
 		return err

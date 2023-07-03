@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-tailing-sidecar-config
+status:
+  phase: Running
+  containerStatuses:
+  - name: count
+  - name: sidecar-2
+---
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+collectors:
+- pod: pod-with-tailing-sidecar-config
+commands:
+- script: "[ $(kubectl logs pod-with-tailing-sidecar-config sidecar-2 -n ${NAMESPACE} --tail 5 | grep modified | wc -l) -eq 5 ]"

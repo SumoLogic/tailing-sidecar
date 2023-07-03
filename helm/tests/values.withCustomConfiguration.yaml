@@ -105,9 +105,9 @@ sidecar:
             DB.Sync             Normal
         
         [FILTER]
-          Name modify
-          Match *
-          Set message modified
+            Name modify
+            Match *
+            Set log modified
 
         [OUTPUT]
             name  gstdout

@@ -205,7 +205,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			},
 		}
 
-		if e.ConfigMapName != "" && e.ConfigMountPath != "" {
+		if e.ConfigMapName != "" && e.ConfigMountPath != "" && e.ConfigMapNamespace != "" {
 			volumeMounts = append(volumeMounts, corev1.VolumeMount{
 				Name:      sidecarConfigurationName,
 				MountPath: e.ConfigMountPath,
@@ -505,7 +505,6 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 		return admission.Allowed(fmt.Sprintf("Error while getting list of pods (%v); %s", err, deletionMessage))
 	}
 
-	configMapUsed := false
 	for _, p := range podList.Items {
 		// skip current pod as it is going to be removed anyway
 		if p.Name == pod.Name && p.Namespace == pod.Namespace {
@@ -515,12 +514,9 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 		// check if sidecar configuration is attached to the p pod
 		for _, volume := range p.Spec.Volumes {
 			if volume.ConfigMap != nil && volume.ConfigMap.Name == e.ConfigMapName {
-				configMapUsed = true
+				// do not anything in case volume is used
 				return admission.Allowed(deletionMessage)
 			}
-		}
-		if configMapUsed {
-			return admission.Allowed(deletionMessage)
 		}
 	}
 

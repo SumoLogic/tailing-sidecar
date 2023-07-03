@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-with-annotations
+status:
+  numberReady: 1
+---
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+collectors:
+- selector: app=daemonset-with-annotations
+commands:
+  - script: "[ $(kubectl logs -l app=daemonset-with-annotations -c tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep modified | wc -l) -eq 5 ]"
+  - script: "[ $(kubectl logs -l app=daemonset-with-annotations -c tailing-sidecar-1 -n ${NAMESPACE} --tail 5 | grep modified | wc -l) -eq 5 ]"
