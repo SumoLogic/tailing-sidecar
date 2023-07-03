@@ -1,3 +1,4 @@
+{{- if .Values.sidecar.config.content }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
     {{- include "tailing-sidecar-operator.labels" . | nindent 4 }}
 data:
 {{- toYaml .Values.sidecar.config.content | nindent 2 }}
+{{- end }}

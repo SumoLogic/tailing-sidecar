@@ -455,6 +455,11 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 // handle pod deletion:
 // - remove sidecar configmap if it is not used by any pod in the req namespace
 func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) admission.Response {
+	// check if configmap is configured
+	if e.ConfigMapName == "" || e.ConfigMapNamespace == "" || e.ConfigMountPath == "" {
+		return admission.Allowed(deletionMessage)
+	}
+
 	// eliminates hanging kubectl apply -f command
 	// kube-apiserver server waits for response from operator on DELETE request
 	pod := &corev1.Pod{}

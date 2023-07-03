@@ -302,6 +302,7 @@ rules:
   - tailingsidecars/finalizers
   verbs:
   - update
+{{- if .Values.sidecar.config.content }}
 - apiGroups:
   - ""
   resources:
@@ -313,6 +314,7 @@ rules:
   - list
   - patch
   - update
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
