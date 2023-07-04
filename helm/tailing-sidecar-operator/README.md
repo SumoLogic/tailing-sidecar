@@ -56,10 +56,14 @@ In order to override tailing sidecar configuration, the following properties may
 ```yaml
 sidecar:
   config:
-    configMapName: custom-configmap-name
     mountPath: /fluent-bit/etc/
+    content:
+      file-1.conf: |
+        content of file-1.conf
+      file-2.conf: |
+        content of file-2.conf
 ```
 
-The above configuration is going to mount `custom-configmap-name` configMap as `/fluent-bit/etc/` directory.
+The above configuration is going to create `file-1.conf` and `file-2.conf` in `/fluent-bit/etc/` directory.
 
-**The configmap has to exist in every namespace the oparator is being used.**
+**All existing content of `/fluent-bit/etc/` directory will be replaced with the `sidecar.config.content`.**
