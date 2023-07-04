@@ -56,3 +56,10 @@ Configmap name
 {{- define "tailing-sidecar-operator.configMap.name" -}}
 {{- printf "%s-%s" .Release.Name "operator-config" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{/*
+Tailing sidecar configmap name
+*/}}
+{{- define "tailing-sidecar.configMap.name" -}}
+{{- printf "%s-%s" .Release.Name "sidecar-config" | trunc 63 | trimSuffix "-" }}
+{{- end }}

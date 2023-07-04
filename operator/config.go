@@ -19,12 +19,19 @@ type Config struct {
 type SidecarConfig struct {
 	Image     string                      `yaml:"image,omitempty"`
 	Resources corev1.ResourceRequirements `yaml:"resources,omitempty"`
+	Config    SidecarConfigConfig         `yaml:"config,omitempty"`
 }
 
 type LeaderElectionConfig struct {
 	LeaseDuration Duration `yaml:"leaseDuration,omitempty"`
 	RenewDeadline Duration `yaml:"renewDeadline,omitempty"`
 	RetryPeriod   Duration `yaml:"retryPeriod,omitempty"`
+}
+
+type SidecarConfigConfig struct {
+	Name      string `yaml:"name,omitempty"`
+	MountPath string `yaml:"mountPath,omitempty"`
+	Namespace string `yaml:"namespace,omitempty"`
 }
 
 // Duration sigs.k8s.io/yaml not support time.Duration:https://github.com/kubernetes-sigs/yaml/issues/64
@@ -60,6 +67,7 @@ func ReadConfig(configPath string, config *Config) error {
 	if err != nil {
 		return err
 	}
+
 	err = yaml.Unmarshal(content, config)
 	if err != nil {
 		return err

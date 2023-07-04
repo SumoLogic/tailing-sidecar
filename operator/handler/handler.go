@@ -19,6 +19,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -31,6 +32,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	ctrl "sigs.k8s.io/controller-runtime"
 
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
@@ -48,6 +50,10 @@ const (
 	sidecarVolumeName   = "volume-sidecar-%d"
 	sidecarVolumePrefix = "volume-sidecar-"
 	sidecarMountPath    = "/tailing-sidecar/var"
+
+	sidecarConfigurationName = "tailing-sidecar-configuration"
+
+	deletionMessage = "Tailing Sidecar Operator does not block Pod deletion"
 )
 
 var handlerLog = ctrl.Log.WithName("tailing-sidecar.operator.handler.PodExtender")
@@ -58,6 +64,9 @@ type PodExtender struct {
 	TailingSidecarImage     string
 	TailingSidecarResources corev1.ResourceRequirements
 	decoder                 *admission.Decoder
+	ConfigMapName           string
+	ConfigMapNamespace      string
+	ConfigMountPath         string
 }
 
 // Handle handles requests to create/update Pod and extends it by adding tailing sidecars
@@ -67,9 +76,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	}
 
 	if req.Operation == admv1.Delete {
-		// eliminates hanging kubectl apply -f command
-		// kube-apiserver server waits for response from operator on DELETE request
-		return admission.Allowed("Tailing Sidecar Operator does not block Pod deletion")
+		return e.handleDelete(ctx, req)
 	}
 
 	pod := &corev1.Pod{}
@@ -87,14 +94,15 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		return admission.Allowed("Configuration for Tailing Sidecar Operator is not provided")
 	}
 
-	handlerLog.Info("Handling request for Pod",
-		"Name", pod.ObjectMeta.Name,
-		"Namespace", pod.ObjectMeta.Namespace,
+	handlerLog.Info("Handling request",
+		"Name", req.Name,
+		"Namespace", req.Namespace,
+		"Kind", req.Kind,
 		"GenerateName", pod.ObjectMeta.GenerateName,
 		"Operation", req.Operation,
 	)
 
-	if err := e.extendPod(ctx, pod, tailingSidecarConfigs); err != nil {
+	if err := e.extendPod(ctx, pod, tailingSidecarConfigs, req); err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
 
@@ -116,7 +124,7 @@ func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
-func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig) error {
+func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSidecarConfigs []tailingsidecarv1.TailingSidecarConfig, req admission.Request) error {
 	// Get number of existing tailing sidecars
 	sidecarsCount := len(getTailingSidecars(pod.Spec.Containers))
 
@@ -127,18 +135,22 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 		return err
 	}
 
+	namespace := req.Namespace
+
 	if len(configs) == 0 && sidecarsCount == 0 {
 		handlerLog.Info("Pod does not need to be configured",
-			"Name", pod.ObjectMeta.Name,
-			"Namespace", pod.ObjectMeta.Namespace,
+			"Name", req.Name,
+			"Namespace", namespace,
+			"Kind", req.Kind,
 			"GenerateName", pod.ObjectMeta.GenerateName,
 		)
 		return nil
 	}
 
 	handlerLog.Info("Found configuration for Pod",
-		"Pod Name", pod.ObjectMeta.Name,
-		"Namespace", pod.ObjectMeta.Namespace,
+		"Name", req.Name,
+		"Namespace", namespace,
+		"Kind", req.Kind,
 		"GenerateName", pod.ObjectMeta.GenerateName,
 	)
 
@@ -149,8 +161,9 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 		if err != nil {
 			handlerLog.Error(err,
 				"Failed to prepare volume",
-				"Pod Name", pod.ObjectMeta.Name,
-				"Namespace", pod.ObjectMeta.Namespace,
+				"Name", req.Name,
+				"Namespace", namespace,
+				"Kind", req.Kind,
 				"GenerateName", pod.ObjectMeta.GenerateName,
 			)
 			continue
@@ -184,6 +197,21 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			config.spec.Resources.Limits = e.TailingSidecarResources.Limits
 		}
 
+		volumeMounts := []corev1.VolumeMount{
+			config.spec.VolumeMount,
+			{
+				Name:      volumeName,
+				MountPath: sidecarMountPath,
+			},
+		}
+
+		if e.ConfigMapName != "" && e.ConfigMountPath != "" && e.ConfigMapNamespace != "" {
+			volumeMounts = append(volumeMounts, corev1.VolumeMount{
+				Name:      sidecarConfigurationName,
+				MountPath: e.ConfigMountPath,
+			})
+		}
+
 		container := corev1.Container{
 			Image: e.TailingSidecarImage,
 			Name:  config.name,
@@ -197,14 +225,8 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					Value: sidecarEnvMarkerVal,
 				},
 			},
-			VolumeMounts: []corev1.VolumeMount{
-				config.spec.VolumeMount,
-				{
-					Name:      volumeName,
-					MountPath: sidecarMountPath,
-				},
-			},
-			Resources: config.spec.Resources,
+			VolumeMounts: volumeMounts,
+			Resources:    config.spec.Resources,
 		}
 		containers = append(containers, container)
 		pod.ObjectMeta.Annotations = addAnnotations(pod.ObjectMeta.Annotations, config)
@@ -213,6 +235,26 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 	podContainers := removeDeletedSidecars(pod.Spec.Containers, configs)
 
 	pod.Spec.Containers = append(podContainers, containers...)
+
+	if e.ConfigMapName != "" && e.ConfigMountPath != "" && e.ConfigMapNamespace != "" {
+		err = e.createSidecarConfigMap(ctx, namespace)
+		if err != nil {
+			return err
+		}
+
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: sidecarConfigurationName,
+				VolumeSource: corev1.VolumeSource{
+					ConfigMap: &corev1.ConfigMapVolumeSource{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: e.ConfigMapName,
+						},
+					},
+				},
+			})
+	}
+
 	pod.Spec.Volumes = filterUnusedVolumes(pod.Spec.Volumes, pod.Spec.Containers)
 	return nil
 }
@@ -239,6 +281,51 @@ func (e PodExtender) getTailingSidecarConfigs(ctx context.Context, podLabels map
 		tailingSidcarConfigs = append(tailingSidcarConfigs, tailingSidcarConfig)
 	}
 	return tailingSidcarConfigs, nil
+}
+
+func (e PodExtender) createSidecarConfigMap(ctx context.Context, namespace string) error {
+	// get exemplar configMap
+	mainConfigMap := corev1.ConfigMap{}
+	key := types.NamespacedName{
+		Namespace: e.ConfigMapNamespace,
+		Name:      e.ConfigMapName,
+	}
+
+	err := e.Client.Get(ctx, key, &mainConfigMap)
+	if err != nil {
+		return errors.Join(fmt.Errorf("cannot find exemplar (%s) configuration in `%s` namespace", e.ConfigMapName, e.ConfigMapNamespace), err)
+	}
+
+	// create configMap for non-exemplar namespace
+	if namespace != e.ConfigMapNamespace {
+		key := types.NamespacedName{
+			Namespace: namespace,
+			Name:      e.ConfigMapName,
+		}
+		configMap := corev1.ConfigMap{}
+		err = e.Client.Get(ctx, key, &configMap)
+		if err == nil {
+			configMap.Data = mainConfigMap.Data
+			err = e.Client.Update(ctx, &configMap)
+			if err != nil {
+				return errors.Join(fmt.Errorf("error updating tailing sidecar configuration in `%s` namespace", namespace), err)
+			}
+		} else {
+			// prepare configMap
+			configMap.SetNamespace(namespace)
+			configMap.Data = mainConfigMap.Data
+			configMap.SetAnnotations(mainConfigMap.GetAnnotations())
+			configMap.SetLabels(mainConfigMap.GetLabels())
+			configMap.SetName(mainConfigMap.GetName())
+
+			err = e.Client.Create(ctx, &configMap)
+			if err != nil {
+				return errors.Join(fmt.Errorf("cannot create tailing sidecar configuration in `%s` namespace", namespace), err)
+			}
+		}
+	}
+
+	return nil
 }
 
 // validateContainers validates containers
@@ -363,4 +450,86 @@ func getTailingSidecars(containers []corev1.Container) []corev1.Container {
 		}
 	}
 	return tailingSidecars
+}
+
+// handle pod deletion:
+// - remove sidecar configmap if it is not used by any pod in the req namespace
+func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) admission.Response {
+	// check if configmap is configured
+	if e.ConfigMapName == "" || e.ConfigMapNamespace == "" || e.ConfigMountPath == "" {
+		return admission.Allowed(deletionMessage)
+	}
+
+	// eliminates hanging kubectl apply -f command
+	// kube-apiserver server waits for response from operator on DELETE request
+	pod := &corev1.Pod{}
+	err := e.decoder.DecodeRaw(req.OldObject, pod)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error ocurred (%v); %s", err, deletionMessage))
+	}
+
+	// do not try to remove exemplar configMap
+	if req.Namespace == e.ConfigMapNamespace {
+		return admission.Allowed(deletionMessage)
+	}
+
+	// check if theres is sidecar configuration configMap in the namespace
+	volumes := pod.Spec.Volumes
+	ret := true
+	for _, v := range volumes {
+		if v.Name == sidecarConfigurationName {
+			ret = false
+		}
+	}
+	if ret {
+		return admission.Allowed(deletionMessage)
+	}
+
+	// get sidecar configmap from the namespace
+	key := types.NamespacedName{
+		Namespace: req.Namespace,
+		Name:      e.ConfigMapName,
+	}
+	configMap := corev1.ConfigMap{}
+	err = e.Client.Get(ctx, key, &configMap)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return admission.Allowed(deletionMessage)
+		}
+		return admission.Allowed(fmt.Sprintf("Error while getting configMap to clean up (%v); %s", err, deletionMessage))
+	}
+
+	// check if the configMap is used by any pod in the namespace
+	podList := &corev1.PodList{}
+
+	listOptions := []client.ListOption{
+		client.InNamespace(req.Namespace),
+	}
+	err = e.Client.List(ctx, podList, listOptions...)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error while getting list of pods (%v); %s", err, deletionMessage))
+	}
+
+	for _, p := range podList.Items {
+		// skip current pod as it is going to be removed anyway
+		if p.Name == pod.Name && p.Namespace == pod.Namespace {
+			continue
+		}
+
+		// check if sidecar configuration is attached to the p pod
+		for _, volume := range p.Spec.Volumes {
+			if volume.ConfigMap != nil && volume.ConfigMap.Name == e.ConfigMapName {
+				// do not anything in case volume is used
+				return admission.Allowed(deletionMessage)
+			}
+		}
+	}
+
+	// delete configMap as it is not used by any pod
+	err = e.Client.Delete(ctx, &configMap)
+	if err != nil {
+		return admission.Allowed(fmt.Sprintf("Error while cleaning up configMap (%v); %s", err, deletionMessage))
+	}
+
+	return admission.Allowed(deletionMessage)
 }

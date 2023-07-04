@@ -302,6 +302,19 @@ rules:
   - tailingsidecars/finalizers
   verbs:
   - update
+{{- if not (empty .Values.sidecar.config.content) }}
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

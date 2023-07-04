@@ -66,9 +66,12 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
 	config = GetDefaultConfig()
-	if configPath != "" && ReadConfig(configPath, &config) != nil {
-		setupLog.Error(err, "unable to read configuration", "configPath", configPath)
-		os.Exit(1)
+	if configPath != "" {
+		err = ReadConfig(configPath, &config)
+		if err != nil {
+			setupLog.Error(err, "unable to read configuration", "configPath", configPath)
+			os.Exit(1)
+		}
 	}
 
 	if err := config.Validate(); err != nil {
@@ -110,6 +113,9 @@ func main() {
 			Client:                  mgr.GetClient(),
 			TailingSidecarImage:     config.Sidecar.Image,
 			TailingSidecarResources: config.Sidecar.Resources,
+			ConfigMapName:           config.Sidecar.Config.Name,
+			ConfigMountPath:         config.Sidecar.Config.MountPath,
+			ConfigMapNamespace:      config.Sidecar.Config.Namespace,
 		},
 	})
 

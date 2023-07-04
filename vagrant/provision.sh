@@ -3,8 +3,13 @@
 set -x
 
 export DEBIAN_FRONTEND=noninteractive
+GO_VERSION="1.20"
+HELM_VERSION=v3.5.2
+KUTTL_VERSION=0.15.0
+
 apt-get update
 apt-get --yes upgrade
+
 
 apt-get install --yes make gcc
 
@@ -37,7 +42,6 @@ usermod -a -G microk8s vagrant
 echo "export KUBECONFIG=/var/snap/microk8s/current/credentials/kubelet.config" >> /home/vagrant/.bashrc
 
 # Install go
-GO_VERSION="1.20"
 wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
 tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
 rm go${GO_VERSION}.linux-amd64.tar.gz
@@ -53,7 +57,6 @@ curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack
 mv kustomize /usr/local/bin/
 
 # Install Helm
-HELM_VERSION=v3.5.2
 mkdir /opt/helm3
 curl "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /opt/helm3
 ln -s /opt/helm3/linux-amd64/helm /usr/bin/helm3
@@ -81,3 +84,13 @@ while true; do
   fi
   sleep 5
 done
+
+# Install kuttl
+curl -L "https://github.com/kudobuilder/kuttl/releases/latest/download/kubectl-kuttl_${KUTTL_VERSION}_linux_x86_64" --output kubectl-kuttl
+chmod +x kubectl-kuttl
+mv kubectl-kuttl /usr/local/bin/kubectl-kuttl
+
+# For AMD64 / x86_64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+chmod +x kind
+mv kind /usr/local/bin/kind
