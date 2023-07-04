@@ -302,7 +302,7 @@ rules:
   - tailingsidecars/finalizers
   verbs:
   - update
-{{- if .Values.sidecar.config.content }}
+{{- if not (empty .Values.sidecar.config.content) }}
 - apiGroups:
   - ""
   resources:

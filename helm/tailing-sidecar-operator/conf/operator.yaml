@@ -2,7 +2,7 @@ sidecar:
   image: {{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}
   resources:
     {{- .Values.sidecar.resources | toYaml | nindent 4 }}
-{{- if .Values.sidecar.config.content }}
+{{- if not (empty .Values.sidecar.config.content) }}
   config:
     name: {{ template "tailing-sidecar.configMap.name" . }}
     mountPath: {{ .Values.sidecar.config.mountPath }}

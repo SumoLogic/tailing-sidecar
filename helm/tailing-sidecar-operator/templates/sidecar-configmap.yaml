@@ -1,4 +1,4 @@
-{{- if .Values.sidecar.config.content }}
+{{- if not (empty .Values.sidecar.config.content) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
