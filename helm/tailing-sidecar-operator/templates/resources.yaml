@@ -418,7 +418,15 @@ metadata:
   name: {{ include "tailing-sidecar-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- if .Values.operator.leaderElection.enabled }}
   replicas: {{ .Values.operator.replicaCount }}
+  {{- else }}
+  {{- if gt (.Values.operator.replicaCount | toString) "1" }}
+  replicas: 1
+  {{- else }}
+  replicas: {{ .Values.operator.replicaCount }}
+  {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "tailing-sidecar-operator.selectorLabels" . | nindent 6 }}
