@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.8.0] - 2023-07-07
+
+- build(deps): bump fluent/fluent-bit from 2.0.10 to 2.0.11 in /sidecar [#512]
+- build(deps): bump golang from 1.20.3 to 1.20.5 in /sidecar [#521] [#538]
+- build(deps): bump golang from 1.20.3 to 1.20.5 in /operator [#520] [#539]
+- feat(operator): add support for configuration file [#470]
+- feat(helm): use configmap to configure tailing-sidecar-operator [#534]
+- chore(sidecar): use debian bookworm for package base [#553]
+- feat(operator): support config sidecar pod resources [#552]
+- feat(operator): support config leader election [#550]
+- feat(operator): allow to override sidecar configuration [#551]
+- feat(operator): support config replicaCount [#555]
+
+[#470]: https://github.com/SumoLogic/tailing-sidecar/pull/470
+[#512]: https://github.com/SumoLogic/tailing-sidecar/pull/512
+[#520]: https://github.com/SumoLogic/tailing-sidecar/pull/520
+[#521]: https://github.com/SumoLogic/tailing-sidecar/pull/521
+[#534]: https://github.com/SumoLogic/tailing-sidecar/pull/534
+[#538]: https://github.com/SumoLogic/tailing-sidecar/pull/538
+[#539]: https://github.com/SumoLogic/tailing-sidecar/pull/539
+[#550]: https://github.com/SumoLogic/tailing-sidecar/pull/550
+[#551]: https://github.com/SumoLogic/tailing-sidecar/pull/551
+[#552]: https://github.com/SumoLogic/tailing-sidecar/pull/552
+[#553]: https://github.com/SumoLogic/tailing-sidecar/pull/553
+[#555]: https://github.com/SumoLogic/tailing-sidecar/pull/555
+[v0.8.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.8.0
+
 ## [v0.7.0] - 2023-04-05
 
 - build(deps): bump fluent/fluent-bit from 1.9.9 to 2.0.10 in /sidecar [#492]

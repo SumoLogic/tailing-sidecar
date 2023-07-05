@@ -82,7 +82,6 @@ jobs:
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
           chmod +x /usr/local/bin/kubectl-kuttl
       - name: Run Helm e2e tests
-        if: false  # skipping this test for now, there's something wrong with the configuration
         run: make e2e-helm
 
   test-helm-chart-with-cert-manager:
