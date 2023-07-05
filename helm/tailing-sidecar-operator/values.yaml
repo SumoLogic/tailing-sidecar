@@ -23,6 +23,9 @@ operator:
     renewDeadline: "107s"
     retryPeriod: "26s"
 
+  # Number of sidecar operator Pods to run (requires enable leader election if replicaCount > 1)
+  replicaCount: 1
+
   livenessProbe: {}
     # initialDelaySeconds: 1
     # periodSeconds: 20
