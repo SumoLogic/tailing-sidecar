@@ -452,7 +452,7 @@ spec:
         imagePullPolicy: {{ .Values.kubeRbacProxy.image.pullPolicy }}
         name: kube-rbac-proxy
         {{- with .Values.kubeRbacProxy.resources }}
-        resources: {{ toYaml . | nindent 12 }}
+        resources: {{ toYaml . | nindent 10 }}
         {{- end }}
         ports:
         - containerPort: 8443
