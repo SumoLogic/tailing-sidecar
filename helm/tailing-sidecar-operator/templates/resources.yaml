@@ -451,6 +451,9 @@ spec:
         image: {{ .Values.kubeRbacProxy.image.repository }}:{{ .Values.kubeRbacProxy.image.tag }}
         imagePullPolicy: {{ .Values.kubeRbacProxy.image.pullPolicy }}
         name: kube-rbac-proxy
+        {{- with .Values.kubeRbacProxy.resources }}
+        resources: {{ toYaml . | nindent 12 }}
+        {{- end }}
         ports:
         - containerPort: 8443
           name: https

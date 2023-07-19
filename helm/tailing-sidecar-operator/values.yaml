@@ -64,6 +64,13 @@ kubeRbacProxy:
     pullPolicy: IfNotPresent
     repository: quay.io/brancz/kube-rbac-proxy
     tag: v0.11.0
+  resources:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 5m
+      memory: 64Mi
 
 # Configuration for MutatingWebhook which is used by tailing sidecar operator
 # for details please see Kubernetes API Reference Docs
