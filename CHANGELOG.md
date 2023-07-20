@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore(sidecar): update fluent-bit to 2.1.7 [#563]
 - feat(helm): add resource setting for kubeRbacProxy [#562]
 - build(deps): bump golang from 1.20.5 to 1.20.6 in /sidecar [#559]
--build(deps): bump golang from 1.20.5 to 1.20.6 in /operator [#558]
+- build(deps): bump golang from 1.20.5 to 1.20.6 in /operator [#558]
 
 [#558]: https://github.com/SumoLogic/tailing-sidecar/pull/558
 [#559]: https://github.com/SumoLogic/tailing-sidecar/pull/559
