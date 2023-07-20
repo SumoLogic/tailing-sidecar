@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.0] - 2023-07-20
+
+- chore(sidecar): update fluent-bit to 2.1.7 [#563]
+- feat(helm): add resource setting for kubeRbacProxy [#562]
+- build(deps): bump golang from 1.20.5 to 1.20.6 in /sidecar [#559]
+-build(deps): bump golang from 1.20.5 to 1.20.6 in /operator [#558]
+
+[#558]: https://github.com/SumoLogic/tailing-sidecar/pull/558
+[#559]: https://github.com/SumoLogic/tailing-sidecar/pull/559
+[#562]: https://github.com/SumoLogic/tailing-sidecar/pull/562
+[#563]: https://github.com/SumoLogic/tailing-sidecar/pull/563
+[v0.9.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.9.0
+
 ## [v0.8.0] - 2023-07-07
 
 - build(deps): bump fluent/fluent-bit from 2.0.10 to 2.0.11 in /sidecar [#512]
