@@ -8,7 +8,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.27.10
 	github.com/stretchr/testify v1.8.4
-	gomodules.xyz/jsonpatch/v2 v2.3.0
+	gomodules.xyz/jsonpatch/v2 v2.4.0
 	k8s.io/api v0.26.3
 	k8s.io/apimachinery v0.27.4
 	k8s.io/client-go v0.26.3
