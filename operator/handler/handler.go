@@ -63,7 +63,7 @@ type PodExtender struct {
 	Client                  client.Client
 	TailingSidecarImage     string
 	TailingSidecarResources corev1.ResourceRequirements
-	decoder                 *admission.Decoder
+	Decoder                 *admission.Decoder
 	ConfigMapName           string
 	ConfigMapNamespace      string
 	ConfigMountPath         string
@@ -80,7 +80,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	}
 
 	pod := &corev1.Pod{}
-	err := e.decoder.Decode(req, pod)
+	err := e.Decoder.Decode(req, pod)
 	if err != nil {
 		return admission.Errored(http.StatusBadRequest, err)
 	}
@@ -115,12 +115,6 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
 	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
-}
-
-// InjectDecoder injects the decoder
-func (e *PodExtender) InjectDecoder(d *admission.Decoder) error {
-	e.decoder = d
-	return nil
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
@@ -463,7 +457,7 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 	// eliminates hanging kubectl apply -f command
 	// kube-apiserver server waits for response from operator on DELETE request
 	pod := &corev1.Pod{}
-	err := e.decoder.DecodeRaw(req.OldObject, pod)
+	err := e.Decoder.DecodeRaw(req.OldObject, pod)
 	if err != nil {
 		return admission.Allowed(fmt.Sprintf("Error ocurred (%v); %s", err, deletionMessage))
 	}
