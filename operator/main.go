@@ -28,6 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
+	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
 	"github.com/SumoLogic/tailing-sidecar/operator/controllers"
@@ -107,10 +108,11 @@ func main() {
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
-
+	decoder := admission.NewDecoder(mgr.GetScheme())
 	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
 		Handler: &handler.PodExtender{
 			Client:                  mgr.GetClient(),
+			Decoder:                 decoder,
 			TailingSidecarImage:     config.Sidecar.Image,
 			TailingSidecarResources: config.Sidecar.Resources,
 			ConfigMapName:           config.Sidecar.Config.Name,

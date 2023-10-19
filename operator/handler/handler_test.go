@@ -71,7 +71,7 @@ var _ = Describe("handler", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		decoder, err := admission.NewDecoder(scheme.Scheme)
+		decoder := admission.NewDecoder(scheme.Scheme)
 		It("creates decoder without any errors", func() {
 			Expect(err).ToNot(HaveOccurred())
 
@@ -80,7 +80,7 @@ var _ = Describe("handler", func() {
 		podExtender := PodExtender{
 			Client:              k8sClient,
 			TailingSidecarImage: "tailing-sidecar-image:test",
-			decoder:             decoder,
+			Decoder:             decoder,
 		}
 
 		When("Pod with raw configuration is created", func() {
@@ -154,7 +154,7 @@ var _ = Describe("handler", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		decoder, err := admission.NewDecoder(scheme.Scheme)
+		decoder := admission.NewDecoder(scheme.Scheme)
 		It("creates decoder without any errors", func() {
 			Expect(err).ToNot(HaveOccurred())
 
@@ -163,13 +163,13 @@ var _ = Describe("handler", func() {
 		podExtender := PodExtender{
 			Client:              k8sClient,
 			TailingSidecarImage: "tailing-sidecar-image:test",
-			decoder:             decoder,
+			Decoder:             decoder,
 		}
 
 		podExtenderWithConfiguration := PodExtender{
 			Client:              k8sClient,
 			TailingSidecarImage: "tailing-sidecar-image:test",
-			decoder:             decoder,
+			Decoder:             decoder,
 			ConfigMapName:       "my-config-map",
 			ConfigMountPath:     "my-custom-path",
 			ConfigMapNamespace:  "tailing-sidecar-system",
