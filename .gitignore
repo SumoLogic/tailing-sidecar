@@ -16,3 +16,7 @@ tests/_build
 
 .kubeconfig
 kubeconfig
+
+# Go workspace files
+go.work
+go.work.sum
