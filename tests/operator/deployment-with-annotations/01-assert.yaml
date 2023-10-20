@@ -18,5 +18,7 @@ apiVersion: kuttl.dev/v1beta1
 kind: TestAssert
 collectors:
 - selector: app=deployment-with-annotations
+- selector: app.kubernetes.io/name=tailing-sidecar-operator
+  namespace: tailing-sidecar-system
 commands:
   - script: "[ $(kubectl logs -l app=deployment-with-annotations -c tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep example | wc -l) -eq 5 ]"
