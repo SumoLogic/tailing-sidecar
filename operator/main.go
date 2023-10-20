@@ -27,6 +27,7 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
@@ -35,6 +36,8 @@ import (
 	"github.com/SumoLogic/tailing-sidecar/operator/handler"
 	// +kubebuilder:scaffold:imports
 )
+
+const WebhookPort = 9443
 
 var (
 	scheme   = runtime.NewScheme()
@@ -85,14 +88,15 @@ func main() {
 	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:             scheme,
-		MetricsBindAddress: metricsAddr,
-		Port:               9443,
-		LeaderElection:     enableLeaderElection,
-		LeaderElectionID:   "7b555970.sumologic.com",
-		LeaseDuration:      (*time.Duration)(&config.LeaderElection.LeaseDuration),
-		RenewDeadline:      (*time.Duration)(&config.LeaderElection.RenewDeadline),
-		RetryPeriod:        (*time.Duration)(&config.LeaderElection.RetryPeriod),
+		Scheme: scheme,
+		Metrics: metricsserver.Options{
+			BindAddress: metricsAddr,
+		},
+		LeaderElection:   enableLeaderElection,
+		LeaderElectionID: "7b555970.sumologic.com",
+		LeaseDuration:    (*time.Duration)(&config.LeaderElection.LeaseDuration),
+		RenewDeadline:    (*time.Duration)(&config.LeaderElection.RenewDeadline),
+		RetryPeriod:      (*time.Duration)(&config.LeaderElection.RetryPeriod),
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -109,7 +113,10 @@ func main() {
 	}
 	// +kubebuilder:scaffold:builder
 	decoder := admission.NewDecoder(mgr.GetScheme())
-	mgr.GetWebhookServer().Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
+	webhookServer := webhook.NewServer(webhook.Options{
+		Port: WebhookPort,
+	})
+	webhookServer.Register("/add-tailing-sidecars-v1-pod", &webhook.Admission{
 		Handler: &handler.PodExtender{
 			Client:                  mgr.GetClient(),
 			Decoder:                 decoder,
@@ -120,6 +127,7 @@ func main() {
 			ConfigMapNamespace:      config.Sidecar.Config.Namespace,
 		},
 	})
+	mgr.Add(webhookServer)
 
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
