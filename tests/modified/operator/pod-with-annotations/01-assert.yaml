@@ -9,6 +9,12 @@ apiVersion: kuttl.dev/v1beta1
 kind: TestAssert
 collectors:
 - pod: pod-with-annotations-updated
+- selector: app.kubernetes.io/name=tailing-sidecar-operator
+  namespace: tailing-sidecar-system
+  tail: 100
+- selector: control-plane=tailing-sidecar-operator
+  namespace: tailing-sidecar-system
+  tail: 100
 commands:
   - script: "[ $(kubectl logs pod-with-annotations-updated tailing-sidecar-0 -n ${NAMESPACE} --tail 5 | grep modified | wc -l) -eq 5 ]"
   - script: "[ $(kubectl logs pod-with-annotations-updated named-sidecar -n ${NAMESPACE} --tail 5 | grep modified | wc -l) -eq 5 ]"
