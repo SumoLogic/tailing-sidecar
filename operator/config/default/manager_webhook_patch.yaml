@@ -14,25 +14,18 @@ spec:
           protocol: TCP
         startupProbe:
           httpGet:
-            scheme: HTTPS
-            path: /add-tailing-sidecars-v1-pod
-            port: 9443
-            httpHeaders:
-            - name: Accept
-              value: application/json
-            - name: Content-Type
-              value: application/json
+            path: /readyz
+            port: 8081
           periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          periodSeconds: 10
         livenessProbe:
           httpGet:
-            scheme: HTTPS
-            path: /add-tailing-sidecars-v1-pod
-            port: 9443
-            httpHeaders:
-            - name: Accept
-              value: application/json
-            - name: Content-Type
-              value: application/json
+            path: /healthz
+            port: 8081
           initialDelaySeconds: 1
           periodSeconds: 10
         volumeMounts:
