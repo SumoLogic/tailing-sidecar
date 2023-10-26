@@ -42,6 +42,13 @@ e2e-helm-certmanager: e2e
 e2e-helm-custom-configuration: KUTTL_CONFIG = kuttl-test-helm-custom-configuration.yaml
 e2e-helm-custom-configuration: e2e
 
+# We sleep for 10 seconds here because webhooks can mysteriously be unavailable even though the readiness check passes
+.PHONY: e2e-wait-until-operator-ready
+e2e-wait-until-operator-ready:
+	kubectl wait --for=condition=available --timeout 300s deploy --all -n tailing-sidecar-system
+	kubectl wait --for=condition=ready --timeout 300s pod --all -n tailing-sidecar-system
+	sleep 10  
+
 build-push-deploy: build-push-sidecar build-push-deploy-operator
 
 build-push-sidecar:

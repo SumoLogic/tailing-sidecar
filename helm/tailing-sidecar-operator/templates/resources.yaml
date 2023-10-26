@@ -474,29 +474,22 @@ spec:
           protocol: TCP
         startupProbe:
           httpGet:
-            scheme: HTTPS
-            path: /add-tailing-sidecars-v1-pod
-            port: 9443
-            httpHeaders:
-            - name: Accept
-              value: application/json
-            - name: Content-Type
-              value: application/json
+            path: /readyz
+            port: 8081
 {{- if .Values.operator.startupProbe}}
 {{ toYaml .Values.operator.startupProbe | indent 10 }}
 {{ else }}
           periodSeconds: 3
 {{ end }}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          periodSeconds: 10
         livenessProbe:
           httpGet:
-            scheme: HTTPS
-            path: /add-tailing-sidecars-v1-pod
-            port: 9443
-            httpHeaders:
-            - name: Accept
-              value: application/json
-            - name: Content-Type
-              value: application/json
+            path: /healthz
+            port: 8081
 {{- if .Values.operator.livenessProbe}}
 {{ toYaml .Values.operator.livenessProbe | indent 10 }}
 {{ else }}
