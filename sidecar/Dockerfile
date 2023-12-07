@@ -38,6 +38,7 @@ COPY --from=go-builder \
   /tailing-sidecar/lib/
 
 COPY conf/fluent-bit.conf \
+  conf/inputs.conf \
   conf/plugins.conf \
   /fluent-bit/etc/
 
