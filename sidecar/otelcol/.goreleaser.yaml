@@ -1,0 +1,63 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+
+# The lines below are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/need to use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
+version: 1
+
+project_name: otelcol-sidecar
+
+before:
+  hooks:
+    - make generate-sources VERSION={{ .Version }}
+
+builds:
+  - main: ./cmd
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+# disable archiving
+archives:
+  - format: binary
+
+dockers:
+  - image_templates:
+      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-amd64"
+      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-amd64"
+    use: buildx
+    goarch: amd64
+    build_flag_templates:
+      - "--platform=linux/amd64"
+    extra_files:
+      - "config.yaml"
+  - image_templates:
+      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-arm64"
+      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-arm64"
+    use: buildx
+    goarch: arm64
+    build_flag_templates:
+      - "--platform=linux/arm64"
+    extra_files:
+      - "config.yaml"
+
+docker_manifests:
+  - name_template: "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-amd64"
+      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/sumologic/tailing-sidecar-otel:latest"
+    image_templates:
+      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-amd64"
+      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-arm64"
+
+# we only want to build and publish docker images
+release:
+  disable: true
