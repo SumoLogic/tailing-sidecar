@@ -10,7 +10,7 @@ markdownlint: mdl
 mdl:
 	mdl --style .markdownlint/style.rb \
 		README.md \
-		sidecar/README.md \
+		sidecar/fluentbit/README.md \
 		operator/README.md \
 		docs/*.md
 
@@ -26,7 +26,7 @@ login-ecr:
 e2e: IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
 e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/tailing-sidecar:test"
 e2e:
-	$(MAKE) -C ./sidecar build TAG=$(TAILING_SIDECAR_IMG)
+	$(MAKE) -C ./sidecar/fluentbit build TAG=$(TAILING_SIDECAR_IMG)
 	$(MAKE) -C ./operator docker-build IMG=$(IMG) TAILING_SIDECAR_IMG=$(TAILING_SIDECAR_IMG)
 	kubectl-kuttl test --config $(KUTTL_CONFIG)
 

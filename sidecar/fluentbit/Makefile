@@ -12,7 +12,7 @@ TAG ?= "localhost:32000/sumologic/tailing-sidecar:latest"
 all: build push
 
 build:
-	docker build --tag $(TAG) --file ${root_dir}sidecar/Dockerfile ${root_dir}sidecar/
+	docker build --tag $(TAG) --file Dockerfile .
 
 run: build
 	docker run --rm -it \
@@ -32,11 +32,11 @@ push:
 	docker push $(TAG)
 
 deploy-examples:
-	kubectl apply -f ${root_dir}sidecar/examples/pod_with_tailing_sidecars.yaml
+	kubectl apply -f examples/pod_with_tailing_sidecars.yaml
 	kubectl wait --for=condition=ready --timeout 60s pod example-with-tailling-sidecars
 
 test-examples:
-	${root_dir}sidecar/tests/test.sh
+	tests/test.sh
 
 teardown-examples:
 	kubectl delete pod example-with-tailling-sidecars

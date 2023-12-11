@@ -94,7 +94,7 @@ vagrant ssh
 Build and push tailing sidecar image to local container registry:
 
 ```bash
-/tailing-sidecar/sidecar/Makefile
+/tailing-sidecasidecar/fluentbit/akefile
 ```
 
 Go to operator directory:
