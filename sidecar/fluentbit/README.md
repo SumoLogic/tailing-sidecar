@@ -237,11 +237,11 @@ vagrant ssh
 Build and push docker image to local container registry:
 
 ```bash
-/tailing-sidecar/sidecar/Makefile
+/tailing-sidecar/sidecar/fluentbit/Makefile
 ```
 
 Run example Pod:
 
 ```bash
-kubectl apply -f /tailing-sidecar/sidecar/examples/pod_with_tailing_sidecars.yaml
+kubectl apply -f /tailing-sidecar/sidecar/fluentbit/examples/pod_with_tailing_sidecars.yaml
 ```

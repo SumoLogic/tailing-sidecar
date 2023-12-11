@@ -37,10 +37,10 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - name: Push tailing sidecar image
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
-        working-directory: ./sidecar
+        working-directory: ./sidecar/fluentbit
       - name: Push tailing sidecar image with latest tag
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
-        working-directory: ./sidecar
+        working-directory: ./sidecar/fluentbit
       - name: Log in to AWS Public ECR to publish tailing sidecar image
         run: make login-ecr
         env:
@@ -48,10 +48,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_TAILING_SIDECAR }}
       - name: Build and push to ECR tailing sidecar multiplatform image
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ steps.extract_tag.outputs.tag }}
-        working-directory: ./sidecar
+        working-directory: ./sidecar/fluentbit
       - name: Push tailing sidecar image with latest tag to ECR
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
-        working-directory: ./sidecar
+        working-directory: ./sidecar/fluentbit
 
   build-operator:
     runs-on: ubuntu-20.04

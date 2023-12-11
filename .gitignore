@@ -4,9 +4,9 @@ ubuntu-bionic-18.04-cloudimg-console.log
 .kube-config
 
 # Fluent Bit ignores
-sidecar/out_gstdout/out_gstdout.h
-sidecar/out_gstdout/out_gstdout.so
-sidecar/var/
+sidecar/fluentbit/out_gstdout/out_gstdout.h
+sidecar/fluentbit/out_gstdout/out_gstdout.so
+sidecar/fluentbit/var/
 
 .vscode/*
 !.vscode/snippets.code-snippets
