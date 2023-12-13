@@ -2,6 +2,7 @@ NAMESPACE ?= tailing-sidecar-system
 RELEASE ?= tailing-sidecar
 HELM_CHART ?= helm/tailing-sidecar-operator
 KUTTL_CONFIG ?= kuttl-test.yaml
+TAILING_SIDECAR ?= fluentbit
 
 all: markdownlint yamllint
 
@@ -26,7 +27,7 @@ login-ecr:
 e2e: IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
 e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/tailing-sidecar:test"
 e2e:
-	$(MAKE) -C ./sidecar/fluentbit build TAG=$(TAILING_SIDECAR_IMG)
+	$(MAKE) -C ./sidecar/$(TAILING_SIDECAR) build-test-image TAG=$(TAILING_SIDECAR_IMG)
 	$(MAKE) -C ./operator docker-build IMG=$(IMG) TAILING_SIDECAR_IMG=$(TAILING_SIDECAR_IMG)
 	kubectl-kuttl test --config $(KUTTL_CONFIG)
 

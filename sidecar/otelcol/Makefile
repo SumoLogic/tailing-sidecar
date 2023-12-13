@@ -5,7 +5,7 @@ GO ?= go
 
 OS ?= $(shell uname -s | tr A-Z a-z)
 ARCH ?= $(shell uname -m | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
-LOCALBIN ?= ./bin
+LOCALBIN ?= $(shell pwd)/bin
 
 GORELEASER ?= $(LOCALBIN)/goreleaser
 
@@ -14,6 +14,8 @@ BUILDER_BIN_PATH ?= $(LOCALBIN)
 BUILDER=$(BUILDER_BIN_PATH)/$(BUILDER_BIN_NAME)
 
 INSTALLED_VERSION := $(shell $(BUILDER) version 2>&1)
+
+CONTAINER_REGISTRY := ghcr.io/sumologic/tailing-sidecar-otel
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -70,6 +72,10 @@ release-dev: ensure-correct-builder-version install-goreleaser
 .PHONY: release
 release: ensure-correct-builder-version install-goreleaser
 	@$(GORELEASER) release --clean
+
+.PHONY: build-test-image
+build-test-image: build
+	docker tag $(CONTAINER_REGISTRY):latest-$(ARCH) $(TAG)
 
 .PHONY: generate-sources
 generate-sources:
