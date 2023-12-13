@@ -58,8 +58,8 @@ jobs:
         with:
           go-version: '1.21'
           cache-dependency-path: |
-            .otelcol-builder.yaml
-            .goreleaser.yaml
+            sidecar/otelcol/.otelcol-builder.yaml
+            sidecar/otelcol/.goreleaser.yaml
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
       - name: Set up Docker Buildx
