@@ -16,6 +16,6 @@ COPY --from=directories --chown=${USER_UID}:${USER_UID} /var/log/otelcol.log /va
 # copy the default tailing-sidecar configuration file
 COPY ./config.yaml /etc/otel/config.yaml
 
-COPY otelcol-sidecar /
-ENTRYPOINT ["/otelcol-sidecar"]
+COPY otelcol-sidecar /otelcol
+ENTRYPOINT ["/otelcol"]
 CMD ["--config", "/etc/otel/config.yaml"]
