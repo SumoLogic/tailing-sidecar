@@ -15,8 +15,6 @@ BUILDER=$(BUILDER_BIN_PATH)/$(BUILDER_BIN_NAME)
 
 INSTALLED_VERSION := $(shell $(BUILDER) version 2>&1)
 
-CONTAINER_REGISTRY := ghcr.io/sumologic/tailing-sidecar-otel
-
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 define go-get-tool
@@ -74,8 +72,9 @@ release: ensure-correct-builder-version install-goreleaser
 	@$(GORELEASER) release --clean
 
 .PHONY: build-test-image
+build-test-image: GHCR_IMAGE = ghcr.io/sumologic/tailing-sidecar-otel
 build-test-image: build
-	docker tag $(CONTAINER_REGISTRY):latest-$(ARCH) $(TAG)
+	docker tag $(GHCR_IMAGE):main-$(ARCH) $(TAG)
 
 .PHONY: generate-sources
 generate-sources:
