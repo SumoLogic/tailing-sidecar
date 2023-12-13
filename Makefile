@@ -40,7 +40,7 @@ e2e-helm-certmanager: KUTTL_CONFIG = kuttl-test-helm-certmanager.yaml
 e2e-helm-certmanager: e2e
 
 .PHONY: e2e-helm-custom-configuration
-e2e-helm-custom-configuration: KUTTL_CONFIG = kuttl-test-helm-custom-configuration.yaml
+e2e-helm-custom-configuration: KUTTL_CONFIG = kuttl-test-helm-$(TAILING_SIDECAR)-custom-configuration.yaml
 e2e-helm-custom-configuration: e2e
 
 # We sleep for 10 seconds here because webhooks can mysteriously be unavailable even though the readiness check passes

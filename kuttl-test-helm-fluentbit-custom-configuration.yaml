@@ -12,5 +12,5 @@ kindContainers:
   - registry.localhost:5000/sumologic/tailing-sidecar-operator:test
   - registry.localhost:5000/sumologic/tailing-sidecar:test
 commands: 
-  - command: helm upgrade --install test-release ./helm/tailing-sidecar-operator -f ./helm/tests/values.withCustomConfiguration.yaml -n tailing-sidecar-system --create-namespace
+  - command: helm upgrade --install test-release ./helm/tailing-sidecar-operator -f ./helm/tests/values.withFluentBitCustomConfiguration.yaml -n tailing-sidecar-system --create-namespace
   - command: make e2e-wait-until-operator-ready
