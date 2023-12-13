@@ -57,6 +57,20 @@ endif
 build: ensure-correct-builder-version install-goreleaser
 	@$(GORELEASER) release --snapshot --clean
 
+.PHONY: release-dev
+release-dev: TAG = $(shell git describe --tags --always)
+release-dev: ensure-correct-builder-version install-goreleaser
+	git tag "$(TAG)"
+	GORELEASER_CURRENT_TAG=$(TAG) \
+		ECR_IMAGE=public.ecr.aws/sumologic/tailing-sidecar-otel-dev \
+		GHCR_IMAGE=ghcr.io/sumologic/tailing-sidecar-otel \
+		make release
+	git tag -d "$(TAG)"
+
+.PHONY: release
+release: ensure-correct-builder-version install-goreleaser
+	@$(GORELEASER) release --clean
+
 .PHONY: generate-sources
 generate-sources:
 	$(BUILDER) \

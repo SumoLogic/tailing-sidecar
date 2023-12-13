@@ -10,6 +10,10 @@ version: 1
 
 project_name: otelcol-sidecar
 
+env:
+  - GHCR_IMAGE={{ if index .Env "GHCR_IMAGE" }}{{ .Env.GHCR_IMAGE }}{{ else }}ghcr.io/sumologic/tailing-sidecar-otel{{ end }}
+  - ECR_IMAGE={{ if index .Env "ECR_IMAGE" }}{{ .Env.ECR_IMAGE }}{{ else }}public.ecr.aws/sumologic/tailing-sidecar-otel{{ end }}
+
 before:
   hooks:
     - make generate-sources VERSION={{ .Version }}
@@ -30,8 +34,10 @@ archives:
 
 dockers:
   - image_templates:
-      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-amd64"
-      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-amd64"
+      - "{{ .Env.ECR_IMAGE }}:{{ .Version }}-amd64"
+      - "{{ .Env.ECR_IMAGE }}:main-amd64"
+      - "{{ .Env.GHCR_IMAGE }}:{{ .Version }}-amd64"
+      - "{{ .Env.GHCR_IMAGE }}:main-amd64"
     use: buildx
     goarch: amd64
     build_flag_templates:
@@ -39,8 +45,10 @@ dockers:
     extra_files:
       - "config.yaml"
   - image_templates:
-      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-arm64"
-      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-arm64"
+      - "{{ .Env.ECR_IMAGE }}:{{ .Version }}-arm64"
+      - "{{ .Env.ECR_IMAGE }}:main-arm64"
+      - "{{ .Env.GHCR_IMAGE }}:{{ .Version }}-arm64"
+      - "{{ .Env.GHCR_IMAGE }}:main-arm64"
     use: buildx
     goarch: arm64
     build_flag_templates:
@@ -49,14 +57,22 @@ dockers:
       - "config.yaml"
 
 docker_manifests:
-  - name_template: "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}"
+  - name_template: "{{ .Env.GHCR_IMAGE }}:{{ .Version }}"
     image_templates:
-      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-amd64"
-      - "ghcr.io/sumologic/tailing-sidecar-otel:{{ .Version }}-arm64"
-  - name_template: "ghcr.io/sumologic/tailing-sidecar-otel:latest"
+      - "{{ .Env.GHCR_IMAGE }}:{{ .Version }}-amd64"
+      - "{{ .Env.GHCR_IMAGE }}:{{ .Version }}-arm64"
+  - name_template: "{{ .Env.GHCR_IMAGE }}:main"
     image_templates:
-      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-amd64"
-      - "ghcr.io/sumologic/tailing-sidecar-otel:latest-arm64"
+      - "{{ .Env.GHCR_IMAGE }}:main-amd64"
+      - "{{ .Env.GHCR_IMAGE }}:main-arm64"
+  - name_template: "{{ .Env.ECR_IMAGE }}:{{ .Version }}"
+    image_templates:
+      - "{{ .Env.ECR_IMAGE }}:{{ .Version }}-amd64"
+      - "{{ .Env.ECR_IMAGE }}:{{ .Version }}-arm64"
+  - name_template: "{{ .Env.ECR_IMAGE }}:main"
+    image_templates:
+      - "{{ .Env.ECR_IMAGE }}:main-amd64"
+      - "{{ .Env.ECR_IMAGE }}:main-arm64"
 
 # we only want to build and publish docker images
 release:
