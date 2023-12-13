@@ -15,7 +15,7 @@ before:
     - make generate-sources VERSION={{ .Version }}
 
 builds:
-  - main: ./cmd
+  - dir: ./cmd
     env:
       - CGO_ENABLED=0
     goos:
