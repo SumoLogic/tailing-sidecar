@@ -14,6 +14,8 @@ all: build push
 build:
 	docker build --tag $(TAG) --file Dockerfile .
 
+build-test-image: build
+
 run: build
 	docker run --rm -it \
 		-v $(DIR_TO_TAIL):/tmp/host \
