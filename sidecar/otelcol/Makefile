@@ -59,7 +59,7 @@ build: ensure-correct-builder-version install-goreleaser
 
 .PHONY: generate-sources
 generate-sources:
-	$(BUILDER_BIN_NAME) \
+	$(BUILDER) \
 		--go $(GO) \
 		--version "$(VERSION)" \
 		--config .otelcol-builder.yaml \
