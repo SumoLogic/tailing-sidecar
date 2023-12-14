@@ -3,9 +3,10 @@
 set -x
 
 export DEBIAN_FRONTEND=noninteractive
-GO_VERSION="1.20"
+GO_VERSION="1.21.5"
 HELM_VERSION=v3.5.2
 KUTTL_VERSION=0.15.0
+MICROK8S_VERSION=1.27
 
 apt-get update
 apt-get --yes upgrade
@@ -23,7 +24,7 @@ apt-get install --yes docker-ce docker-ce-cli containerd.io
 usermod -aG docker vagrant
 
 # Install k8s
-snap install microk8s --classic --channel=1.20/stable
+snap install microk8s --classic --channel=${MICROK8S_VERSION}/stable
 microk8s.status --wait-ready
 ufw allow in on cbr0
 ufw allow out on cbr0
