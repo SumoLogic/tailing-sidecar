@@ -59,7 +59,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-tags: true
+          filter: tree:0
+          fetch-depth: 0
       - name: Setup go
         uses: actions/setup-go@v5
         with:
