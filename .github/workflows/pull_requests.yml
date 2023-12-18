@@ -74,6 +74,9 @@ jobs:
     name: Test resources created without Helm chart
     runs-on: ubuntu-20.04
     timeout-minutes: 15
+    strategy:
+      matrix:
+        sidecar: [fluentbit, otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -95,15 +98,16 @@ jobs:
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
           chmod +x /usr/local/bin/kubectl-kuttl
-      - name: Run e2e tests for Fluent Bit in tailing sidecar
-        run: make e2e TAILING_SIDECAR=fluentbit
-      - name: Run e2e tests for otelcol in tailing sidecar
-        run: make e2e TAILING_SIDECAR=otelcol
+      - name: Run e2e tests for ${{ matrix.sidecar }} in tailing sidecar
+        run: make e2e TAILING_SIDECAR=${{ matrix.sidecar }}
 
   test-helm-chart:
     name: Test Helm chart
     runs-on: ubuntu-20.04
     timeout-minutes: 15
+    strategy:
+      matrix:
+        sidecar: [fluentbit, otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -125,15 +129,16 @@ jobs:
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
           chmod +x /usr/local/bin/kubectl-kuttl
-      - name: Run Helm e2e tests for Fluent Bit in tailing sidecar
-        run: make e2e-helm TAILING_SIDECAR=fluentbit
-      - name: Run Helm e2e tests for otelcol in tailing sidecar
-        run: make e2e-helm TAILING_SIDECAR=otelcol
+      - name: Run Helm e2e tests for ${{ matrix.sidecar }} in tailing sidecar
+        run: make e2e-helm TAILING_SIDECAR=${{ matrix.sidecar }}
 
   test-helm-chart-with-cert-manager:
     name: Test Helm chart with cert-manager
     runs-on: ubuntu-20.04
     timeout-minutes: 15
+    strategy:
+      matrix:
+        sidecar: [fluentbit, otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -155,15 +160,16 @@ jobs:
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
           chmod +x /usr/local/bin/kubectl-kuttl
-      - name: Run Helm e2e tests for Fluent Bit in tailing sidecar
-        run: make e2e-helm-certmanager TAILING_SIDECAR=fluentbit
-      - name: Run Helm e2e tests for otelcol in tailing sidecar
-        run: make e2e-helm-certmanager TAILING_SIDECAR=otelcol
+      - name: Run Helm e2e tests for ${{ matrix.sidecar }} in tailing sidecar
+        run: make e2e-helm-certmanager TAILING_SIDECAR=${{ matrix.sidecar }}
 
   test-helm-chart-with-custom-configuration:
     name: Test Helm chart with custom configuration
     runs-on: ubuntu-20.04
     timeout-minutes: 15
+    strategy:
+      matrix:
+        sidecar: [fluentbit, otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -185,7 +191,5 @@ jobs:
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
           chmod +x /usr/local/bin/kubectl-kuttl
-      - name: Run Helm e2e tests for Fluent Bit in tailing sidecar
-        run: make e2e-helm-custom-configuration TAILING_SIDECAR=fluentbit
-      - name: Run Helm e2e tests for otelcol in tailing sidecar
-        run: make e2e-helm-custom-configuration TAILING_SIDECAR=otelcol
+      - name: Run Helm e2e tests for ${{ matrix.sidecar }} in tailing sidecar
+        run: make e2e-helm-custom-configuration TAILING_SIDECAR=${{ matrix.sidecar }}
