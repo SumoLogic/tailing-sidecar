@@ -10,7 +10,7 @@ startKIND: true
 kindNodeCache: true
 kindContainers:
   - registry.localhost:5000/sumologic/tailing-sidecar-operator:test
-  - registry.localhost:5000/sumologic/tailing-sidecar:test
+  - registry.localhost:5000/sumologic/sidecar:test
 commands: 
   - command: helm upgrade --install test-release ./helm/tailing-sidecar-operator -f ./helm/tests/values.yaml -n tailing-sidecar-system --create-namespace
 

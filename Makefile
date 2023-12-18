@@ -25,7 +25,7 @@ login-ecr:
 
 .PHONY: e2e
 e2e: IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
-e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/tailing-sidecar:test"
+e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/sidecar:test"
 e2e:
 	$(MAKE) -C ./sidecar/$(TAILING_SIDECAR) build-test-image TAG=$(TAILING_SIDECAR_IMG)
 	$(MAKE) -C ./operator docker-build IMG=$(IMG) TAILING_SIDECAR_IMG=$(TAILING_SIDECAR_IMG)

@@ -5,7 +5,7 @@ operator:
 
 sidecar:
   image:
-    repository: registry.localhost:5000/sumologic/tailing-sidecar
+    repository: registry.localhost:5000/sumologic/sidecar
     tag: test
   resources:
     limits:
