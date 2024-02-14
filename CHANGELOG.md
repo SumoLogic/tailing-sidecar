@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.10.0] - 2024-02-14
+
+- feat(operator): add proper health checks [#608]
+- build(deps): bump Fluent Bit from 2.1.7 to 2.2.2 [#569] [#581] [#589] [#622] [#636] [#639]
+- deps(operator): upgrade controller-runtime to 0.17.1 [#603] [#644] [#648]
+
+[#569]: https://github.com/SumoLogic/tailing-sidecar/pull/569
+[#581]: https://github.com/SumoLogic/tailing-sidecar/pull/581
+[#589]: https://github.com/SumoLogic/tailing-sidecar/pull/589
+[#603]: https://github.com/SumoLogic/tailing-sidecar/pull/603
+[#608]: https://github.com/SumoLogic/tailing-sidecar/pull/608
+[#622]: https://github.com/SumoLogic/tailing-sidecar/pull/622
+[#636]: https://github.com/SumoLogic/tailing-sidecar/pull/636
+[#639]: https://github.com/SumoLogic/tailing-sidecar/pull/639
+[#644]: https://github.com/SumoLogic/tailing-sidecar/pull/644
+[#648]: https://github.com/SumoLogic/tailing-sidecar/pull/648
+[v0.10.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.10.0
+
 ## [v0.9.0] - 2023-07-20
 
 - chore(sidecar): update fluent-bit to 2.1.7 [#563]
