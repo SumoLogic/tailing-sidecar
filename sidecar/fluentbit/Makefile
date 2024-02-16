@@ -8,11 +8,12 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 root_dir := $(dir $(abspath $(mkfile_path)/..))
 
 TAG ?= "localhost:32000/sumologic/tailing-sidecar:latest"
+DOCKERFILE ?= Dockerfile
 
 all: build push
 
 build:
-	docker build --tag $(TAG) --file Dockerfile .
+	docker build --tag $(TAG) --file ${DOCKERFILE} .
 
 build-test-image: build
 
@@ -29,6 +30,10 @@ build-push-multiplatform:
 		--platform linux/amd64,linux/arm/v7,linux/arm64 \
 		--tag ${TAG} \
 		.
+
+build-push-ubi:
+	$(MAKE) build DOCKERFILE=${DOCKERFILE}.ubi TAG=${TAG}-ubi
+	$(MAKE) push DOCKERFILE=${DOCKERFILE}.ubi TAG=${TAG}-ubi
 
 push:
 	docker push $(TAG)

@@ -35,11 +35,17 @@ jobs:
           registry: ghcr.io
           username: USERNAME
           password: ${{ secrets.CR_PAT }}
-      - name: Push tailing sidecar image
+      - name: Build and push tailing sidecar multiplatform image
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar/fluentbit
+      - name: Build and push tailing sidecar ubi image
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar/fluentbit
       - name: Push tailing sidecar image with latest tag
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
+        working-directory: ./sidecar/fluentbit
+      - name: Push tailing sidecar ubi image with latest tag
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./sidecar/fluentbit
       - name: Log in to AWS Public ECR to publish tailing sidecar image
         run: make login-ecr
@@ -49,8 +55,14 @@ jobs:
       - name: Build and push to ECR tailing sidecar multiplatform image
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./sidecar/fluentbit
+      - name: Build and push to ECR tailing sidecar ubi image
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar/fluentbit
       - name: Push tailing sidecar image with latest tag to ECR
         run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
+        working-directory: ./sidecar/fluentbit
+      - name: Push tailing sidecar ubi image with latest tag to ECR
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
         working-directory: ./sidecar/fluentbit
 
   build-operator:
@@ -81,8 +93,14 @@ jobs:
       - name: Build and push tailing sidecar operator multiplatform image
         run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./operator
+      - name: Build and push tailing sidecar operator ubi image
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
       - name: Push tailing sidecar operator image with latest tag
         run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
+        working-directory: ./operator
+      - name: Push tailing sidecar operator ubi image with latest tag
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./operator
       - name: Log in to AWS Public ECR to publish tailing sidecar operator image
         run: make login-ecr
@@ -92,8 +110,14 @@ jobs:
       - name: Build and push to ECR tailing sidecar operator multiplatform image
         run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE_ECR }}:${{ steps.extract_tag.outputs.tag }}
         working-directory: ./operator
+      - name: Build and push to ECR tailing sidecar operator ubi image
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE_ECR }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
       - name: Push tailing sidecar operator image with latest tag to ECR
         run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
+        working-directory: ./operator
+      - name: Push tailing sidecar operator ubi image with latest tag to ECR
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
         working-directory: ./operator
 
   push-helm-chart:
