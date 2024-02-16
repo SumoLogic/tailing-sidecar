@@ -1,0 +1,39 @@
+FROM golang:1.20.7 as go-builder
+RUN mkdir /build
+ADD ./out_gstdout /build/
+WORKDIR /build
+RUN make all
+
+# ToDo: build and use the latest fluent-bit image
+FROM public.ecr.aws/sumologic/fluent-bit:1.6.10-sumo-2-ubi
+
+ARG VERSION=${VERSION}
+ARG RELEASE_NUMBER=${RELEASE_NUMBER}
+
+ENV SUMMARY="UBI based Tailing Sidecar" \
+    DESCRIPTION="Tailing sidecar is a streaming sidecar container which can be used with Tailing Sidecar Operator."
+
+LABEL name="Tailing Sidecar" \
+      maintainer="collection@sumologic.com" \
+      vendor="Sumo Logic" \
+      version=${VERSION} \
+      release=${RELEASE_NUMBER} \
+      summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$DESCRIPTION"
+
+ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LICENSE /licenses/LICENSE
+
+ENV LOG_LEVEL=warning
+
+COPY --from=go-builder \
+  /build/out_gstdout.so \
+  /tailing-sidecar/lib/
+
+COPY conf/fluent-bit.conf \
+  conf/plugins.conf \
+  /fluent-bit/etc/
+
+USER nobody
+
+CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf", "--quiet"]

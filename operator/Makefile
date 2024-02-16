@@ -13,6 +13,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
 # Image URL to use all building/pushing image targets
 IMG ?= localhost:32000/sumologic/tailing-sidecar-operator:latest
+DOCKERFILE ?= Dockerfile
 
 # Image URL for tailing sidecar
 TAILING_SIDECAR_IMG ?= localhost:32000/sumologic/tailing-sidecar:latest
@@ -174,7 +175,7 @@ generate: controller-gen
 
 # Build the docker image
 docker-build:
-	docker build . -t ${IMG}
+	docker build . -f ${DOCKERFILE} -t ${IMG}
 
 # Push the docker image
 docker-push:
@@ -186,6 +187,10 @@ build-push-multiplatform:
 		--platform linux/amd64,linux/arm/v7,linux/arm64 \
 		--tag ${IMG} \
 		.
+
+build-push-ubi:
+	$(MAKE) docker-build DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
+	$(MAKE) docker-push DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
 
 # find or download controller-gen
 # download controller-gen if necessary
