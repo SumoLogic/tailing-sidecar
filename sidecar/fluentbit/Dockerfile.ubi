@@ -5,7 +5,7 @@ WORKDIR /build
 RUN make all
 
 # ToDo: build and use the latest fluent-bit image
-FROM public.ecr.aws/sumologic/fluent-bit:1.6.10-sumo-2-ubi
+FROM public.ecr.aws/sumologic/fluent-bit:1.6.10-sumo-3-ubi
 
 ARG VERSION=${VERSION}
 ARG RELEASE_NUMBER=${RELEASE_NUMBER}
