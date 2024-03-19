@@ -515,3 +515,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "tailing-sidecar-operator.configMap.name" . }}
+      {{- with .Values.operator.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
