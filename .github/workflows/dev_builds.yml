@@ -94,8 +94,8 @@ jobs:
       - name: Log in to AWS Public ECR
         run: make login-ecr
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_TAILING_SIDECAR_DEV }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_TAILING_SIDECAR_DEV }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_TAILING_SIDECAR_OTEL_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_TAILING_SIDECAR_OTEL_DEV }}
       - name: Build and push otelcol sidecar image
         run: |
           make install-builder
