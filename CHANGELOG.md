@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.11.0] - 2024-03-25
+
+- feat: build ubi images [#654]
+- add affinity config for operator pod [#670]
+- build(deps): bump Fluent Bit from 2.2.2 to 3.0.0 [#672]
+
+[#654]: https://github.com/SumoLogic/tailing-sidecar/pull/654
+[#670]: https://github.com/SumoLogic/tailing-sidecar/pull/670
+[#672]: https://github.com/SumoLogic/tailing-sidecar/pull/672
+[v0.11.0]: https://github.com/SumoLogic/tailing-sidecar/releases/v0.11.0
+
 ## [v0.10.0] - 2024-02-14
 
 - feat(operator): add proper health checks [#608]
