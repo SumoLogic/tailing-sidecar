@@ -13,7 +13,7 @@ project_name: otelcol-sidecar
 env:
   - GHCR_IMAGE={{ if index .Env "GHCR_IMAGE" }}{{ .Env.GHCR_IMAGE }}{{ else }}ghcr.io/sumologic/tailing-sidecar-otel{{ end }}
   - ECR_IMAGE={{ if index .Env "ECR_IMAGE" }}{{ .Env.ECR_IMAGE }}{{ else }}public.ecr.aws/sumologic/tailing-sidecar-otel{{ end }}
-  - DOCKERHUB_IMAGE={{ if index .Env "ECR_IMAGE" }}{{ .Env.ECR_IMAGE }}{{ else }}sumologic/tailing-sidecar-otel{{ end }}
+  - DOCKERHUB_IMAGE={{ if index .Env "DOCKERHUB_IMAGE" }}{{ .Env.DOCKERHUB_IMAGE }}{{ else }}sumologic/tailing-sidecar-otel{{ end }}
 
 before:
   hooks:
