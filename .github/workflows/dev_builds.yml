@@ -12,6 +12,8 @@ env:
   ECR_URL: public.ecr.aws/sumologic
   SIDECAR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar-dev"
   OPERATOR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar-operator-dev"
+  SIDECAR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar-dev"
+  OPERATOR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar-operator-dev"
   LATEST_TAG: "main"
 
 jobs:
@@ -48,6 +50,7 @@ jobs:
       - name: Push tailing sidecar ubi image with latest tag
         run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./sidecar/fluentbit
+
       - name: Log in to AWS Public ECR to publish tailing sidecar image
         run: make login-ecr
         env:
@@ -66,6 +69,23 @@ jobs:
         run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
         working-directory: ./sidecar/fluentbit
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN_TAILING_SIDECAR_DEV }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD_TAILING_SIDECAR_DEV }}
+      - name: Build and push tailing sidecar multiplatform image
+        run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_DOCKERHUB }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar/fluentbit
+      - name: Build and push tailing sidecar ubi image
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE_DOCKERHUB }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./sidecar/fluentbit
+      - name: Push tailing sidecar image with latest tag
+        run: make build-push-multiplatform TAG=${{ env.SIDECAR_IMAGE_DOCKERHUB }}:${{ env.LATEST_TAG }}
+        working-directory: ./sidecar/fluentbit
+      - name: Push tailing sidecar ubi image with latest tag
+        run: make build-push-ubi TAG=${{ env.SIDECAR_IMAGE_DOCKERHUB }}:${{ env.LATEST_TAG }}
+        working-directory: ./sidecar/fluentbit
 
   build-otelcol-sidecar:
     runs-on: ubuntu-20.04
@@ -96,6 +116,11 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_TAILING_SIDECAR_OTEL_DEV }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_TAILING_SIDECAR_OTEL_DEV }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN_TAILING_SIDECAR_OTEL_DEV }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD_TAILING_SIDECAR_OTEL_DEV }}
       - name: Build and push otelcol sidecar image
         run: |
           make install-builder
@@ -139,6 +164,7 @@ jobs:
       - name: Push tailing sidecar operator ubi image with latest tag
         run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE }}:${{ env.LATEST_TAG }}
         working-directory: ./operator
+
       - name: Log in to AWS Public ECR to publish tailing sidecar operator image
         run: make login-ecr
         env:
@@ -155,6 +181,24 @@ jobs:
         working-directory: ./operator
       - name: Push tailing sidecar operator ubi image with latest tag to ECR
         run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE_ECR }}:${{ env.LATEST_TAG }}
+        working-directory: ./operator
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN_TAILING_SIDECAR_OPERATOR_DEV }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD_TAILING_SIDECAR_OPERATOR_DEV }}
+      - name: Build and push tailing sidecar operator multiplatform image
+        run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE_DOCKERHUB }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
+      - name: Build and push tailing sidecar operator ubi image
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE_DOCKERHUB }}:${{ steps.extract_tag.outputs.tag }}
+        working-directory: ./operator
+      - name: Push tailing sidecar operator image with latest tag
+        run: make build-push-multiplatform IMG=${{ env.OPERATOR_IMAGE_DOCKERHUB }}:${{ env.LATEST_TAG }}
+        working-directory: ./operator
+      - name: Push tailing sidecar operator ubi image with latest tag
+        run: make build-push-ubi IMG=${{ env.OPERATOR_IMAGE_DOCKERHUB }}:${{ env.LATEST_TAG }}
         working-directory: ./operator
 
   push-helm-chart:

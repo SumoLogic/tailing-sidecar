@@ -64,6 +64,7 @@ release-dev: ensure-correct-builder-version install-goreleaser
 	GORELEASER_CURRENT_TAG=$(TAG) \
 		ECR_IMAGE=public.ecr.aws/sumologic/tailing-sidecar-otel-dev \
 		GHCR_IMAGE=ghcr.io/sumologic/tailing-sidecar-otel \
+		DOCKERHUB_IMAGE=sumologic/tailing-sidecar-otel-dev \
 		make release
 	git tag -d "$(TAG)"
 
