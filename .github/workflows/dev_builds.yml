@@ -7,22 +7,17 @@ on:
       - 'release-v[0-9]+.[0-9]+'
 
 env:
-  BUILD_GHCR: ${{ vars.BUILD_GHCR || 'true' }}
   SIDECAR_IMAGE: ${{ vars.OVERRIDE_SIDECAR_IMAGE || 'ghcr.io/sumologic/tailing-sidecar' }}
   OPERATOR_IMAGE: ${{ vars.OVERRIDE_OPERATOR_IMAGE || 'ghcr.io/sumologic/tailing-sidecar-operator' }}
-  BUILD_ECR: ${{ vars.BUILD_ECR || 'true' }}
   ECR_URL: ${{ vars.OVERRIDE_ECR_URL || 'public.ecr.aws/sumologic' }}
   SIDECAR_IMAGE_ECR: ${{ vars.OVERRIDE_SIDECAR_IMAGE_ECR || 'public.ecr.aws/sumologic/tailing-sidecar-dev' }}
   OPERATOR_IMAGE_ECR:  ${{ vars.OVERRIDE_OPERATOR_IMAGE_ECR || 'public.ecr.aws/sumologic/tailing-sidecar-operator-dev' }}
-  BUILD_DOCKERHUB: ${{ vars.BUILD_DOCKERHUB || 'true' }}
   SIDECAR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_SIDECAR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-dev' }}
   OPERATOR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_OPERATOR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-operator-dev' }}
   LATEST_TAG: "main"
-  PUSH_HELM: ${{ vars.PUSH_HELM || 'true'}}
 
 jobs:
   build-fluentbit-sidecar-ghcr:
-    if: env.BUILD_GHCR == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +52,6 @@ jobs:
         working-directory: ./sidecar/fluentbit
 
   build-fluentbit-sidecar-ecr:
-    if: env.BUILD_ECR == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +85,6 @@ jobs:
         working-directory: ./sidecar/fluentbit
 
   build-fluentbit-sidecar-dockerhub:
-    if: env.BUILD_DOCKERHUB == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -165,7 +158,6 @@ jobs:
         working-directory: ./sidecar/otelcol
 
   build-operator-ghcr:
-    if: env.BUILD_GHCR == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -204,7 +196,6 @@ jobs:
         working-directory: ./operator
 
   build-operator-ecr:
-    if: env.BUILD_ECR == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -242,7 +233,6 @@ jobs:
         working-directory: ./operator
 
   build-operator-dockerhub:
-    if: env.BUILD_DOCKERHUB == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -280,7 +270,6 @@ jobs:
         working-directory: ./operator
 
   push-helm-chart:
-    if: env.PUSH_HELM == 'true'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
