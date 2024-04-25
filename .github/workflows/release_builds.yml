@@ -6,13 +6,13 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 env:
-  SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
-  OPERATOR_IMAGE: "ghcr.io/sumologic/tailing-sidecar-operator"
-  ECR_URL: public.ecr.aws/sumologic
-  SIDECAR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar"
-  OPERATOR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar-operator"
-  SIDECAR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar"
-  OPERATOR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar-operator"
+  SIDECAR_IMAGE: ${{ vars.OVERRIDE_SIDECAR_IMAGE || 'ghcr.io/sumologic/tailing-sidecar' }}
+  OPERATOR_IMAGE: ${{ vars.OVERRIDE_OPERATOR_IMAGE || 'ghcr.io/sumologic/tailing-sidecar-operator' }}
+  ECR_URL: ${{ vars.OVERRIDE_ECR_URL || 'public.ecr.aws/sumologic' }}
+  SIDECAR_IMAGE_ECR: ${{ vars.OVERRIDE_SIDECAR_IMAGE_ECR || 'public.ecr.aws/sumologic/tailing-sidecar-dev' }}
+  OPERATOR_IMAGE_ECR:  ${{ vars.OVERRIDE_OPERATOR_IMAGE_ECR || 'public.ecr.aws/sumologic/tailing-sidecar-operator-dev' }}
+  SIDECAR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_SIDECAR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-dev' }}
+  OPERATOR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_OPERATOR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-operator-dev' }}
   LATEST_TAG: "latest"
 
 jobs:
