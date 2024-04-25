@@ -14,7 +14,6 @@ env:
   SIDECAR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_SIDECAR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-dev' }}
   OPERATOR_IMAGE_DOCKERHUB: ${{ vars.OVERRIDE_OPERATOR_IMAGE_DOCKERHUB || 'sumologic/tailing-sidecar-operator-dev' }}
   LATEST_TAG: "latest"
-  PUSH_HELM: ${{ vars.PUSH_HELM || 'true'}}
 
 jobs:
   build-sidecar-ghcr:
