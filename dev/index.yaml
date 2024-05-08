@@ -2,6 +2,25 @@ apiVersion: v1
 entries:
   tailing-sidecar-operator:
   - apiVersion: v2
+    appVersion: 0.12.0-2-gcc449807e00f20735833676b7cded853a06b19ed
+    created: "2024-05-08T05:03:31.752056453Z"
+    description: Installs Tailing Sidecar Operator
+    digest: 996c8736f88b2f28de0d4397f7869263eef31d67e34cddab2dd896c8a9f508e7
+    home: https://sumologic.github.io/tailing-sidecar
+    icon: https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/main/images/sumo_logic_logo.png
+    keywords:
+    - tailing-sidecar
+    - k8s-logging
+    - kubernetes-logging
+    - k8s-logs-pod
+    name: tailing-sidecar-operator
+    sources:
+    - https://github.com/SumoLogic/tailing-sidecar
+    type: application
+    urls:
+    - https://sumologic.github.io/tailing-sidecar/dev/tailing-sidecar-operator-0.12.0-2-gcc449807e00f20735833676b7cded853a06b19ed.tgz
+    version: 0.12.0-2-gcc449807e00f20735833676b7cded853a06b19ed
+  - apiVersion: v2
     appVersion: 0.12.0-1-gdb4eeb5b59156a6bf840f02a0755cb656ead6bde
     created: "2024-04-29T09:00:53.158316264Z"
     description: Installs Tailing Sidecar Operator
@@ -6212,4 +6231,4 @@ entries:
     urls:
     - https://sumologic.github.io/tailing-sidecar/dev/tailing-sidecar-operator-0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1.tgz
     version: 0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1
-generated: "2024-04-29T09:00:53.156716699Z"
+generated: "2024-05-08T05:03:31.751364496Z"
