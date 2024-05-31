@@ -1,4 +1,4 @@
-FROM golang:1.22.3 as go-builder
+FROM golang:1.20.14 as go-builder
 RUN mkdir /build
 ADD ./out_gstdout /build/
 WORKDIR /build
