@@ -15,7 +15,11 @@ VERSION ?= ""
 all: build push
 
 build:
-	docker build --tag $(TAG) --file ${DOCKERFILE} .
+	docker build \
+	--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
+	--build-arg VERSION=$(VERSION) \
+	--tag $(TAG) \
+	--file ${DOCKERFILE} .
 
 build-test-image: build
 
@@ -23,8 +27,6 @@ run: build
 	docker run --rm -it \
 		-v $(DIR_TO_TAIL):/tmp/host \
 		-v $(FLUENT_BIT_DB_DIR):/tailing-sidecar/var \
-		--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
-		--build-arg VERSION=$(VERSION) \
 		--env "PATH_TO_TAIL=/tmp/host/$(FILES_PATTERN)" \
 		--env "LOG_LEVEL=${LOG_LEVEL}" $(TAG)
 
