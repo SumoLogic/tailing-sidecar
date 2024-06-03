@@ -9,6 +9,8 @@ root_dir := $(dir $(abspath $(mkfile_path)/..))
 
 TAG ?= "localhost:32000/sumologic/tailing-sidecar:latest"
 DOCKERFILE ?= Dockerfile
+RELEASE_NUMBER ?= 1\
+VERSION ?= ""
 
 all: build push
 
@@ -21,6 +23,8 @@ run: build
 	docker run --rm -it \
 		-v $(DIR_TO_TAIL):/tmp/host \
 		-v $(FLUENT_BIT_DB_DIR):/tailing-sidecar/var \
+		--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
+		--build-arg VERSION=$(VERSION) \
 		--env "PATH_TO_TAIL=/tmp/host/$(FILES_PATTERN)" \
 		--env "LOG_LEVEL=${LOG_LEVEL}" $(TAG)
 
