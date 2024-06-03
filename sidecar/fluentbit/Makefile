@@ -9,7 +9,7 @@ root_dir := $(dir $(abspath $(mkfile_path)/..))
 
 TAG ?= "localhost:32000/sumologic/tailing-sidecar:latest"
 DOCKERFILE ?= Dockerfile
-RELEASE_NUMBER ?= 1\
+RELEASE_NUMBER ?= 1
 VERSION ?= ""
 
 all: build push
