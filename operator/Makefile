@@ -28,6 +28,9 @@ else
 GOBIN=$(shell go env GOBIN)
 endif
 
+# UBI image variables
+RELEASE_NUMBER ?= "1"
+
 # Run tests
 # Set default shell as bash
 SHELL := /bin/bash
@@ -175,7 +178,11 @@ generate: controller-gen
 
 # Build the docker image
 docker-build:
-	docker build . -f ${DOCKERFILE} -t ${IMG}
+	docker build . \
+		--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
+		--build-arg VERSION=$(VERSION) \
+		-f ${DOCKERFILE} \
+		-t ${IMG}
 
 # Push the docker image
 docker-push:
