@@ -63,7 +63,7 @@ type PodExtender struct {
 	Client                  client.Client
 	TailingSidecarImage     string
 	TailingSidecarResources corev1.ResourceRequirements
-	Decoder                 *admission.Decoder
+	Decoder                 admission.Decoder
 	ConfigMapName           string
 	ConfigMapNamespace      string
 	ConfigMountPath         string
