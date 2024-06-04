@@ -20,6 +20,11 @@ updates:
       interval: "daily"
       time: "06:27"
       timezone: "Europe/Warsaw"
+    groups:
+      kubernetes:
+        patterns:
+          - "k8s.io/*"
+          - "sigs.k8s.io/*"
 
   - package-ecosystem: "docker"
     directory: "/sidecar/fluentbit"
