@@ -34,6 +34,8 @@ operator:
 
   affinity: {}
 
+  tolerations: []
+
 sidecar:
   image:
     repository: public.ecr.aws/sumologic/tailing-sidecar
