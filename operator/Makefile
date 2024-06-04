@@ -19,7 +19,7 @@ DOCKERFILE ?= Dockerfile
 TAILING_SIDECAR_IMG ?= localhost:32000/sumologic/tailing-sidecar:latest
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
-CRD_OPTIONS ?= "crd:crdVersions={v1},trivialVersions=true"
+CRD_OPTIONS ?= "crd:crdVersions={v1}"
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -199,6 +199,7 @@ build-push-ubi:
 	$(MAKE) docker-build DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
 	$(MAKE) docker-push DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
 
+CONTROLLER_TOOLS_VERSION ?= v0.14.0
 # find or download controller-gen
 # download controller-gen if necessary
 controller-gen:
@@ -208,7 +209,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1 ;\
+	go install sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION) ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}
 CONTROLLER_GEN=$(GOBIN)/controller-gen
