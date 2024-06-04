@@ -1,11 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: tailingsidecarconfigs.tailing-sidecar.sumologic.com
 spec:
   group: tailing-sidecar.sumologic.com
@@ -22,14 +20,19 @@ spec:
         description: TailingSidecarConfig is the Schema for the tailingsidecars API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -55,18 +58,23 @@ spec:
                       description: Resources describes the compute resource requirements.
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined
-                            in spec.resourceClaims, that are used by this container.
-                            \n This is an alpha field and requires enabling the DynamicResourceAllocation
-                            feature gate. \n This field is immutable. It can only
-                            be set for containers."
+                          description: |-
+                            Claims lists the names of resources, defined in spec.resourceClaims,
+                            that are used by this container.
+
+
+                            This is an alpha field and requires enabling the
+                            DynamicResourceAllocation feature gate.
+
+
+                            This field is immutable. It can only be set for containers.
                           items:
                             description: ResourceClaim references one entry in PodSpec.ResourceClaims.
                             properties:
                               name:
-                                description: Name must match the name of one entry
-                                  in pod.spec.resourceClaims of the Pod where this
-                                  field is used. It makes that resource available
+                                description: |-
+                                  Name must match the name of one entry in pod.spec.resourceClaims of
+                                  the Pod where this field is used. It makes that resource available
                                   inside a container.
                                 type: string
                             required:
@@ -83,8 +91,9 @@ spec:
                             - type: string
                             pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                             x-kubernetes-int-or-string: true
-                          description: 'Limits describes the maximum amount of compute
-                            resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                          description: |-
+                            Limits describes the maximum amount of compute resources allowed.
+                            More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                           type: object
                         requests:
                           additionalProperties:
@@ -93,11 +102,11 @@ spec:
                             - type: string
                             pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                             x-kubernetes-int-or-string: true
-                          description: 'Requests describes the minimum amount of compute
-                            resources required. If Requests is omitted for a container,
-                            it defaults to Limits if that is explicitly specified,
-                            otherwise to an implementation-defined value. Requests
-                            cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                          description: |-
+                            Requests describes the minimum amount of compute resources required.
+                            If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                            otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                            More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                           type: object
                       type: object
                     volumeMount:
@@ -105,41 +114,70 @@ spec:
                         a tailing sidecar container.
                       properties:
                         mountPath:
-                          description: Path within the container at which the volume
-                            should be mounted.  Must not contain ':'.
+                          description: |-
+                            Path within the container at which the volume should be mounted.  Must
+                            not contain ':'.
                           type: string
                         mountPropagation:
-                          description: mountPropagation determines how mounts are
-                            propagated from the host to container and the other way
-                            around. When not set, MountPropagationNone is used. This
-                            field is beta in 1.10.
+                          description: |-
+                            mountPropagation determines how mounts are propagated from the host
+                            to container and the other way around.
+                            When not set, MountPropagationNone is used.
+                            This field is beta in 1.10.
+                            When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+                            (which defaults to None).
                           type: string
                         name:
                           description: This must match the Name of a Volume.
                           type: string
                         readOnly:
-                          description: Mounted read-only if true, read-write otherwise
-                            (false or unspecified). Defaults to false.
+                          description: |-
+                            Mounted read-only if true, read-write otherwise (false or unspecified).
+                            Defaults to false.
                           type: boolean
+                        recursiveReadOnly:
+                          description: |-
+                            RecursiveReadOnly specifies whether read-only mounts should be handled
+                            recursively.
+
+
+                            If ReadOnly is false, this field has no meaning and must be unspecified.
+
+
+                            If ReadOnly is true, and this field is set to Disabled, the mount is not made
+                            recursively read-only.  If this field is set to IfPossible, the mount is made
+                            recursively read-only, if it is supported by the container runtime.  If this
+                            field is set to Enabled, the mount is made recursively read-only if it is
+                            supported by the container runtime, otherwise the pod will not be started and
+                            an error will be generated to indicate the reason.
+
+
+                            If this field is set to IfPossible or Enabled, MountPropagation must be set to
+                            None (or be unspecified, which defaults to None).
+
+
+                            If this field is not specified, it is treated as an equivalent of Disabled.
+                          type: string
                         subPath:
-                          description: Path within the volume from which the container's
-                            volume should be mounted. Defaults to "" (volume's root).
+                          description: |-
+                            Path within the volume from which the container's volume should be mounted.
+                            Defaults to "" (volume's root).
                           type: string
                         subPathExpr:
-                          description: Expanded path within the volume from which
-                            the container's volume should be mounted. Behaves similarly
-                            to SubPath but environment variable references $(VAR_NAME)
-                            are expanded using the container's environment. Defaults
-                            to "" (volume's root). SubPathExpr and SubPath are mutually
-                            exclusive.
+                          description: |-
+                            Expanded path within the volume from which the container's volume should be mounted.
+                            Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+                            Defaults to "" (volume's root).
+                            SubPathExpr and SubPath are mutually exclusive.
                           type: string
                       required:
                       - mountPath
                       - name
                       type: object
                   type: object
-                description: SidecarSpecs defines specifications for tailing sidecar
-                  containers, map key indicates name of tailing sidecar container
+                description: |-
+                  SidecarSpecs defines specifications for tailing sidecar containers,
+                  map key indicates name of tailing sidecar container
                 type: object
               podSelector:
                 description: PodSelector selects Pods to which this tailing sidecar
@@ -149,43 +187,45 @@ spec:
                     description: matchExpressions is a list of label selector requirements.
                       The requirements are ANDed.
                     items:
-                      description: A label selector requirement is a selector that
-                        contains values, a key, and an operator that relates the key
-                        and values.
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
                       properties:
                         key:
                           description: key is the label key that the selector applies
                             to.
                           type: string
                         operator:
-                          description: operator represents a key's relationship to
-                            a set of values. Valid operators are In, NotIn, Exists
-                            and DoesNotExist.
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
                           type: string
                         values:
-                          description: values is an array of string values. If the
-                            operator is In or NotIn, the values array must be non-empty.
-                            If the operator is Exists or DoesNotExist, the values
-                            array must be empty. This array is replaced during a strategic
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
                             merge patch.
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: atomic
                       required:
                       - key
                       - operator
                       type: object
                     type: array
+                    x-kubernetes-list-type: atomic
                   matchLabels:
                     additionalProperties:
                       type: string
-                    description: matchLabels is a map of {key,value} pairs. A single
-                      {key,value} in the matchLabels map is equivalent to an element
-                      of matchExpressions, whose key field is "key", the operator
-                      is "In", and the values array contains only "value". The requirements
-                      are ANDed.
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
             type: object
           status:
             description: TailingSidecarConfigStatus defines the observed state of
@@ -196,9 +236,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
