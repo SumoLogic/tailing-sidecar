@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.14.0] - 2024-06-04
+
+- build(deps): bump ubi8/ubi-minimal from 8.9 to 8.10 [#706]
+- build(deps): bump fluent/fluent-bit from 3.0.4 to 3.0.6 [#708]
+- chore: set version and release_number labels in ubi image [#711]
+- build: downgrade sidecar to Go 1.20 [#710]
+- deps: upgrade controller-runtime to 0.18.3 [#715]
+- feat(helm): set tolerations for the operator [#716]
+
+[#706]: https://github.com/SumoLogic/tailing-sidecar/pull/706
+[#708]: https://github.com/SumoLogic/tailing-sidecar/pull/708
+[#710]: https://github.com/SumoLogic/tailing-sidecar/pull/710
+[#711]: https://github.com/SumoLogic/tailing-sidecar/pull/711
+[#715]: https://github.com/SumoLogic/tailing-sidecar/pull/715
+[#716]: https://github.com/SumoLogic/tailing-sidecar/pull/716
+
 ## [v0.13.0] - 2024-05-21
 
 - build(deps): bump fluent/fluent-bit from 3.0.2 to 3.0.4 in /sidecar/fluentbit. [#703]
