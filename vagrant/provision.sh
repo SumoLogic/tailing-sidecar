@@ -7,17 +7,20 @@ GO_VERSION="1.21.5"
 HELM_VERSION=v3.5.2
 KUTTL_VERSION=0.15.0
 MICROK8S_VERSION=1.27
+ARCH="$(dpkg --print-architecture)"
+KUTTL_ARCH="${ARCH}"
+if [[ "${KUTTL_ARCH}" == "amd64" ]]; then
+  KUTTL_ARCH="x86_64";
+fi
 
 apt-get update
 apt-get --yes upgrade
-
-
 apt-get install --yes make gcc
 
 # Install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
 apt-get install --yes docker-ce docker-ce-cli containerd.io
@@ -43,15 +46,15 @@ usermod -a -G microk8s vagrant
 echo "export KUBECONFIG=/var/snap/microk8s/current/credentials/kubelet.config" >> /home/vagrant/.bashrc
 
 # Install go
-wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
-tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
-rm go${GO_VERSION}.linux-amd64.tar.gz
+wget "https://golang.org/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz"
+tar -C /usr/local -xzf "go${GO_VERSION}.linux-${ARCH}.tar.gz"
+rm "go${GO_VERSION}.linux-${ARCH}.tar.gz"
 echo "export PATH=$PATH:/usr/local/go/bin" >> /home/vagrant/.bashrc
 
 # Install operator SDK
-curl -LO "https://github.com/operator-framework/operator-sdk/releases/latest/download/operator-sdk_linux_amd64"
-chmod +x operator-sdk_linux_amd64
-mv operator-sdk_linux_amd64 /usr/local/bin/operator-sdk
+curl -LO "https://github.com/operator-framework/operator-sdk/releases/latest/download/operator-sdk_linux_${ARCH}"
+chmod +x "operator-sdk_linux_${ARCH}"
+mv "operator-sdk_linux_${ARCH}" /usr/local/bin/operator-sdk
 
 # Install kustomize
 curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
@@ -59,8 +62,8 @@ mv kustomize /usr/local/bin/
 
 # Install Helm
 mkdir /opt/helm3
-curl "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /opt/helm3
-ln -s /opt/helm3/linux-amd64/helm /usr/bin/helm3
+curl "https://get.helm.sh/helm-${HELM_VERSION}-linux-${ARCH}.tar.gz" | tar -xz -C /opt/helm3
+ln -s "/opt/helm3/linux-${ARCH}/helm" /usr/bin/helm3
 ln -s /usr/bin/helm3 /usr/bin/helm
 
 # Check if k8s is ready
@@ -87,11 +90,11 @@ while true; do
 done
 
 # Install kuttl
-curl -L "https://github.com/kudobuilder/kuttl/releases/latest/download/kubectl-kuttl_${KUTTL_VERSION}_linux_x86_64" --output kubectl-kuttl
+curl -L "https://github.com/kudobuilder/kuttl/releases/download/v${KUTTL_VERSION}/kubectl-kuttl_${KUTTL_VERSION}_linux_${KUTTL_ARCH}" --output kubectl-kuttl
 chmod +x kubectl-kuttl
 mv kubectl-kuttl /usr/local/bin/kubectl-kuttl
 
 # For AMD64 / x86_64
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-${ARCH}
 chmod +x kind
 mv kind /usr/local/bin/kind
