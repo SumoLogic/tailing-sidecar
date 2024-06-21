@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.14.1] - 2024-06-21
+
+- deps: upgrade kube-rbac-proxy to v0.18.0 [#723]
+
+[#723]: https://github.com/SumoLogic/tailing-sidecar/pull/723
+
 ## [v0.14.0] - 2024-06-04
 
 - build(deps): bump ubi8/ubi-minimal from 8.9 to 8.10 [#706]
