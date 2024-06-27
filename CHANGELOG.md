@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.15.0] - 2024-06-27
+
+- chore(sidecar): update Fluent Bit UBI image to 3.0.7 by @sumo-drosiek in #725
+
+[#725]: https://github.com/SumoLogic/tailing-sidecar/pull/725
+
 ## [v0.14.1] - 2024-06-21
 
 - deps: upgrade kube-rbac-proxy to v0.18.0 [#723]
