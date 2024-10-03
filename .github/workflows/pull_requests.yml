@@ -64,7 +64,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.4.0
+        uses: docker/setup-buildx-action@v3.6.1
       - name: Build otelcol sidecar
         working-directory: ./sidecar/otelcol
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.4.0
+        uses: docker/setup-buildx-action@v3.6.1
       - name: Install opentelemetry-collector-builder
         working-directory: ./sidecar/otelcol
         run: make install-builder
@@ -121,7 +121,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.4.0
+        uses: docker/setup-buildx-action@v3.6.1
       - name: Install opentelemetry-collector-builder
         working-directory: ./sidecar/otelcol
         run: make install-builder
@@ -152,7 +152,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.4.0
+        uses: docker/setup-buildx-action@v3.6.1
       - name: Install opentelemetry-collector-builder
         working-directory: ./sidecar/otelcol
         run: make install-builder
@@ -183,7 +183,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.4.0
+        uses: docker/setup-buildx-action@v3.6.1
       - name: Install opentelemetry-collector-builder
         working-directory: ./sidecar/otelcol
         run: make install-builder
