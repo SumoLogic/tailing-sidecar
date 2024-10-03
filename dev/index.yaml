@@ -155,9 +155,9 @@ entries:
     version: 0.15.0-2-g422496fcf99e32866fbb617a8d6be9f735703c61
   - apiVersion: v2
     appVersion: 0.15.0-12-ga63942091249407fc0fae85f0ee8c825f12f73d5
-    created: "2024-10-03T16:53:05.334162275Z"
+    created: "2024-10-03T17:55:00.788186169Z"
     description: Installs Tailing Sidecar Operator
-    digest: 0009d3f1011cfd4ff3f20f6134e0634144fed4faca146457ce27adea6ccca61c
+    digest: 7b8d15b52947d6da5c189d3a5d10c5e9b6faee0c48b758392d5d74ad5af8cb91
     home: https://sumologic.github.io/tailing-sidecar
     icon: https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/main/images/sumo_logic_logo.png
     keywords:
@@ -6934,4 +6934,4 @@ entries:
     urls:
     - https://sumologic.github.io/tailing-sidecar/dev/tailing-sidecar-operator-0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1.tgz
     version: 0.1.0-11-g9b795153b2676a014237fdf785a4928269b738f1
-generated: "2024-10-03T16:53:05.333470511Z"
+generated: "2024-10-03T17:55:00.787201105Z"
