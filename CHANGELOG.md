@@ -5,12 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.16.0] - 2024-10-07
+## [v0.16.0] - 2024-10-10
 
-- build(deps): bump docker/setup-buildx-action from 3.4.0 to 3.7.1 (#745)
-- build(deps): bump github.com/onsi/gomega in /operator (#757)
-- build(deps): bump fluent/fluent-bit in /sidecar/fluentbit (#763)
-- build(deps): bump golang from 1.22.4 to 1.23.2 in /operator (#764)
+- build(deps): bump docker/setup-buildx-action from 3.4.0 to 3.7.1 [#745]
+- build(deps): bump github.com/onsi/gomega in /operator [#757]
+- build(deps): bump fluent/fluent-bit in /sidecar/fluentbit [#763]
+- build(deps): bump golang from 1.22.4 to 1.23.2 in /operator [#764]
 
 [#745] https://github.com/SumoLogic/tailing-sidecar/pull/745
 [#757] https://github.com/SumoLogic/tailing-sidecar/pull/757
