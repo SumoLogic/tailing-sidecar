@@ -12,10 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - build(deps): bump fluent/fluent-bit in /sidecar/fluentbit [#763]
 - build(deps): bump golang from 1.22.4 to 1.23.2 in /operator [#764]
 
-[#745] https://github.com/SumoLogic/tailing-sidecar/pull/745
-[#757] https://github.com/SumoLogic/tailing-sidecar/pull/757
-[#763] https://github.com/SumoLogic/tailing-sidecar/pull/763
-[#764] https://github.com/SumoLogic/tailing-sidecar/pull/764
+[#745]: https://github.com/SumoLogic/tailing-sidecar/pull/745
+[#757]: https://github.com/SumoLogic/tailing-sidecar/pull/757
+[#763]: https://github.com/SumoLogic/tailing-sidecar/pull/763
+[#764]: https://github.com/SumoLogic/tailing-sidecar/pull/764
 
 ## [v0.15.0] - 2024-06-27
 
