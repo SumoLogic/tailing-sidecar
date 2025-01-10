@@ -66,7 +66,7 @@ jobs:
             .otelcol-builder.yaml
             .goreleaser.yaml
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.3.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Install opentelemetry-collector-builder
@@ -97,7 +97,7 @@ jobs:
             .otelcol-builder.yaml
             .goreleaser.yaml
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.3.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Install opentelemetry-collector-builder
@@ -128,7 +128,7 @@ jobs:
             sidecar/otelcol/.otelcol-builder.yaml
             sidecar/otelcol/.goreleaser.yaml
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.3.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Install opentelemetry-collector-builder
@@ -159,7 +159,7 @@ jobs:
             sidecar/otelcol/.otelcol-builder.yaml
             sidecar/otelcol/.goreleaser.yaml
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.3.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Install opentelemetry-collector-builder
