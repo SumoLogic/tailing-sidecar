@@ -17,7 +17,7 @@ env:
 
 jobs:
   build-sidecar:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Extract tag
@@ -87,7 +87,7 @@ jobs:
         working-directory: ./sidecar/fluentbit
 
   build-operator:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -162,7 +162,7 @@ jobs:
         working-directory: ./operator
 
   push-helm-chart:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Push dev helm chart
