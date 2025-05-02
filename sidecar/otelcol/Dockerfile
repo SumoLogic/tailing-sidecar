@@ -1,5 +1,5 @@
 # Prepare the necessary directories in an Alpine container where we have the necessary tooling
-FROM alpine:3.19.0 as directories
+FROM alpine:3.21.3 AS directories
 RUN mkdir /etc/otel/
 RUN mkdir /var/lib/otc
 RUN touch /var/log/otelcol.log
