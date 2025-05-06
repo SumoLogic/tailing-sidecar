@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.17.0] - 2025-05-06
+
+- chore: update base ubi image from 9.4 to 9.5 and golang version from 1.22.5 to 1.24.3 [#802](https://github.com/SumoLogic/tailing-sidecar/pull/802)
+
 ## [v0.16.0] - 2024-10-10
 
 - build(deps): bump docker/setup-buildx-action from 3.4.0 to 3.7.1 [#745]
