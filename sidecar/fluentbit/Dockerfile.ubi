@@ -1,11 +1,11 @@
-FROM golang:1.23rc1 AS go-builder
+FROM golang:1.24.3 AS go-builder
 RUN mkdir /build
 ADD ./out_gstdout /build/
 WORKDIR /build
 RUN make all
 
 # ToDo: build and use the latest fluent-bit image
-FROM public.ecr.aws/sumologic/fluent-bit:3.0.7-ubi
+FROM public.ecr.aws/sumologic/fluent-bit:4.0.1-ubi
 
 ARG VERSION=${VERSION}
 ARG RELEASE_NUMBER=${RELEASE_NUMBER}
