@@ -15,7 +15,7 @@ COPY . .
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go config.go
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.5
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.6
 
 ARG VERSION=${VERSION}
 ARG RELEASE_NUMBER=${RELEASE_NUMBER}
@@ -36,6 +36,8 @@ ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LIC
 
 WORKDIR /
 COPY --from=builder /workspace/manager .
-USER nonroot:nonroot
+
+RUN useradd -ms /bin/bash nonroot
+USER nonroot
 
 ENTRYPOINT ["/manager"]
