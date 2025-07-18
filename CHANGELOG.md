@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.18.0] - 2025-07-18
+
+- chore: update Go to 1.24.5 for fluentbit images [#807]
+- chore: update Go to 1.24.5 for operator images [#808]
+
+[#807]: https://github.com/SumoLogic/tailing-sidecar/pull/807
+[#808]: https://github.com/SumoLogic/tailing-sidecar/pull/808
+
 ## [v0.17.0] - 2025-05-07
 
 - chore: update base ubi image from 9.4 to 9.5 and golang version from 1.22.5 to 1.24.3 [#802](https://github.com/SumoLogic/tailing-sidecar/pull/802)
