@@ -199,7 +199,7 @@ build-push-ubi:
 	$(MAKE) docker-build DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
 	$(MAKE) docker-push DOCKERFILE=${DOCKERFILE}.ubi IMG=${IMG}-ubi
 
-CONTROLLER_TOOLS_VERSION ?= v0.15.0
+CONTROLLER_TOOLS_VERSION ?= v0.18.0
 # find or download controller-gen
 # download controller-gen if necessary
 controller-gen:
