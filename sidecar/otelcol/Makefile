@@ -1,17 +1,18 @@
 BINARY_NAME ?= otelcol-sidecar
-OTELCOL_VERSION ?= 0.90.1
-BUILDER_REPO ?= github.com/open-telemetry/opentelemetry-collector
+OTELCOL_VERSION ?= 0.137.0
+BUILDER_REPO ?= github.com/open-telemetry/opentelemetry-collector-releases
 GO ?= go
 
 OS ?= $(shell uname -s | tr A-Z a-z)
 ARCH ?= $(shell uname -m | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
 LOCALBIN ?= $(shell pwd)/bin
 
-GORELEASER ?= $(LOCALBIN)/goreleaser
 
 BUILDER_BIN_NAME ?= opentelemetry-collector-builder$(BUILDER_BIN_EXT)
 BUILDER_BIN_PATH ?= $(LOCALBIN)
 BUILDER=$(BUILDER_BIN_PATH)/$(BUILDER_BIN_NAME)
+GORELEASER ?= $(BUILDER_BIN_PATH)/goreleaser
+
 
 INSTALLED_VERSION := $(shell $(BUILDER) version 2>&1)
 
@@ -39,18 +40,37 @@ install-builder:
 
 .PHONY: install-goreleaser
 install-goreleaser:
-	$(call go-get-tool,$(GORELEASER),github.com/goreleaser/goreleaser,latest)
+	@echo "Installing GoReleaser..."
+	@mkdir -p $(BUILDER_BIN_PATH)
+	@VERSION=$$(curl -sf https://goreleaser.com/static/latest); \
+	OS=$$(uname -s ); \
+	ARCH=$$(uname -m); \
+	echo "Detected OS: $$OS"; \
+	echo "Detected ARCH: $$ARCH"; \
+    TAR_FILE="goreleaser_${OS}_${ARCH}.tar.gz";\
+	RELEASES_URL="https://github.com/goreleaser/goreleaser/releases"; \
+	echo "Downloading GoReleaser $$VERSION..."; \
+	echo "Download URL: $$RELEASES_URL/download/$$VERSION/$$TAR_FILE";\
+	curl -sfLO "$$RELEASES_URL/download/$$VERSION/$$TAR_FILE"; \
+	tar -xzf "$$TAR_FILE" -C $(BUILDER_BIN_PATH) ; \
+	rm "$$TAR_FILE"; \
+	echo "GoReleaser binary installed at $(BUILDER_BIN_PATH)/goreleaser"
+
 
 
 .PHONY: ensure-correct-builder-version
 ensure-correct-builder-version:
-ifneq ($(lastword $(INSTALLED_VERSION)),$(OTELCOL_VERSION))
-	@$(error Installed opentelemetry-collector-builder version \
+ifeq (,$(findstring $(OTELCOL_VERSION),$(lastword $(INSTALLED_VERSION))))
+	@$(error Installed ocb version \
 		"$(INSTALLED_VERSION)" \
-		does not match the requested "$(OTELCOL_VERSION)" \
-		Please check if "$(BUILDER_BIN_PATH)" can be found in your PATH \
-		and if not, then install it using 'make install-builder' from otelcolbuilder's directory\
+		does not match the requested "$(OTELCOL_VERSION)". The correct version of \
+		ocb can be installed by running 'make install-builder' from the \
+		otelcolbuilder directory.\
 	)
+else
+	@printf "Installed ocb (%s) is at the correct version %s\n" \
+		"$(shell type $(OCB) | cut -d' ' -f 3)" \
+		"$(INSTALLED_VERSION)"
 endif
 
 .PHONY: build
@@ -80,8 +100,6 @@ build-test-image: build
 .PHONY: generate-sources
 generate-sources:
 	$(BUILDER) \
-		--go $(GO) \
-		--version "$(VERSION)" \
 		--config .otelcol-builder.yaml \
 		--skip-compilation=true
 
