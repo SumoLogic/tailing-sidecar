@@ -1,21 +1,16 @@
-# Prepare the necessary directories in an Alpine container where we have the necessary tooling
-FROM alpine:3.21.3 AS directories
-RUN mkdir /etc/otel/
-RUN mkdir /var/lib/otc
-RUN touch /var/log/otelcol.log
+FROM public.ecr.aws/sumologic/sumologic-otel-collector:latest AS collector
 
-FROM scratch
+FROM alpine:3.21.3
 
-ARG USER_UID=10001
-USER ${USER_UID}
+RUN mkdir -p /etc/otel /var/lib/otc /var/log
 
-COPY --from=directories --chown=${USER_UID}:${USER_UID} /etc/otel/ /etc/otel/
-COPY --from=directories --chown=${USER_UID}:${USER_UID} /var/lib/otc /var/lib/otc
-COPY --from=directories --chown=${USER_UID}:${USER_UID} /var/log/otelcol.log /var/log/otelcol.log
+RUN addgroup -g 10001 otelcol && \
+    adduser -D -u 10001 -G otelcol otelcol
 
-# copy the default tailing-sidecar configuration file
+COPY --from=collector / /
 COPY ./config.yaml /etc/otel/config.yaml
+RUN chown -R otelcol:otelcol /etc/otel /var/lib/otc /var/log
+USER 10001
 
-COPY otelcol-sidecar /otelcol
-ENTRYPOINT ["/otelcol"]
+ENTRYPOINT ["/otelcol-sumo"]
 CMD ["--config", "/etc/otel/config.yaml"]
