@@ -1,3 +1,1 @@
-bin/
-cmd/
-dist/
+builder-config.yaml

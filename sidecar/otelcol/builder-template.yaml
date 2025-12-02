@@ -1,0 +1,26 @@
+dist:
+  name: otelcol-sidecar
+  description: Sumo Logic OpenTelemetry Collector Sidecar distribution
+  # the module name for the new distribution, following Go mod conventions. Optional, but recommended.
+  module: github.com/SumoLogic/tailing-sidecar/sidecar
+  # the OpenTelemetry Collector version to use as base for the distribution.
+  version: ${DIST_VERSION}
+  # the path to write the output (sources and binary).
+  output_path: ./cmd
+
+exporters:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v${OT_VERSION}
+
+# Note: These components aren't strictly necessary, but they don't measurably increase the binary size
+processors:
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v${OT_VERSION}
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v${OT_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbyattrsprocessor v${OT_VERSION}
+
+receivers:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v${OT_VERSION}
+
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v${OT_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage v${OT_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/encoding/textencodingextension v${OT_VERSION}
