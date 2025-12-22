@@ -69,9 +69,6 @@ jobs:
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
-      - name: Install opentelemetry-collector-builder
-        working-directory: ./sidecar/otelcol
-        run: make install-builder
       - uses: imranismail/setup-kustomize@v2
       - name: Install kuttl
         run: |
@@ -100,9 +97,6 @@ jobs:
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
-      - name: Install opentelemetry-collector-builder
-        working-directory: ./sidecar/otelcol
-        run: make install-builder
       - uses: imranismail/setup-kustomize@v2
       - name: Install kuttl
         run: |
@@ -131,9 +125,6 @@ jobs:
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
-      - name: Install opentelemetry-collector-builder
-        working-directory: ./sidecar/otelcol
-        run: make install-builder
       - uses: imranismail/setup-kustomize@v2
       - name: Install kuttl
         run: |
@@ -162,9 +153,6 @@ jobs:
         uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
-      - name: Install opentelemetry-collector-builder
-        working-directory: ./sidecar/otelcol
-        run: make install-builder
       - uses: imranismail/setup-kustomize@v2
       - name: Install kuttl
         run: |
