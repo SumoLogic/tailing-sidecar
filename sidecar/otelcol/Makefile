@@ -17,6 +17,11 @@ INSTALLED_VERSION := $(shell $(BUILDER) version 2>&1)
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+
+GHCR_IMAGE = ghcr.io/sumologic/tailing-sidecar-otel
+RELEASE_NUMBER ?= 1
+VERSION ?= ""
+
 define go-get-tool
 @[ -f $(1) ] || { \
 set -e ;\
@@ -53,12 +58,29 @@ ifneq ($(lastword $(INSTALLED_VERSION)),$(OTELCOL_VERSION))
 	)
 endif
 
-.PHONY: build
+
+
 build:
 	docker build \
-	  --platform linux/$(ARCH) \
-	  -t $(GHCR_IMAGE):main-$(ARCH) \
-	  .
+	--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
+	--build-arg VERSION=$(VERSION) \
+	--tag $(GHCR_IMAGE):$(TAG)  \
+	--file ${DOCKERFILE} .
+
+push:
+	docker push $(TAG)
+
+
+build-push-multiplatform:
+	docker buildx build \
+		--push \
+		--platform linux/amd64,linux/arm/v7,linux/arm64 \
+		--tag ${TAG} \
+		.
+
+build-push-ubi:
+	$(MAKE) build DOCKERFILE=${DOCKERFILE}.ubi TAG=${TAG}-ubi
+	$(MAKE) push DOCKERFILE=${DOCKERFILE}.ubi TAG=${TAG}-ubi
 
 .PHONY: release-dev
 release-dev: TAG = $(shell git describe --tags --always)
@@ -76,9 +98,7 @@ release: ensure-correct-builder-version install-goreleaser
 	@$(GORELEASER) release --clean
 
 .PHONY: build-test-image
-build-test-image: GHCR_IMAGE = ghcr.io/sumologic/tailing-sidecar-otel
 build-test-image: build
-	docker tag $(GHCR_IMAGE):main-$(ARCH) $(TAG)
 
 .PHONY: generate-sources
 generate-sources:
