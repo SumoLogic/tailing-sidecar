@@ -2,6 +2,23 @@ FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.140.0-sumo-0-ubi AS col
 
 FROM alpine:3.21.3
 
+ARG VERSION=${VERSION}
+ARG RELEASE_NUMBER=${RELEASE_NUMBER}
+
+ENV SUMMARY="UBI based Tailing Sidecar" \
+  DESCRIPTION="Tailing sidecar is a streaming sidecar container which can be used with Tailing Sidecar Operator."
+
+LABEL name="Tailing Sidecar" \
+  maintainer="collection@sumologic.com" \
+  vendor="Sumo Logic" \
+  version=${VERSION} \
+  release=${RELEASE_NUMBER} \
+  summary="$SUMMARY" \
+  description="$DESCRIPTION" \
+  io.k8s.description="$DESCRIPTION"
+
+ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LICENSE /licenses/LICENSE
+
 RUN mkdir -p /etc/otel /var/lib/otc /var/log
 
 RUN addgroup -g 10001 otelcol && \
