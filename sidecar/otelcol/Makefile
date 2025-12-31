@@ -54,8 +54,11 @@ ifneq ($(lastword $(INSTALLED_VERSION)),$(OTELCOL_VERSION))
 endif
 
 .PHONY: build
-build: ensure-correct-builder-version install-goreleaser
-	@$(GORELEASER) release --snapshot --clean
+build:
+	docker build \
+	  --platform linux/$(ARCH) \
+	  -t $(GHCR_IMAGE):main-$(ARCH) \
+	  .
 
 .PHONY: release-dev
 release-dev: TAG = $(shell git describe --tags --always)
@@ -84,4 +87,3 @@ generate-sources:
 		--version "$(VERSION)" \
 		--config .otelcol-builder.yaml \
 		--skip-compilation=true
-
