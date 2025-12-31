@@ -1,6 +1,6 @@
 FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.140.0-sumo-0-ubi AS collector
 
-FROM alpine:3.21.3
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 ARG VERSION=${VERSION}
 ARG RELEASE_NUMBER=${RELEASE_NUMBER}
@@ -19,14 +19,16 @@ LABEL name="Tailing Sidecar" \
 
 ADD https://raw.githubusercontent.com/SumoLogic/tailing-sidecar/release-v0.3/LICENSE /licenses/LICENSE
 
-RUN mkdir -p /etc/otel /var/lib/otc /var/log
+RUN mkdir -p /etc/otel /var/lib/otc /var/log && \
+    groupadd -g 10001 otelcol && \
+    useradd -d /home/otelcol -u 10001 -g otelcol -s /sbin/nologin otelcol
 
-RUN addgroup -g 10001 otelcol && \
-    adduser -D -u 10001 -G otelcol otelcol
-
-COPY --from=collector / /
+COPY --from=collector /otelcol-sumo /otelcol-sumo
 COPY ./config.yaml /etc/otel/config.yaml
-RUN chown -R otelcol:otelcol /etc/otel /var/lib/otc /var/log
+
+RUN chmod +x /otelcol-sumo && \
+    chown -R otelcol:otelcol /etc/otel /var/lib/otc /var/log
+
 USER 10001
 
 ENTRYPOINT ["/otelcol-sumo"]
