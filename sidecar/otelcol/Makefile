@@ -41,7 +41,7 @@ build:
 	--build-arg RELEASE_NUMBER=$(RELEASE_NUMBER) \
 	--build-arg VERSION=$(VERSION) \
 	--tag $(TAG)  \
-	--file ${DOCKERFILE} .
+	--file ${DOCKERFILE}
 
 push:
 	docker push $(TAG)
