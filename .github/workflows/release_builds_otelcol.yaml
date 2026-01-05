@@ -1,4 +1,4 @@
-name: Releases
+name: Releases Otelcol
 
 on:
   push:
