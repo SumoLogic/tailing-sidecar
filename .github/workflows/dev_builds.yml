@@ -3,9 +3,8 @@ name: Dev builds
 on:
   push:
     branches:
-      - main
-      - 'release-v[0-9]+.[0-9]+'
-      - 'dev-build/*'
+      - 'fluentbit-release-v[0-9]+.[0-9]+'
+      - 'fluentbit=dev-build/*'
 
 env:
   SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
