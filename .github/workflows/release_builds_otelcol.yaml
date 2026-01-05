@@ -13,7 +13,7 @@ env:
   OPERATOR_IMAGE_ECR: "public.ecr.aws/sumologic/tailing-sidecar-operator"
   SIDECAR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar"
   OPERATOR_IMAGE_DOCKERHUB: "sumologic/tailing-sidecar-operator"
-  LATEST_TAG: "latest-test"
+  LATEST_TAG: "latest_otelcol"
 
 jobs:
   build-sidecar:
