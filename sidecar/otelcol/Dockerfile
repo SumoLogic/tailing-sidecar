@@ -7,9 +7,9 @@ RUN mkdir -p /etc/otel /var/lib/otc /var/log
 RUN addgroup -g 10001 otelcol && \
     adduser -D -u 10001 -G otelcol otelcol
 
+RUN chown -R otelcol:otelcol /etc/otel /var/lib/otc /var/log
 COPY --from=collector / /
 COPY ./config.yaml /etc/otel/config.yaml
-RUN chown -R otelcol:otelcol /etc/otel /var/lib/otc /var/log
 USER 10001
 
 ENTRYPOINT ["/otelcol-sumo"]
