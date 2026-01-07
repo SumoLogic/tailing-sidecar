@@ -17,8 +17,8 @@ sidecar:
       memory: "0"
 
   config:
+    mountPath: /fluent-bit/etc/
     content:
-      mountPath: /fluent-bit/etc/
       fluent-bit.conf: |
         [SERVICE]
             # Flush
