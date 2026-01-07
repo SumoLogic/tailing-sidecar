@@ -1,22 +1,78 @@
 [
-    {
-            "op": "replace",
-            "path": "/spec/volumes/2/name",
-            "value": "volume-sidecar-1"
-    },
-    {
-            "op": "replace",
-            "path": "/spec/containers/1/volumeMounts/1/name",
-            "value": "volume-sidecar-1"
-    },
-    {
-            "op": "add",
-            "path": "/spec/containers/1/volumeMounts/0/readOnly",
-            "value": true
-    },
-    {
-            "op": "add",
-            "path": "/spec/containers/1/volumeMounts/0/mountPropagation",
-            "value": "Bidirectional"
+  {
+    "op": "add",
+    "path": "/spec/volumes/3",
+    "value": {
+      "emptyDir": {},
+      "name": "tailing-sidecar-otel-logs-tailing-sidecar-1"
     }
+  },
+  {
+    "op": "add",
+    "path": "/spec/volumes/4",
+    "value": {
+      "emptyDir": {},
+      "name": "tailing-sidecar-otel-file-storage-tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "replace",
+    "path": "/spec/volumes/2/name",
+    "value": "volume-sidecar-1"
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/env/2",
+    "value": {
+      "name": "OTEL_FILE_STORAGE_PATH",
+      "value": "/var/lib/otc/tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/env/3",
+    "value": {
+      "name": "SIDECAR_OTEL_LOG_PATH",
+      "value": "/var/log/tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/env/4",
+    "value": {
+      "name": "SIDECAR_CONTAINER_NAME",
+      "value": "test-container"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/volumeMounts/2",
+    "value": {
+      "mountPath": "/var/lib/otc/tailing-sidecar-1",
+      "name": "tailing-sidecar-otel-file-storage-tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/volumeMounts/3",
+    "value": {
+      "mountPath": "/var/log/tailing-sidecar-1",
+      "name": "tailing-sidecar-otel-logs-tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/volumeMounts/0/readOnly",
+    "value": true
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/1/volumeMounts/0/mountPropagation",
+    "value": "Bidirectional"
+  },
+  {
+    "op": "replace",
+    "path": "/spec/containers/1/volumeMounts/1/name",
+    "value": "volume-sidecar-1"
+  }
 ]
