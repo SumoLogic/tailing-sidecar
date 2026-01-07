@@ -18,7 +18,7 @@ sidecar:
 
   config:
     content:
-      mountPath: /var/lib/
+      mountPath: /etc/otel/
       config.yaml: |
         receivers:
           filelog:
