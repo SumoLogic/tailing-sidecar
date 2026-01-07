@@ -183,7 +183,6 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			config.name = fmt.Sprintf(sidecarContainerName, sidecarsCount)
 		}
 
-		//todo pankaj volume indexed
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
 				Name: volumeName,
@@ -280,7 +279,6 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 
 	pod.Spec.Containers = append(podContainers, containers...)
 
-	//todo pankaj volumes in operator configs
 	if e.ConfigMapName != "" && e.ConfigMountPath != "" && e.ConfigMapNamespace != "" {
 		err = e.createSidecarConfigMap(ctx, namespace)
 		if err != nil {
