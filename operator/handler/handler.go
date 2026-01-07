@@ -190,7 +190,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
-		otelLogsVolumneName := fmt.Sprintf(sidecarOtelLogsVolumeName, sidecarsCount)
+		otelLogsVolumeName := fmt.Sprintf(sidecarOtelLogsVolumeName, sidecarsCount)
 		otelCollectorLogsPath := fmt.Sprintf(sidecarOtelLogsPath, sidecarsCount)
 
 		otelFileStorageVolumeName := fmt.Sprintf(sidecarOtelFileStorageVolumeName, sidecarsCount)
@@ -198,7 +198,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
-				Name: otelLogsVolumneName,
+				Name: otelLogsVolumeName,
 				VolumeSource: corev1.VolumeSource{
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
@@ -230,7 +230,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			},
 
 			{
-				Name:      otelLogsVolumneName,
+				Name:      otelLogsVolumeName,
 				MountPath: otelCollectorLogsPath,
 			},
 		}
