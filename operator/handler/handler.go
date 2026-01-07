@@ -40,12 +40,19 @@ import (
 // +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update;delete,versions=v1,name=tailing-sidecar.sumologic.com,sideEffects=none,admissionReviewVersions={v1,v1beta1}
 
 const (
-	sidecarEnvPath      = "PATH_TO_TAIL"
-	sidecarEnvMarker    = "TAILING_SIDECAR"
-	sidecarEnvMarkerVal = "true"
+	sidecarEnvPath                   = "PATH_TO_TAIL"
+	sidecarOtelFileStoragePathEnv    = "OTEL_FILE_STORAGE_PATH"
+	sidecarOtelFileStoragePath       = "/var/lib/otc/tailing-sidecar-%d"
+	sidecarOtelFileStorageVolumeName = "tailing-sidecar-otel-file-storage-tailing-sidecar-%d"
+	sidecarOtelLogsPathEnv           = "SIDECAR_OTEL_LOG_PATH"
+	sidecarOtelLogsPath              = "/var/log/tailing-sidecar-%d"
+	sidecarOtelLogsVolumeName        = "tailing-sidecar-otel-logs-tailing-sidecar-%d"
+	sidecarEnvMarker                 = "TAILING_SIDECAR"
+	sidecarEnvMarkerVal              = "true"
 
-	sidecarContainerName   = "tailing-sidecar-%d"
-	sidecarContainerPrefix = "tailing-sidecar-"
+	sidecarContainerName    = "tailing-sidecar-%d"
+	sidecarContainerNameEnv = "SIDECAR_CONTAINER_NAME"
+	sidecarContainerPrefix  = "tailing-sidecar-"
 
 	sidecarVolumeName   = "volume-sidecar-%d"
 	sidecarVolumePrefix = "volume-sidecar-"
@@ -183,6 +190,26 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
 
+		otelLogsVolumeName := fmt.Sprintf(sidecarOtelLogsVolumeName, sidecarsCount)
+		otelCollectorLogsPath := fmt.Sprintf(sidecarOtelLogsPath, sidecarsCount)
+
+		otelFileStorageVolumeName := fmt.Sprintf(sidecarOtelFileStorageVolumeName, sidecarsCount)
+		otelFileStoragePath := fmt.Sprintf(sidecarOtelFileStoragePath, sidecarsCount)
+
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: otelLogsVolumeName,
+				VolumeSource: corev1.VolumeSource{
+					EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			})
+
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: otelFileStorageVolumeName,
+				VolumeSource: corev1.VolumeSource{
+					EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			})
+
 		// check if sidecar need add default resources
 		if config.spec.Resources.Requests == nil {
 			config.spec.Resources.Requests = e.TailingSidecarResources.Requests
@@ -196,6 +223,15 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			{
 				Name:      volumeName,
 				MountPath: sidecarMountPath,
+			},
+			{
+				Name:      otelFileStorageVolumeName,
+				MountPath: otelFileStoragePath,
+			},
+
+			{
+				Name:      otelLogsVolumeName,
+				MountPath: otelCollectorLogsPath,
 			},
 		}
 
@@ -217,6 +253,19 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 				{
 					Name:  sidecarEnvMarker,
 					Value: sidecarEnvMarkerVal,
+				},
+				{
+					Name:  sidecarOtelFileStoragePathEnv,
+					Value: otelFileStoragePath,
+				},
+
+				{
+					Name:  sidecarOtelLogsPathEnv,
+					Value: otelCollectorLogsPath,
+				},
+				{
+					Name:  sidecarContainerNameEnv,
+					Value: config.name,
 				},
 			},
 			VolumeMounts: volumeMounts,

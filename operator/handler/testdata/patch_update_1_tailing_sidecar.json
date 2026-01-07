@@ -1,39 +1,75 @@
 [
-    {
-        "op": "add",
-        "path": "/spec/containers/2",
-        "value": {
-            "env": [
-                {
-                    "name": "PATH_TO_TAIL",
-                    "value": "/var/log/example1.log"
-                },
-                {
-                    "name": "TAILING_SIDECAR",
-                    "value": "true"
-                }
-            ],
-            "image": "tailing-sidecar-image:test",
-            "name": "tailing-sidecar-1",
-            "resources": {},
-            "volumeMounts": [
-                {
-                    "mountPath": "/var/log",
-                    "name": "varlog"
-                },
-                {
-                    "mountPath": "/tailing-sidecar/var",
-                    "name": "volume-sidecar-1"
-                }
-            ]
-        }
-    },
-    {
-        "op": "add",
-        "path": "/spec/volumes/3",
-        "value": {
-            "emptyDir": {},
-            "name": "volume-sidecar-1"
-        }
+  {
+    "op": "add",
+    "path": "/spec/volumes/3",
+    "value": {
+      "emptyDir": {},
+      "name": "volume-sidecar-1"
     }
+  },
+  {
+    "op": "add",
+    "path": "/spec/volumes/4",
+    "value": {
+      "emptyDir": {},
+      "name": "tailing-sidecar-otel-logs-tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/volumes/5",
+    "value": {
+      "emptyDir": {},
+      "name": "tailing-sidecar-otel-file-storage-tailing-sidecar-1"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/spec/containers/2",
+    "value": {
+      "env": [
+        {
+          "name": "PATH_TO_TAIL",
+          "value": "/var/log/example1.log"
+        },
+        {
+          "name": "TAILING_SIDECAR",
+          "value": "true"
+        },
+        {
+          "name": "OTEL_FILE_STORAGE_PATH",
+          "value": "/var/lib/otc/tailing-sidecar-1"
+        },
+        {
+          "name": "SIDECAR_OTEL_LOG_PATH",
+          "value": "/var/log/tailing-sidecar-1"
+        },
+        {
+          "name": "SIDECAR_CONTAINER_NAME",
+          "value": "tailing-sidecar-1"
+        }
+      ],
+      "image": "tailing-sidecar-image:test",
+      "name": "tailing-sidecar-1",
+      "resources": {},
+      "volumeMounts": [
+        {
+          "mountPath": "/var/log",
+          "name": "varlog"
+        },
+        {
+          "mountPath": "/tailing-sidecar/var",
+          "name": "volume-sidecar-1"
+        },
+        {
+          "mountPath": "/var/lib/otc/tailing-sidecar-1",
+          "name": "tailing-sidecar-otel-file-storage-tailing-sidecar-1"
+        },
+        {
+          "mountPath": "/var/log/tailing-sidecar-1",
+          "name": "tailing-sidecar-otel-logs-tailing-sidecar-1"
+        }
+      ]
+    }
+  }
 ]
