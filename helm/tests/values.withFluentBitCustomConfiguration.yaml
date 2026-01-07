@@ -18,6 +18,7 @@ sidecar:
 
   config:
     content:
+      mountPath: /fluent-bit/etc/
       fluent-bit.conf: |
         [SERVICE]
             # Flush
