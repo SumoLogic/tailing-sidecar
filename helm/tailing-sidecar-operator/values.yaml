@@ -53,7 +53,7 @@ sidecar:
 
   # Overrides the sidecar configuration
   config:
-    mountPath: /var/lib/otc
+    mountPath: /etc/otel/
     # map of files which are going to be created in mountPath
     # for example to create three empty files:
     #

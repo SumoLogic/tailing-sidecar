@@ -40,12 +40,19 @@ import (
 // +kubebuilder:webhook:path=/add-tailing-sidecars-v1-pod,mutating=true,failurePolicy=ignore,groups="",resources=pods,verbs=create;update;delete,versions=v1,name=tailing-sidecar.sumologic.com,sideEffects=none,admissionReviewVersions={v1,v1beta1}
 
 const (
-	sidecarEnvPath      = "PATH_TO_TAIL"
-	sidecarEnvMarker    = "TAILING_SIDECAR"
-	sidecarEnvMarkerVal = "true"
+	sidecarEnvPath                   = "PATH_TO_TAIL"
+	sidecarOtelFileStoragePathEnv    = "OTEL_FILE_STORAGE_PATH"
+	sidecarOtelFileStoragePath       = "/var/lib/otc/tailing-sidecar-%d"
+	sidecarOtelFileStorageVolumeName = "tailing-sidecar-otel-file-storage-tailing-sidecar-%d"
+	sidecarOtelLogsPathEnv           = "SIDECAR_OTEL_LOG_PATH"
+	sidecarOtelLogsPath              = "/var/log/tailing-sidecar-%d"
+	sidecarOtelLogsVolumeName        = "tailing-sidecar-otel-logs-tailing-sidecar-%d"
+	sidecarEnvMarker                 = "TAILING_SIDECAR"
+	sidecarEnvMarkerVal              = "true"
 
-	sidecarContainerName   = "tailing-sidecar-%d"
-	sidecarContainerPrefix = "tailing-sidecar-"
+	sidecarContainerName    = "tailing-sidecar-%d"
+	sidecarContainerNameEnv = "SIDECAR_CONTAINER_NAME"
+	sidecarContainerPrefix  = "tailing-sidecar-"
 
 	sidecarVolumeName   = "volume-sidecar-%d"
 	sidecarVolumePrefix = "volume-sidecar-"
@@ -176,9 +183,30 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			config.name = fmt.Sprintf(sidecarContainerName, sidecarsCount)
 		}
 
+		//todo pankaj volume indexed
 		pod.Spec.Volumes = append(pod.Spec.Volumes,
 			corev1.Volume{
 				Name: volumeName,
+				VolumeSource: corev1.VolumeSource{
+					EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			})
+
+		otelLogsVolumneName := fmt.Sprintf(sidecarOtelLogsVolumeName, sidecarsCount)
+		otelCollectorLogsPath := fmt.Sprintf(sidecarOtelLogsPath, sidecarsCount)
+
+		otelFileStorageVolumeName := fmt.Sprintf(sidecarOtelFileStorageVolumeName, sidecarsCount)
+		otelFileStoragePath := fmt.Sprintf(sidecarOtelFileStoragePath, sidecarsCount)
+
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: otelLogsVolumneName,
+				VolumeSource: corev1.VolumeSource{
+					EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			})
+
+		pod.Spec.Volumes = append(pod.Spec.Volumes,
+			corev1.Volume{
+				Name: otelFileStorageVolumeName,
 				VolumeSource: corev1.VolumeSource{
 					EmptyDir: &corev1.EmptyDirVolumeSource{}},
 			})
@@ -196,6 +224,15 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 			{
 				Name:      volumeName,
 				MountPath: sidecarMountPath,
+			},
+			{
+				Name:      otelFileStorageVolumeName,
+				MountPath: otelFileStoragePath,
+			},
+
+			{
+				Name:      otelLogsVolumneName,
+				MountPath: otelCollectorLogsPath,
 			},
 		}
 
@@ -218,6 +255,19 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 					Name:  sidecarEnvMarker,
 					Value: sidecarEnvMarkerVal,
 				},
+				{
+					Name:  sidecarOtelFileStoragePathEnv,
+					Value: otelFileStoragePath,
+				},
+
+				{
+					Name:  sidecarOtelLogsPathEnv,
+					Value: otelCollectorLogsPath,
+				},
+				{
+					Name:  sidecarContainerNameEnv,
+					Value: config.name,
+				},
 			},
 			VolumeMounts: volumeMounts,
 			Resources:    config.spec.Resources,
@@ -230,6 +280,7 @@ func (e PodExtender) extendPod(ctx context.Context, pod *corev1.Pod, tailingSide
 
 	pod.Spec.Containers = append(podContainers, containers...)
 
+	//todo pankaj volumes in operator configs
 	if e.ConfigMapName != "" && e.ConfigMountPath != "" && e.ConfigMapNamespace != "" {
 		err = e.createSidecarConfigMap(ctx, namespace)
 		if err != nil {
