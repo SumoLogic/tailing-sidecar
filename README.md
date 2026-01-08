@@ -36,7 +36,8 @@ or when it outputs additional logs to a file instead (eg. the gc.log).
 It [tails](https://en.wikipedia.org/wiki/Tail_(Unix)) the files inside Kubernetes Pods,
 handling situations like the file not being there when tailing starts, tailing multiple files, rotating files, etc.
 
-It uses [Sumologic Collector](https://www.sumologic.com/help/docs/send-data/opentelemetry-collector/) version 0.19.0 onwards. Before that [Fluent Bit](https://fluentbit.io/) was used.
+It uses [Sumologic Collector](https://www.sumologic.com/help/docs/send-data/opentelemetry-collector/) version 0.19.0 onwards.
+Before that [Fluent Bit](https://fluentbit.io/) was used.
 
 For more information about cluster-level logging architecture please read Kubernetes
 [documentation](https://kubernetes.io/docs/concepts/cluster-administration/logging/#cluster-level-logging-architectures).
