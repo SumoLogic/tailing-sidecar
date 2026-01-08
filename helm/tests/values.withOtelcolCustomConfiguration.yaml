@@ -35,7 +35,7 @@ sidecar:
         extensions:
           text_encoding:
           file_storage:
-            directory: /var/lib/otc
+            directory: ${OTEL_FILE_STORAGE_PATH}
 
         service:
           extensions:
@@ -46,7 +46,7 @@ sidecar:
               level: none
             logs:
               output_paths:
-                - /var/log/otelcol.log
+                - ${SIDECAR_OTEL_LOG_PATH}/otelcol.log
           pipelines:
             logs:
               exporters: [file]
