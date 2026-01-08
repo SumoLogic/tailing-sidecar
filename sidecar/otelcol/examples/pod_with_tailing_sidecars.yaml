@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: example-with-otelcol-tailing-sidecars
+  name: example-with-tailling-sidecars
 spec:
   containers:
   - name: count
@@ -22,30 +22,44 @@ spec:
     - name: varlog
       mountPath: /var/log
   - name: sidecar1
-    image: otel-side-car:latest
-    imagePullPolicy: Never
+    image: ghcr.io/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example1.log
+    - name: OTEL_FILE_STORAGE_PATH
+      value: /var/sidecar1/
+    - name: SIDECAR_OTEL_LOG_PATH
+      value: /var/sidecar1/
     volumeMounts:
     - name: varlog
       mountPath: /var/log
     - name: volume-sidecar-1
       mountPath: /tailing-sidecar/var
+    - name: otel-volume-1
+      mountPath: /var/sidecar1/
   - name: sidecar2
-    image: otel-side-car:latest
-    imagePullPolicy: Never
+    image: ghcr.io/sumologic/tailing-sidecar:latest
     env:
     - name: PATH_TO_TAIL
       value: /var/log/example2.log
+    - name: OTEL_FILE_STORAGE_PATH
+      value: /var/sidecar2/
+    - name: SIDECAR_OTEL_LOG_PATH
+      value: /var/sidecar2/
     volumeMounts:
     - name: varlog
       mountPath: /var/log
+    - name: otel-volume-2
+      mountPath: /var/sidecar2/
     - name: volume-sidecar-2
       mountPath: /tailing-sidecar/var
   volumes:
   - name: varlog
     emptyDir: {}
+  - name: otel-volume-1
+    emptyDir: { }
+  - name: otel-volume-2
+    emptyDir: { }
   - name: volume-sidecar-1
     hostPath:
       path: /var/log/sidecar1
