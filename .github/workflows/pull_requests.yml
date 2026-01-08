@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        sidecar: [ fluentbit,otelcol ]
+        sidecar: [ otelcol ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -83,7 +83,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        sidecar: [fluentbit,otelcol]
+        sidecar: [otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
@@ -139,7 +139,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        sidecar: [fluentbit,otelcol]
+        sidecar: [otelcol]
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
