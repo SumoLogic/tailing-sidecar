@@ -94,5 +94,8 @@ webhook:
 certManager:
   enabled: false
 
+# Cert period time in days. The default is 365 days.
+autoCertPeriodDays: 365
+
 scc:
   create: true
