@@ -4,20 +4,21 @@ receivers:
     - ${PATH_TO_TAIL}
     start_at: beginning
     storage: file_storage
+    poll_interval: 1s
+    operators:
+      - type: file_output
+        path: /dev/stdout
+        format: "{{.Body}}\n"
 
 exporters:
-  file:
-    path: /dev/stdout
-    encoding: text_encoding
+  nop:
 
 extensions:
-  text_encoding:
   file_storage:
     directory: ${OTEL_FILE_STORAGE_PATH}
 
 service:
   extensions:
-    - text_encoding
     - file_storage
   telemetry:
     metrics:
@@ -27,5 +28,5 @@ service:
         - ${SIDECAR_OTEL_LOG_PATH}/otelcol.log
   pipelines:
     logs:
-      exporters: [file]
+      exporters: [nop]
       receivers: [filelog]
