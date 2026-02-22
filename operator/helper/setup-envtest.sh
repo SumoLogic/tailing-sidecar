@@ -40,7 +40,7 @@ function setup_envtest_env {
   # Setup env vars
   KUBEBUILDER_ASSETS=${KUBEBUILDER_ASSETS:-""}
   if [[ -z "${KUBEBUILDER_ASSETS}" ]]; then
-    export KUBEBUILDER_ASSETS=$1/bin
+    export KUBEBUILDER_ASSETS=$1/envtest
   fi
 }
 
@@ -75,8 +75,8 @@ function fetch_envtest_tools {
   local dest_dir="${1}"
 
   # use the pre-existing version in the temporary folder if it matches our k8s version
-  if [[ -x "${dest_dir}/bin/kube-apiserver" ]]; then
-    version=$("${dest_dir}"/bin/kube-apiserver --version)
+  if [[ -x "${dest_dir}/envtest/kube-apiserver" ]]; then
+    version=$("${dest_dir}"/envtest/kube-apiserver --version)
     if [[ $version == *"${k8s_version}"* ]]; then
       header_text "Using cached envtest tools from ${dest_dir}"
       return 0
