@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.19.2] - 2025-07-18
+
+- chore: upgrade alpine base image from 3.21.3 to 3.23.3 [#832a]
+- chore: upgrade sumologic-otel-collector from 0.141.0-sumo-0 to 0.145.0-sumo-0 [#832b]
+
+[#832a]: https://github.com/SumoLogic/tailing-sidecar/pull/832/changes/2135a8f77a68443c5de91bcc29185bcb16b16466
+[#832b]: https://github.com/SumoLogic/tailing-sidecar/pull/832/changes/e3cf78eb52040d88ae204e95cda204ce436e40d8
+
 ## [v0.18.0] - 2025-07-18
 
 - chore: update Go to 1.24.5 for fluentbit images [#807]
