@@ -14,3 +14,4 @@ USER 10001
 
 ENTRYPOINT ["/otelcol-sumo"]
 CMD ["--config", "/etc/otel/config.yaml"]
+
