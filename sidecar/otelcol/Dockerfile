@@ -1,6 +1,6 @@
-FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.141.0-sumo-0 AS collector
+FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.145.0-sumo-0 AS collector
 
-FROM alpine:3.21.3
+FROM alpine:3.23.3
 
 RUN mkdir -p /etc/otel /var/lib/otc /var/log
 
