@@ -25,6 +25,7 @@ login-ecr:
 e2e: IMG="registry.localhost:5000/sumologic/tailing-sidecar-operator:test"
 e2e: TAILING_SIDECAR_IMG = "registry.localhost:5000/sumologic/sidecar:test"
 e2e:
+	$(MAKE) -C ./sidecar/$(TAILING_SIDECAR) build-test-image TAG=$(TAILING_SIDECAR_IMG)
 	$(MAKE) -C ./operator docker-build IMG=$(IMG) TAILING_SIDECAR_IMG=$(TAILING_SIDECAR_IMG)
 	kubectl-kuttl test --config $(KUTTL_CONFIG)
 
@@ -35,6 +36,10 @@ e2e-helm: e2e
 .PHONY: e2e-helm-certmanager
 e2e-helm-certmanager: KUTTL_CONFIG = kuttl-test-helm-certmanager.yaml
 e2e-helm-certmanager: e2e
+
+.PHONY: e2e-helm-custom-configuration
+e2e-helm-custom-configuration: KUTTL_CONFIG = kuttl-test-helm-$(TAILING_SIDECAR)-custom-configuration.yaml
+e2e-helm-custom-configuration: e2e
 
 # We sleep for 10 seconds here because webhooks can mysteriously be unavailable even though the readiness check passes
 .PHONY: e2e-wait-until-operator-ready
