@@ -91,12 +91,6 @@ Connect to virtual machine:
 vagrant ssh
 ```
 
-Build and push tailing sidecar image to local container registry:
-
-```bash
-/tailing-sidecasidecar/fluentbit/akefile
-```
-
 Go to operator directory:
 
 ```bash

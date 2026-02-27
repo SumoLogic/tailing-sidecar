@@ -56,14 +56,14 @@ In order to override tailing sidecar configuration, the following properties may
 ```yaml
 sidecar:
   config:
-    mountPath: /etc/otel  #for version>=0.19 .0 or  /fluent-bit/etc/ for version <=0.18.1
-    content: #  applicable for version <=0.18.1
+    mountPath: /etc/otel
+    content:
       file-1.conf: |
         content of file-1.conf
       file-2.conf: |
         content of file-2.conf
 ```
 
-The above configuration is going to create `file-1.conf` and `file-2.conf` in `/fluent-bit/etc/` directory.
+The above configuration is going to create `file-1.conf` and `file-2.conf` in the configured directory.
 
-**All existing content of `/fluent-bit/etc/` directory will be replaced with the `sidecar.config.content`.**
+**All existing content of the config directory will be replaced with the `sidecar.config.content`.**
