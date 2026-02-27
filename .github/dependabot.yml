@@ -25,17 +25,3 @@ updates:
         patterns:
           - "k8s.io/*"
           - "sigs.k8s.io/*"
-
-  - package-ecosystem: "docker"
-    directory: "/sidecar/fluentbit"
-    schedule:
-      interval: "daily"
-      time: "06:27"
-      timezone: "Europe/Warsaw"
-
-  - package-ecosystem: "gomod"
-    directory: "/sidecar/fluentbit/out_gstdout"
-    schedule:
-      interval: "daily"
-      time: "06:27"
-      timezone: "Europe/Warsaw"
