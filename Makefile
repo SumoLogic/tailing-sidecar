@@ -2,6 +2,7 @@ NAMESPACE ?= tailing-sidecar-system
 RELEASE ?= tailing-sidecar
 HELM_CHART ?= helm/tailing-sidecar-operator
 KUTTL_CONFIG ?= kuttl-test.yaml
+TAILING_SIDECAR ?= otelcol
 
 all: markdownlint yamllint
 
