@@ -2,7 +2,7 @@ NAMESPACE ?= tailing-sidecar-system
 RELEASE ?= tailing-sidecar
 HELM_CHART ?= helm/tailing-sidecar-operator
 KUTTL_CONFIG ?= kuttl-test.yaml
-TAILING_SIDECAR ?= fluentbit
+TAILING_SIDECAR ?= otelcol
 
 all: markdownlint yamllint
 
@@ -11,7 +11,6 @@ markdownlint: mdl
 mdl:
 	mdl --style .markdownlint/style.rb \
 		README.md \
-		sidecar/fluentbit/README.md \
 		operator/README.md \
 		docs/*.md
 
