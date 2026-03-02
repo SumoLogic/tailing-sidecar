@@ -19,7 +19,7 @@ jobs:
   build-sidecar:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Extract tag
         id: extract_tag
         run: echo "tag=$(echo ${GITHUB_REF#refs/tags/v})" >> $GITHUB_OUTPUT
@@ -89,7 +89,7 @@ jobs:
   build-operator:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup go
         uses: actions/setup-go@v5
         with:
@@ -164,6 +164,6 @@ jobs:
   push-helm-chart:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Push dev helm chart
         run: make push-helm-chart
