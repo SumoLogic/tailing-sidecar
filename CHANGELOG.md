@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.19.3] - 2025-07-18
+## [v0.20.0] - 2026-03-02
+- feat: Remove deprecated fluentbit directories (#836)
+- chore: upgrade sumologic-otel-collector (#837)
+[#836]: https://github.com/SumoLogic/tailing-sidecar/pull/836
+[#837]: https://github.com/SumoLogic/tailing-sidecar/pull/837
+
+## [v0.19.3] - 2026-02-23
 
 - chore: upgrade alpine base image from 3.21.3 to 3.23.3 [#832a]
 - chore: upgrade sumologic-otel-collector from 0.141.0-sumo-0 to 0.145.0-sumo-0 [#832b]
