@@ -581,13 +581,17 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 	return admission.Allowed(deletionMessage)
 }
 
-// filterCreationTimestampPatch filters out spurious creationTimestamp patches
-// caused by Go 1.25.7 JSON serialization changes in metav1.Time.
-// See: https://github.com/kubernetes-sigs/kubebuilder/issues/510
+// filterCreationTimestampPatch filters out spurious creationTimestamp remove patches
+// caused by the omitzero tag added in k8s.io/apimachinery v0.35.2.
+// Only removes "remove" operations - preserves "add" or "replace" if they ever occur
+// (though they shouldn't, as creationTimestamp is a server-managed field).
+// See: https://github.com/kubernetes/apimachinery/blob/v0.35.2/pkg/apis/meta/v1/types.go#L188
 func filterCreationTimestampPatch(patches []jsonpatch.JsonPatchOperation) []jsonpatch.JsonPatchOperation {
 	filtered := make([]jsonpatch.JsonPatchOperation, 0, len(patches))
 	for _, p := range patches {
-		if p.Path == "/metadata/creationTimestamp" {
+		// Only filter "remove" operations on creationTimestamp
+		// Preserve add/replace operations (shouldn't happen, but be defensive)
+		if p.Path == "/metadata/creationTimestamp" && p.Operation == "remove" {
 			continue
 		}
 		filtered = append(filtered, p)
