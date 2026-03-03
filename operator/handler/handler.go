@@ -26,6 +26,7 @@ import (
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
+	"gomodules.xyz/jsonpatch/v2"
 	admv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -121,7 +122,10 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	if err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
-	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
+
+	resp := admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
+	resp.Patches = filterCreationTimestampPatch(resp.Patches)
+	return resp
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
@@ -575,4 +579,18 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 	}
 
 	return admission.Allowed(deletionMessage)
+}
+
+// filterCreationTimestampPatch filters out spurious creationTimestamp patches
+// caused by Go 1.25.7 JSON serialization changes in metav1.Time.
+// See: https://github.com/kubernetes-sigs/kubebuilder/issues/510
+func filterCreationTimestampPatch(patches []jsonpatch.JsonPatchOperation) []jsonpatch.JsonPatchOperation {
+	filtered := make([]jsonpatch.JsonPatchOperation, 0, len(patches))
+	for _, p := range patches {
+		if p.Path == "/metadata/creationTimestamp" {
+			continue
+		}
+		filtered = append(filtered, p)
+	}
+	return filtered
 }
