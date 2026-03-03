@@ -88,6 +88,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 
 	pod := &corev1.Pod{}
 	err := e.Decoder.Decode(req, pod)
+    originalPod := pod.DeepCopy()
 	if err != nil {
 		return admission.Errored(http.StatusBadRequest, err)
 	}
@@ -116,12 +117,12 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	if err := validateContainers(pod.Spec.Containers); err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
-
+    originalJSON, _ := json.Marshal(originalPod)
 	marshaledPod, err := json.Marshal(pod)
 	if err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
-	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
+	return admission.PatchResponseFromRaw(originalJSON, marshaledPod)
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
