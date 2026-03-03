@@ -2,8 +2,6 @@ module github.com/SumoLogic/tailing-sidecar/operator
 
 go 1.25.7
 
-toolchain go1.25.7
-
 require (
 	github.com/go-logr/logr v1.4.3
 	github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce
