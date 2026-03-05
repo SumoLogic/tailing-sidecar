@@ -40,7 +40,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24'
+          go-version: '1.25'
           cache-dependency-path: operator/go.sum
       - name: Run tests for tailing sidecar operator
         working-directory: ./operator
@@ -61,7 +61,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
           cache-dependency-path: |
             .otelcol-builder.yaml
             .goreleaser.yaml
@@ -89,7 +89,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
           cache-dependency-path: |
             .otelcol-builder.yaml
             .goreleaser.yaml
@@ -117,7 +117,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
           cache-dependency-path: |
             sidecar/otelcol/.otelcol-builder.yaml
             sidecar/otelcol/.goreleaser.yaml
@@ -145,7 +145,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
           cache-dependency-path: |
             sidecar/otelcol/.otelcol-builder.yaml
             sidecar/otelcol/.goreleaser.yaml

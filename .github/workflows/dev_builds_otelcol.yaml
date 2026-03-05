@@ -95,7 +95,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
           cache-dependency-path: operator/go.sum
       - name: Extract tag
         id: extract_tag
