@@ -92,7 +92,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "null",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
@@ -304,7 +304,7 @@ var _ = Describe("handler", func() {
 									"apiVersion": "v1",
 									"kind": "Pod",
 									"metadata": {
-										"creationTimestamp": null,
+										"creationTimestamp": "2024-01-01T00:00:00Z",
 										"name": "pod-empty-annotations",
 									  	"annotations": {}
 									},
@@ -339,7 +339,7 @@ var _ = Describe("handler", func() {
 									"apiVersion": "v1",
 									"kind": "Pod",
 									"metadata": {
-										"creationTimestamp": null,
+										"creationTimestamp": "2024-01-01T00:00:00Z",
 										"name": "pod-with-null-annotation",
 									  	"annotations": null
 									},
@@ -374,7 +374,7 @@ var _ = Describe("handler", func() {
 									"apiVersion": "v1",
 									"kind": "Pod",
 									"metadata": {
-										"creationTimestamp": null,
+										"creationTimestamp": "2024-01-01T00:00:00Z",
 										"name": "pod-with-colon-in-annotation",
 										  "annotations": {
 											"tailing-sidecar": ":"
@@ -411,7 +411,7 @@ var _ = Describe("handler", func() {
 									"apiVersion": "v1",
 									"kind": "Pod",
 									"metadata": {
-										"creationTimestamp": null,
+										"creationTimestamp": "2024-01-01T00:00:00Z",
 										"name": "pod-with-empty-string-in-annotation",
 										  "annotations": {
 											"tailing-sidecar": ""
@@ -471,7 +471,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
@@ -578,7 +578,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
@@ -691,7 +691,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system-different",
 							  "annotations": {
@@ -802,7 +802,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -923,7 +923,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1054,7 +1054,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1160,7 +1160,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1267,7 +1267,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1369,7 +1369,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1471,7 +1471,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1602,7 +1602,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1696,7 +1696,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
@@ -1759,7 +1759,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
@@ -1884,7 +1884,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": null,
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "labels": {
