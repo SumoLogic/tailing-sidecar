@@ -26,7 +26,6 @@ import (
 	"strings"
 
 	tailingsidecarv1 "github.com/SumoLogic/tailing-sidecar/operator/api/v1"
-	"gomodules.xyz/jsonpatch/v2"
 	admv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -122,10 +121,7 @@ func (e *PodExtender) Handle(ctx context.Context, req admission.Request) admissi
 	if err != nil {
 		return admission.Errored(http.StatusInternalServerError, err)
 	}
-
-	resp := admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
-	resp.Patches = filterCreationTimestampPatch(resp.Patches)
-	return resp
+	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
 }
 
 // extendPod extends Pod by adding tailing sidecars according to configuration in annotation
@@ -579,22 +575,4 @@ func (e *PodExtender) handleDelete(ctx context.Context, req admission.Request) a
 	}
 
 	return admission.Allowed(deletionMessage)
-}
-
-// filterCreationTimestampPatch filters out spurious creationTimestamp remove patches
-// caused by the omitzero tag added in k8s.io/apimachinery v0.35.2.
-// Only removes "remove" operations - preserves "add" or "replace" if they ever occur
-// (though they shouldn't, as creationTimestamp is a server-managed field).
-// See: https://github.com/kubernetes/apimachinery/blob/v0.35.2/pkg/apis/meta/v1/types.go#L188
-func filterCreationTimestampPatch(patches []jsonpatch.JsonPatchOperation) []jsonpatch.JsonPatchOperation {
-	filtered := make([]jsonpatch.JsonPatchOperation, 0, len(patches))
-	for _, p := range patches {
-		// Only filter "remove" operations on creationTimestamp
-		// Preserve add/replace operations (shouldn't happen, but be defensive)
-		if p.Path == "/metadata/creationTimestamp" && p.Operation == "remove" {
-			continue
-		}
-		filtered = append(filtered, p)
-	}
-	return filtered
 }
