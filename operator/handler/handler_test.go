@@ -92,7 +92,7 @@ var _ = Describe("handler", func() {
 							"apiVersion": "v1",
 							"kind": "Pod",
 							"metadata": {
-							  "creationTimestamp": "null",
+							  "creationTimestamp": "2024-01-01T00:00:00Z",
 							  "name": "pod-with-annotations",
 							  "namespace": "tailing-sidecar-system",
 							  "annotations": {
