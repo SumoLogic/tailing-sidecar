@@ -34,7 +34,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3.7.0
         with:
           registry: ghcr.io
           username: USERNAME
@@ -71,7 +71,7 @@ jobs:
         working-directory: ./sidecar/otelcol
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3.7.0
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN_TAILING_SIDECAR_OTEL_DEV }}
           password: ${{ secrets.DOCKERHUB_PASSWORD_TAILING_SIDECAR_OTEL_DEV }}
@@ -109,7 +109,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.7.1
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3.7.0
         with:
           registry: ghcr.io
           username: USERNAME
@@ -146,7 +146,7 @@ jobs:
         working-directory: ./operator
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3.7.0
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN_TAILING_SIDECAR_OTEL_DEV }}
           password: ${{ secrets.DOCKERHUB_PASSWORD_TAILING_SIDECAR_OTEL_DEV }}
