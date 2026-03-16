@@ -2,6 +2,8 @@ FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.146.0-sumo-0 AS collect
 
 FROM alpine:3.23.3
 
+RUN apk update && apk upgrade --no-cache
+
 RUN mkdir -p /etc/otel /var/lib/otc /var/log
 
 RUN addgroup -g 10001 otelcol && \
