@@ -21,7 +21,7 @@ jobs:
   build-otelcol-sidecar:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Extract tag
         id: extract_tag
         run: echo "tag=$(echo $(git describe --tags --always))" >> $GITHUB_OUTPUT
@@ -91,7 +91,7 @@ jobs:
   build-operator:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup go
         uses: actions/setup-go@v6
         with:
@@ -166,6 +166,6 @@ jobs:
   push-helm-chart:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Push dev helm chart
         run: make push-helm-chart
