@@ -65,7 +65,7 @@ kubeRbacProxy:
   image:
     pullPolicy: IfNotPresent
     repository: quay.io/brancz/kube-rbac-proxy
-    tag: v0.19.1
+    tag: v0.21.2
   resources:
     limits:
       cpu: 500m
