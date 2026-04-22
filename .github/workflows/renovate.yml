@@ -1,0 +1,21 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: '30 18 * * 2'  # every Tuesday at 18:30 UTC (12:00 AM IST)
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Renovate run
+        uses: renovatebot/github-action@v46.1.10
+        env:
+          LOG_LEVEL: debug
+          RENOVATE_REPOSITORIES: SumoLogic/tailing-sidecar
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          configurationFile: renovate.json5
