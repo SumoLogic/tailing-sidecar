@@ -13,6 +13,21 @@ updates:
       interval: "daily"
       time: "06:27"
       timezone: "Europe/Warsaw"
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "docker"
+    directory: "/sidecar/otelcol"
+    schedule:
+      interval: "daily"
+      time: "06:27"
+      timezone: "Europe/Warsaw"
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
 
   - package-ecosystem: "gomod"
     directory: "/operator"
