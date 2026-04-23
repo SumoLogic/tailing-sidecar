@@ -69,7 +69,7 @@ jobs:
         uses: docker/setup-qemu-action@v4.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.0.0
-      - uses: imranismail/setup-kustomize@v2
+      - uses: imranismail/setup-kustomize@v3
       - name: Install kuttl
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
@@ -97,7 +97,7 @@ jobs:
         uses: docker/setup-qemu-action@v4.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.0.0
-      - uses: imranismail/setup-kustomize@v2
+      - uses: imranismail/setup-kustomize@v3
       - name: Install kuttl
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
@@ -125,7 +125,7 @@ jobs:
         uses: docker/setup-qemu-action@v4.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.0.0
-      - uses: imranismail/setup-kustomize@v2
+      - uses: imranismail/setup-kustomize@v3
       - name: Install kuttl
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
@@ -153,7 +153,7 @@ jobs:
         uses: docker/setup-qemu-action@v4.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.0.0
-      - uses: imranismail/setup-kustomize@v2
+      - uses: imranismail/setup-kustomize@v3
       - name: Install kuttl
         run: |
           curl -Lo /usr/local/bin/kubectl-kuttl https://github.com/kudobuilder/kuttl/releases/download/v${{ env.KUTTL_VERSION }}/kubectl-kuttl_${{ env.KUTTL_VERSION }}_linux_x86_64
