@@ -3,8 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "timezone": "Europe/Warsaw",
-  "schedule": ["before 7am"],
   "labels": ["dependencies"],
   // Disable managers that Dependabot already covers
   "enabledManagers": [
