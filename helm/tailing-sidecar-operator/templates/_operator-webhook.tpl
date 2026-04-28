@@ -1,7 +1,8 @@
 {{- define "tailing-sidecar-operator.webhook" -}}
 {{- $altNames := list ( printf "%s.%s" (include "tailing-sidecar-operator.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "tailing-sidecar-operator.fullname" .) .Release.Namespace ) -}}
-{{- $ca := genCA "tailing-sidecar-operator-ca" 365 -}}
-{{- $cert := genSignedCert ( include "tailing-sidecar-operator.fullname" . ) nil $altNames 365 $ca -}}
+{{- $tmpperioddays := int .Values.autoCertPeriodDays | default 365 }}
+{{- $ca := genCA "tailing-sidecar-operator-ca" $tmpperioddays -}}
+{{- $cert := genSignedCert ( include "tailing-sidecar-operator.fullname" . ) nil $altNames $tmpperioddays $ca -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
