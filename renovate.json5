@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "dependencyDashboardApproval": false,
   "recreateWhen": "always",
   "prHourlyLimit": 10,
   "labels": ["dependencies"],
