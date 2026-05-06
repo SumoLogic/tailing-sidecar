@@ -3,8 +3,12 @@
   "extends": [
     "config:recommended"
   ],
+  "dependencyDashboardApproval": false,
+  "recreateWhen": "always",
+  "prHourlyLimit": 10,
   "labels": ["dependencies"],
-  // Disable managers that Dependabot already covers
+  "commitMessageAction": "bump",
+  "commitMessageExtra": "{{#if isSingleVersion}}from {{{currentValue}}} to {{{newValue}}}{{/if}}",
   "enabledManagers": [
     "helm-values"
   ],
@@ -12,5 +16,12 @@
     "fileMatch": [
       "helm/tailing-sidecar-operator/values\\.yaml"
     ]
-  }
+  },
+  "packageRules": [
+    {
+      "description": "Add chore(deps) prefix to all dependency update commits",
+      "matchPackagePatterns": [".*"],
+      "commitMessagePrefix": "chore(deps):"
+    }
+  ]
 }
