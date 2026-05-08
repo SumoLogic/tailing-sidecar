@@ -1,27 +1,31 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "dependencyDashboardApproval": false,
-  "recreateWhen": "always",
-  "prHourlyLimit": 10,
-  "labels": ["dependencies"],
-  "commitMessageAction": "bump",
-  "commitMessageExtra": "{{#if isSingleVersion}}from {{{currentValue}}} to {{{newValue}}}{{/if}}",
-  "enabledManagers": [
-    "helm-values"
+  dependencyDashboardApproval: false,
+  recreateWhen: 'always',
+  prHourlyLimit: 10,
+  labels: [
+    'dependencies',
   ],
-  "helm-values": {
-    "fileMatch": [
-      "helm/tailing-sidecar-operator/values\\.yaml"
-    ]
+  commitMessageAction: 'bump',
+  commitMessageExtra: '{{#if isSingleVersion}}from {{{currentValue}}} to {{{newValue}}}{{/if}}',
+  enabledManagers: [
+    'helm-values',
+  ],
+  'helm-values': {
+    managerFilePatterns: [
+      '/helm/tailing-sidecar-operator/values\\.yaml/',
+    ],
   },
-  "packageRules": [
+  packageRules: [
     {
-      "description": "Add chore(deps) prefix to all dependency update commits",
-      "matchPackagePatterns": [".*"],
-      "commitMessagePrefix": "chore(deps):"
-    }
-  ]
+      description: 'Add chore(deps) prefix to all dependency update commits',
+      commitMessagePrefix: 'chore(deps):',
+      matchPackageNames: [
+        '/.*/',
+      ],
+    },
+  ],
 }
