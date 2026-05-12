@@ -1,0 +1,124 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (semver without v prefix, e.g. 0.21.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate version format
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version must be semver without v prefix (e.g. 0.21.0)"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_RELEASE_PAT }}
+
+      - name: Fetch tags
+        run: git fetch --tags
+
+      - name: Check tag does not already exist
+        run: |
+          if git ls-remote --tags origin "refs/tags/v${{ inputs.version }}" | grep -q .; then
+            echo "::error::Tag v${{ inputs.version }} already exists"
+            exit 1
+          fi
+
+      - name: Configure git identity
+        run: |
+          git config user.email "continuous-integration@sumologic.com"
+          git config user.name "Continuous Integration [bot]"
+
+      - name: Create release branch and update Chart.yaml
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH="release/v${VERSION}"
+
+          git checkout -b "${BRANCH}"
+
+          sed -i "s/^version: .*/version: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
+
+          # Generate changelog from merged PRs since last tag
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          TODAY=$(date +%Y-%m-%d)
+
+          {
+            echo "## [v${VERSION}] - ${TODAY}"
+            echo ""
+            if [ -n "${PREV_TAG}" ]; then
+              gh pr list \
+                --state merged \
+                --base main \
+                --search "merged:>=$(git log -1 --format=%aI ${PREV_TAG})" \
+                --json number,title \
+                --jq '.[] | "- \(.title) [#\(.number)]"' \
+              | grep -v "prepare release" || echo "- No notable changes"
+            else
+              echo "- Initial release"
+            fi
+            echo ""
+            if [ -n "${PREV_TAG}" ]; then
+              gh pr list \
+                --state merged \
+                --base main \
+                --search "merged:>=$(git log -1 --format=%aI ${PREV_TAG})" \
+                --json number \
+                --jq '.[] | "[#\(.number)]: https://github.com/SumoLogic/tailing-sidecar/pull/\(.number)"' \
+              | grep -v "prepare release" || true
+            fi
+          } > /tmp/changelog-entry.md
+
+          # Prepend new entry after the header lines (first 5 lines)
+          head -n 5 CHANGELOG.md > /tmp/changelog-new.md
+          echo "" >> /tmp/changelog-new.md
+          cat /tmp/changelog-entry.md >> /tmp/changelog-new.md
+          tail -n +6 CHANGELOG.md >> /tmp/changelog-new.md
+          mv /tmp/changelog-new.md CHANGELOG.md
+
+          git add helm/tailing-sidecar-operator/Chart.yaml CHANGELOG.md
+          git commit -m "feat: prepare release v${VERSION}"
+          git push origin "${BRANCH}"
+
+      - name: Ensure release label exists
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+        run: gh label create release --color "0075ca" --description "Release PR" 2>/dev/null || true
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh pr create \
+            --title "feat: prepare release v${VERSION}" \
+            --base main \
+            --head "release/v${VERSION}" \
+            --label "release" \
+            --body "## Release v${VERSION}
+
+          This PR bumps Chart.yaml to \`${VERSION}\` and auto-generates the CHANGELOG entry.
+
+          ### Pre-merge checklist
+
+          - [ ] Review and edit the generated CHANGELOG.md entry if needed
+          - [ ] Verify \`version\` and \`appVersion\` in \`helm/tailing-sidecar-operator/Chart.yaml\`
+          - [ ] Approve this PR
+
+          After merging, the release tag and GitHub Release will be created automatically."

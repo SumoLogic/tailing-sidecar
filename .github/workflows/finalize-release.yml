@@ -1,0 +1,80 @@
+name: Finalize Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-release:
+    if: >-
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'release') &&
+      startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_RELEASE_PAT }}
+          fetch-depth: 0
+
+      - name: Read version from Chart.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' helm/tailing-sidecar-operator/Chart.yaml | awk '{print $2}')
+          echo "value=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git tag --list "v${{ steps.version.outputs.value }}" | grep -q .; then
+            echo "::warning::Tag v${{ steps.version.outputs.value }} already exists, skipping"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure git identity
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          git config user.email "continuous-integration@sumologic.com"
+          git config user.name "Continuous Integration [bot]"
+
+      - name: Create and push tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Create release branch if needed
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          MAJOR=$(echo "${VERSION}" | cut -d. -f1)
+          MINOR=$(echo "${VERSION}" | cut -d. -f2)
+          RELEASE_BRANCH="release-v${MAJOR}.${MINOR}"
+
+          if git ls-remote --heads origin "${RELEASE_BRANCH}" | grep -q .; then
+            echo "Release branch ${RELEASE_BRANCH} already exists, skipping"
+          else
+            git checkout -b "${RELEASE_BRANCH}"
+            git push origin "${RELEASE_BRANCH}"
+          fi
+
+      - name: Create draft GitHub release
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --generate-notes \
+            --draft \
+            --verify-tag
