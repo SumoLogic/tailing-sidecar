@@ -5,7 +5,7 @@
 Releases are automated using GitHub Actions. Only two manual steps are required:
 
 1. Trigger the **Prepare Release** workflow
-2. Update the CHANGELOG, review, and merge the resulting PR
+1. Update the CHANGELOG, review, and merge the resulting PR
 
 ### Prerequisites
 
@@ -42,9 +42,9 @@ PRs since the last tag. Review and edit it if needed, then merge the PR.
 After the release PR is merged, the **Finalize Release** workflow:
 
 1. Reads the version from `Chart.yaml`
-2. Creates an annotated tag `v{VERSION}` and pushes it
-3. Creates a `release-v{MAJOR}.{MINOR}` branch (for new minor versions)
-4. Creates a **draft GitHub Release** with auto-generated notes
+1. Creates an annotated tag `v{VERSION}` and pushes it
+1. Creates a `release-v{MAJOR}.{MINOR}` branch (for new minor versions)
+1. Creates a **draft GitHub Release** with auto-generated notes
 
 The tag push triggers the **Releases Otelcol** workflow which:
 
@@ -70,7 +70,7 @@ If the automated process is unavailable, follow these manual steps:
 1. Create and merge a PR updating `version` and `appVersion` in
    [Chart.yaml](../helm/tailing-sidecar-operator/Chart.yaml).
 
-2. Create and push the release tag:
+1. Create and push the release tag:
 
    ```bash
    export VERSION=0.21.0
@@ -80,12 +80,12 @@ If the automated process is unavailable, follow these manual steps:
    git push origin "v${VERSION}"
    ```
 
-3. For major or minor version changes, create a release branch:
+1. For major or minor version changes, create a release branch:
 
    ```bash
    git checkout -b "release-v${VERSION%.*}"
    git push origin "release-v${VERSION%.*}"
    ```
 
-4. If the GitHub Release was not created automatically, draft one at
+1. If the GitHub Release was not created automatically, draft one at
    <https://github.com/SumoLogic/tailing-sidecar/releases>.
