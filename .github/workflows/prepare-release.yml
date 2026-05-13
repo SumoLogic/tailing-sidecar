@@ -57,28 +57,28 @@ jobs:
           PREV_TAG=$(git tag --sort=-version:refname | head -1)
           TODAY=$(date +%Y-%m-%d)
 
+          if [ -n "${PREV_TAG}" ]; then
+            SINCE=$(git log -1 --format=%as "${PREV_TAG}")
+            gh pr list \
+              --state merged \
+              --base main \
+              --search "merged:>=${SINCE}" \
+              --json number,title \
+              --jq '[.[] | select(.title | test("prepare release") | not)]' \
+            > /tmp/prs.json
+          else
+            echo '[]' > /tmp/prs.json
+          fi
+
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
-            if [ -n "${PREV_TAG}" ]; then
-              SINCE=$(git log -1 --format=%as "${PREV_TAG}")
-              gh pr list \
-                --state merged \
-                --base main \
-                --search "merged:>=${SINCE}" \
-                --json number,title \
-                --jq '.[] | "- \(.title) [#\(.number)]"' \
-              | grep -v "prepare release" || echo "- No notable changes"
+            if [ -s /tmp/prs.json ] && [ "$(jq length /tmp/prs.json)" -gt 0 ]; then
+              jq -r '.[] | "- \(.title) [#\(.number)]"' /tmp/prs.json
               echo ""
-              gh pr list \
-                --state merged \
-                --base main \
-                --search "merged:>=${SINCE}" \
-                --json number \
-                --jq '.[] | "[#\(.number)]: https://github.com/${{ github.repository }}/pull/\(.number)"' \
-              | grep -v "prepare release" || true
+              jq -r '.[] | "[#\(.number)]: https://github.com/${{ github.repository }}/pull/\(.number)"' /tmp/prs.json
             else
-              echo "- Initial release"
+              echo "- No notable changes"
             fi
           } > /tmp/changelog-entry.md
 
