@@ -27,13 +27,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.GH_RELEASE_PAT }}
-
-      - name: Fetch tags
-        run: git fetch --tags
+          fetch-depth: 0
 
       - name: Check tag does not already exist
         run: |
-          if git ls-remote --tags origin "refs/tags/v${{ inputs.version }}" | grep -q .; then
+          if git tag --list "v${{ inputs.version }}" | grep -q .; then
             echo "::error::Tag v${{ inputs.version }} already exists"
             exit 1
           fi
@@ -48,7 +46,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
         run: |
           VERSION="${{ inputs.version }}"
-          BRANCH="release/v${VERSION}"
+          BRANCH="prepare-release-${VERSION}"
 
           git checkout -b "${BRANCH}"
 
@@ -56,40 +54,46 @@ jobs:
           sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
 
           # Generate changelog from merged PRs since last tag
-          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          PREV_TAG=$(git tag --sort=-version:refname | head -1)
           TODAY=$(date +%Y-%m-%d)
 
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
             if [ -n "${PREV_TAG}" ]; then
+              SINCE=$(git log -1 --format=%as "${PREV_TAG}")
               gh pr list \
                 --state merged \
                 --base main \
-                --search "merged:>=$(git log -1 --format=%aI ${PREV_TAG})" \
+                --search "merged:>=${SINCE}" \
                 --json number,title \
                 --jq '.[] | "- \(.title) [#\(.number)]"' \
               | grep -v "prepare release" || echo "- No notable changes"
-            else
-              echo "- Initial release"
-            fi
-            echo ""
-            if [ -n "${PREV_TAG}" ]; then
+              echo ""
               gh pr list \
                 --state merged \
                 --base main \
-                --search "merged:>=$(git log -1 --format=%aI ${PREV_TAG})" \
+                --search "merged:>=${SINCE}" \
                 --json number \
-                --jq '.[] | "[#\(.number)]: https://github.com/SumoLogic/tailing-sidecar/pull/\(.number)"' \
+                --jq '.[] | "[#\(.number)]: https://github.com/${{ github.repository }}/pull/\(.number)"' \
               | grep -v "prepare release" || true
+            else
+              echo "- Initial release"
             fi
           } > /tmp/changelog-entry.md
 
-          # Prepend new entry after the header lines (first 5 lines)
-          head -n 5 CHANGELOG.md > /tmp/changelog-new.md
-          echo "" >> /tmp/changelog-new.md
-          cat /tmp/changelog-entry.md >> /tmp/changelog-new.md
-          tail -n +6 CHANGELOG.md >> /tmp/changelog-new.md
+          # Prepend new entry after the header (everything before first ## line)
+          HEADER_END=$(grep -n '^## ' CHANGELOG.md | head -1 | cut -d: -f1)
+          if [ -n "${HEADER_END}" ]; then
+            head -n $((HEADER_END - 1)) CHANGELOG.md > /tmp/changelog-new.md
+            cat /tmp/changelog-entry.md >> /tmp/changelog-new.md
+            echo "" >> /tmp/changelog-new.md
+            tail -n +"${HEADER_END}" CHANGELOG.md >> /tmp/changelog-new.md
+          else
+            cat CHANGELOG.md > /tmp/changelog-new.md
+            echo "" >> /tmp/changelog-new.md
+            cat /tmp/changelog-entry.md >> /tmp/changelog-new.md
+          fi
           mv /tmp/changelog-new.md CHANGELOG.md
 
           git add helm/tailing-sidecar-operator/Chart.yaml CHANGELOG.md
@@ -109,7 +113,7 @@ jobs:
           gh pr create \
             --title "feat: prepare release v${VERSION}" \
             --base main \
-            --head "release/v${VERSION}" \
+            --head "prepare-release-${VERSION}" \
             --label "release" \
             --body "## Release v${VERSION}
 

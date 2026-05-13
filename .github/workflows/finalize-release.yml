@@ -14,7 +14,7 @@ jobs:
     if: >-
       github.event.pull_request.merged == true &&
       contains(github.event.pull_request.labels.*.name, 'release') &&
-      startsWith(github.event.pull_request.head.ref, 'release/v')
+      startsWith(github.event.pull_request.head.ref, 'prepare-release-')
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout

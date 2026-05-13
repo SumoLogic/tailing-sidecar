@@ -25,9 +25,10 @@ The workflow will:
 
 - Validate the version format
 - Verify the tag does not already exist
-- Create branch `release/v{VERSION}`
+- Create branch `prepare-release-{VERSION}`
 - Update `version` and `appVersion` in
   `helm/tailing-sidecar-operator/Chart.yaml`
+- Auto-generate a CHANGELOG entry from merged PRs since the last tag
 - Open a PR to `main` titled `feat: prepare release v{VERSION}`
   with the `release` label
 
