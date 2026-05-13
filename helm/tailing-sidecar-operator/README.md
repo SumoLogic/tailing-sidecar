@@ -56,7 +56,7 @@ In order to override tailing sidecar configuration, the following properties may
 ```yaml
 sidecar:
   config:
-    mountPath: /etc/otel #for version>=0.19 .0 or  /fluent-bit/etc/ for version <=0.18.1
+    mountPath: /etc/otel  #for version>=0.19 .0 or  /fluent-bit/etc/ for version <=0.18.1
     content: #  applicable for version <=0.18.1
       file-1.conf: |
         content of file-1.conf
