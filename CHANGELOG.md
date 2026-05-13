@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [v0.20.3] - 2026-04-09
+
 - chore: bump tailing-sidecar-operator to 0.20.3 (#861)
 - chore: bump sumologic-otel-collector to 0.149.0 (#861)
 - chore: bump kube-rbac-proxy to 0.21.2 (#861)
@@ -13,10 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#861]: https://github.com/SumoLogic/tailing-sidecar/pull/861
 
 ## [v0.20.0] - 2026-03-02
+
 - feat: Remove deprecated fluentbit directories (#836)
 - chore: upgrade sumologic-otel-collector (#837)
-[#836]: https://github.com/SumoLogic/tailing-sidecar/pull/836
-[#837]: https://github.com/SumoLogic/tailing-sidecar/pull/837
+  [#836]: https://github.com/SumoLogic/tailing-sidecar/pull/836
+  [#837]: https://github.com/SumoLogic/tailing-sidecar/pull/837
 
 ## [v0.19.3] - 2026-02-23
 
@@ -298,9 +300,10 @@ No significant changes since [v0.5.5]. This release contains ARM docker images.
 ## [v0.5.0] - 2021-06-14
 
 - Changes in Custom Resource for Tailing Sidecar Operator
+
   - Rename TailingSidecar to TailingSidecarConfig (#142)
   - Rename SidecarConfig to SidecarSpec in TailingSidecarConfig (#144)
-  - Rename Config to SidecarSpecs in TailingSidecarConfig  (#144)
+  - Rename Config to SidecarSpecs in TailingSidecarConfig (#144)
   - Sidecar container name defined as key in SidecarSpecs (#145)
   - Add PodSelector to TailingSidecarConfig (#146)
   - Add per tailing sidecar container annotations (#147)

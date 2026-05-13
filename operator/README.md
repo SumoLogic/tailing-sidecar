@@ -1,6 +1,6 @@
 # Tailing sidecar operator
 
-*Tailing sidecar operator* automatically adds
+_Tailing sidecar operator_ automatically adds
 [streaming sidecar containers](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container)
 which use [tailing sidecar image](../sidecar/) to Pods based on configuration provided in annotation.
 

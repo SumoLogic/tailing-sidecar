@@ -17,26 +17,26 @@ metadata:
   name: example-with-tailling-sidecars
 spec:
   containers:
-  - name: count
-    image: busybox
-    args:
-    - /bin/sh
-    - -c
-    - >
-      i=0;
-      while true;
-      do
-        echo "example1: $i $(date)" >> /var/log/example1.log;
-        echo "example2: $i $(date)" >> /var/log/example2.log;
-        i=$((i+1));
-        sleep 1;
-      done
-    volumeMounts:
-    - name: varlog
-      mountPath: /var/log
+    - name: count
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - >
+          i=0;
+          while true;
+          do
+            echo "example1: $i $(date)" >> /var/log/example1.log;
+            echo "example2: $i $(date)" >> /var/log/example2.log;
+            i=$((i+1));
+            sleep 1;
+          done
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
   volumes:
-  - name: varlog
-    emptyDir: {}
+    - name: varlog
+      emptyDir: {}
 ```
 
 Pod can be extended by adding tailing sidecar containers for easier log access:
@@ -48,58 +48,58 @@ metadata:
   name: example-with-tailling-sidecars
 spec:
   containers:
-  - name: count
-    image: busybox
-    args:
-    - /bin/sh
-    - -c
-    - >
-      i=0;
-      while true;
-      do
-        echo "example1: $i $(date)" >> /var/log/example1.log;
-        echo "example2: $i $(date)" >> /var/log/example2.log;
-        i=$((i+1));
-        sleep 1;
-      done
-    volumeMounts:
-    - name: varlog
-      mountPath: /var/log
-  - name: sidecar1
-    image: ghcr.io/sumologic/tailing-sidecar:latest
-    env:
-    - name: PATH_TO_TAIL
-      value: /var/log/example1.log
-    - name: LOG_LEVEL
-      value: warning
-    volumeMounts:
-    - name: varlog
-      mountPath: /var/log
-    - name: volume-sidecar-1
-      mountPath: /tailing-sidecar/var
-  - name: sidecar2
-    image: ghcr.io/sumologic/tailing-sidecar:latest
-    env:
-    - name: PATH_TO_TAIL
-      value: /var/log/example2.log
-    - name: LOG_LEVEL
-      value: warning
-    volumeMounts:
-    - name: varlog
-      mountPath: /var/log
-    - name: volume-sidecar-2
-      mountPath: /tailing-sidecar/var
+    - name: count
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - >
+          i=0;
+          while true;
+          do
+            echo "example1: $i $(date)" >> /var/log/example1.log;
+            echo "example2: $i $(date)" >> /var/log/example2.log;
+            i=$((i+1));
+            sleep 1;
+          done
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+    - name: sidecar1
+      image: ghcr.io/sumologic/tailing-sidecar:latest
+      env:
+        - name: PATH_TO_TAIL
+          value: /var/log/example1.log
+        - name: LOG_LEVEL
+          value: warning
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: volume-sidecar-1
+          mountPath: /tailing-sidecar/var
+    - name: sidecar2
+      image: ghcr.io/sumologic/tailing-sidecar:latest
+      env:
+        - name: PATH_TO_TAIL
+          value: /var/log/example2.log
+        - name: LOG_LEVEL
+          value: warning
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: volume-sidecar-2
+          mountPath: /tailing-sidecar/var
   volumes:
-  - name: varlog
-    emptyDir: {}
-  - name: volume-sidecar-1
-    hostPath:
-      path: /var/log/sidecar1
-      type: DirectoryOrCreate
-  - name: volume-sidecar-2
-    hostPath:
-      path: /var/log/sidecar2
-      type: DirectoryOrCreate
+    - name: varlog
+      emptyDir: {}
+    - name: volume-sidecar-1
+      hostPath:
+        path: /var/log/sidecar1
+        type: DirectoryOrCreate
+    - name: volume-sidecar-2
+      hostPath:
+        path: /var/log/sidecar2
+        type: DirectoryOrCreate
 ```
 
 Notice that tailing sidecar containers are configured through two environmental variables:
@@ -110,7 +110,6 @@ Notice that tailing sidecar containers are configured through two environmental 
   allowed values: error, warning, info, debug, trace
 - `OTEL_FILE_STORAGE_PATH` - path to directory where filelog reciever stores data,
 - `SIDECAR_OTEL_LOG_PATH` - dir path for otel collector own logs. Logs will be in otel.log file inside this directory
-
 
 Try it!
 
