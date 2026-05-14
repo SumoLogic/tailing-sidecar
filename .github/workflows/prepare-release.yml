@@ -26,6 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          ref: main
           token: ${{ secrets.GH_RELEASE_PAT }}
           fetch-depth: 0
 
@@ -58,14 +59,11 @@ jobs:
           TODAY=$(date +%Y-%m-%d)
 
           if [ -n "${PREV_TAG}" ]; then
-            SINCE=$(git log -1 --format=%as "${PREV_TAG}")
-            gh pr list \
-              --state merged \
-              --base main \
-              --search "merged:>=${SINCE}" \
-              --json number,title \
-              --jq '[.[] | select(.title | test("prepare release") | not)]' \
-            > /tmp/prs.json
+            git log "${PREV_TAG}..HEAD" --oneline \
+              | grep -oE '#[0-9]+' | tr -d '#' | sort -un \
+              | xargs -I{} gh pr view {} --json number,title \
+              | jq -s '[.[] | select(.title | test("prepare release") | not)]' \
+              > /tmp/prs.json
           else
             echo '[]' > /tmp/prs.json
           fi
