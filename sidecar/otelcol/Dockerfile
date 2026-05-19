@@ -1,4 +1,4 @@
-FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.151.0-sumo-0 AS collector
+FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.152.0-sumo-0 AS collector
 
 FROM alpine:3.23.4
 
