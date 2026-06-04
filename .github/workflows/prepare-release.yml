@@ -41,34 +41,46 @@ jobs:
           git config user.email "continuous-integration@sumologic.com"
           git config user.name "Continuous Integration [bot]"
 
-      - name: Create release branch and update Chart.yaml
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          PREV_TAG=$(git tag --sort=-creatordate | head -1)
+          echo "tag=${PREV_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          fromTag: ${{ steps.prev_tag.outputs.tag }}
+          toTag: main
+          configurationJson: |
+            {
+              "ignore_labels": ["release"],
+              "template": "#{{UNCATEGORIZED}}",
+              "pr_template": "- #{{TITLE}} (#{{NUMBER}})\n",
+              "empty_template": "- No notable changes\n"
+            }
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create release branch, update Chart.yaml and CHANGELOG
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION="${{ inputs.version }}"
           BRANCH="prepare-release-${VERSION}"
+          TODAY=$(date +%Y-%m-%d)
 
           git checkout -b "${BRANCH}"
 
           sed -i "s/^version: .*/version: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
           sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
 
-          # Generate changelog using GitHub's release notes API
-          PREV_TAG=$(git tag --sort=-version:refname | head -1)
-          TODAY=$(date +%Y-%m-%d)
-
-          NOTES_ARGS="-f tag_name=v${VERSION} -f target_commitish=main"
-          if [ -n "${PREV_TAG}" ]; then
-            NOTES_ARGS="${NOTES_ARGS} -f previous_tag_name=${PREV_TAG}"
-          fi
-
-          RELEASE_NOTES=$(gh api repos/${{ github.repository }}/releases/generate-notes \
-            ${NOTES_ARGS} --jq '.body')
-
+          # Build changelog entry
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
-            echo "${RELEASE_NOTES}"
+            echo '${{ steps.changelog.outputs.changelog }}'
           } > /tmp/changelog-entry.md
 
           # Prepend new entry after the header (everything before first ## line)
