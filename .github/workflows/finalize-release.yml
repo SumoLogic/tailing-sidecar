@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   finalize-release:
@@ -20,7 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GH_RELEASE_PAT }}
           fetch-depth: 0
 
       - name: Read version from Chart.yaml
@@ -70,7 +70,7 @@ jobs:
       - name: Create draft GitHub release
         if: steps.check_tag.outputs.exists == 'false'
         env:
-          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           VERSION="${{ steps.version.outputs.value }}"
           gh release create "v${VERSION}" \
@@ -78,3 +78,12 @@ jobs:
             --generate-notes \
             --draft \
             --verify-tag
+
+      - name: Trigger release builds
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          gh workflow run release_builds_otelcol.yaml \
+            --ref "v${VERSION}"
