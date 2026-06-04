@@ -27,7 +27,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: main
-          token: ${{ secrets.GH_RELEASE_PAT }}
           fetch-depth: 0
 
       - name: Check tag does not already exist
@@ -42,43 +41,49 @@ jobs:
           git config user.email "continuous-integration@sumologic.com"
           git config user.name "Continuous Integration [bot]"
 
-      - name: Create release branch and update Chart.yaml
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          PREV_TAG=$(git tag --sort=-creatordate | head -1)
+          echo "tag=${PREV_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          fromTag: ${{ steps.prev_tag.outputs.tag }}
+          toTag: main
+          configurationJson: |
+            {
+              "ignore_labels": ["release"],
+              "template": "#{{UNCATEGORIZED}}",
+              "pr_template": "- #{{TITLE}} (#{{NUMBER}})\n",
+              "empty_template": "- No notable changes\n"
+            }
         env:
-          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create release branch, update Chart.yaml and CHANGELOG
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           VERSION="${{ inputs.version }}"
           BRANCH="prepare-release-${VERSION}"
+          TODAY=$(date +%Y-%m-%d)
 
           git checkout -b "${BRANCH}"
 
           sed -i "s/^version: .*/version: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
           sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
 
-          # Generate changelog from merged PRs since last tag
-          PREV_TAG=$(git tag --sort=-version:refname | head -1)
-          TODAY=$(date +%Y-%m-%d)
-
-          if [ -n "${PREV_TAG}" ]; then
-            git log "${PREV_TAG}..HEAD" --oneline \
-              | grep -oE '#[0-9]+' | tr -d '#' | sort -un \
-              | xargs -I{} gh pr view {} --json number,title \
-              | jq -s '[.[] | select(.title | test("prepare release") | not)]' \
-              > /tmp/prs.json
-          else
-            echo '[]' > /tmp/prs.json
-          fi
-
+          # Build changelog entry
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
-            if [ -s /tmp/prs.json ] && [ "$(jq length /tmp/prs.json)" -gt 0 ]; then
-              jq -r '.[] | "- \(.title) [#\(.number)]"' /tmp/prs.json
-              echo ""
-              jq -r '.[] | "[#\(.number)]: https://github.com/${{ github.repository }}/pull/\(.number)"' /tmp/prs.json
-            else
-              echo "- No notable changes"
-            fi
+            echo ""
+            echo '${{ steps.changelog.outputs.changelog }}'
           } > /tmp/changelog-entry.md
+
 
           # Prepend new entry after the header (everything before first ## line)
           HEADER_END=$(grep -n '^## ' CHANGELOG.md | head -1 | cut -d: -f1)
@@ -100,12 +105,12 @@ jobs:
 
       - name: Ensure release label exists
         env:
-          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          GH_TOKEN: ${{ github.token }}
         run: gh label create release --color "0075ca" --description "Release PR" 2>/dev/null || true
 
       - name: Create pull request
         env:
-          GH_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
         run: |
           gh pr create \
