@@ -1,19 +1,20 @@
 # Tailing sidecar operator
 
 *Tailing sidecar operator* automatically adds
-[streaming sidecar containers](https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container)
+[streaming sidecar containers][streaming-sidecar]
 which use [tailing sidecar image](../sidecar/) to Pods based on configuration provided in annotation.
 
 Configuration for tailing sidecar operator is described [here](docs/configuration.md).
 
-To quickly see benefits of using tailing sidecar operator try it in prepared [Vagrant environment](#testing-in-Vagrant-environment).
+To quickly see benefits of using tailing sidecar operator try it in prepared
+[Vagrant environment](#testing-in-Vagrant-environment).
 
 ## Deploy tailing sidecar operator
 
 ### Prerequisities
 
 - [cert-manager](https://cert-manager.io/docs/installation/)
-- [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites)
+- [admission webhooks][admission-wh]
   enabled
 - [kustomize](https://kustomize.io/)
 
@@ -114,3 +115,6 @@ Check that operator added tailing sidecars to example resources:
 ```bash
 make check-examples
 ```
+
+[streaming-sidecar]: https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container
+[admission-wh]: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites
