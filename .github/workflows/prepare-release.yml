@@ -53,30 +53,22 @@ jobs:
           sed -i "s/^version: .*/version: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
           sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
 
-          # Generate changelog from merged PRs since last tag
+          # Generate changelog using GitHub's release notes API
           PREV_TAG=$(git tag --sort=-version:refname | head -1)
           TODAY=$(date +%Y-%m-%d)
 
+          NOTES_ARGS="-f tag_name=v${VERSION} -f target_commitish=main"
           if [ -n "${PREV_TAG}" ]; then
-            git log "${PREV_TAG}..HEAD" --oneline \
-              | grep -oE '#[0-9]+' | tr -d '#' | sort -un \
-              | xargs -I{} gh pr view {} --json number,title \
-              | jq -s '[.[] | select(.title | test("prepare release") | not)]' \
-              > /tmp/prs.json
-          else
-            echo '[]' > /tmp/prs.json
+            NOTES_ARGS="${NOTES_ARGS} -f previous_tag_name=${PREV_TAG}"
           fi
+
+          RELEASE_NOTES=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            ${NOTES_ARGS} --jq '.body')
 
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
-            if [ -s /tmp/prs.json ] && [ "$(jq length /tmp/prs.json)" -gt 0 ]; then
-              jq -r '.[] | "- \(.title) [#\(.number)]"' /tmp/prs.json
-              echo ""
-              jq -r '.[] | "[#\(.number)]: https://github.com/${{ github.repository }}/pull/\(.number)"' /tmp/prs.json
-            else
-              echo "- No notable changes"
-            fi
+            echo "${RELEASE_NOTES}"
           } > /tmp/changelog-entry.md
 
           # Prepend new entry after the header (everything before first ## line)
