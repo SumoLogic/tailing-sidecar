@@ -80,8 +80,10 @@ jobs:
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
+            echo ""
             echo '${{ steps.changelog.outputs.changelog }}'
           } > /tmp/changelog-entry.md
+
 
           # Prepend new entry after the header (everything before first ## line)
           HEADER_END=$(grep -n '^## ' CHANGELOG.md | head -1 | cut -d: -f1)
