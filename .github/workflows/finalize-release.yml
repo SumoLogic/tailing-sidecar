@@ -27,6 +27,10 @@ jobs:
         id: version
         run: |
           VERSION=$(grep '^version:' helm/tailing-sidecar-operator/Chart.yaml | awk '{print $2}')
+          if [ -z "${VERSION}" ] || ! [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Failed to read valid version from Chart.yaml (got: '${VERSION}')"
+            exit 1
+          fi
           echo "value=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Check if tag already exists

@@ -45,6 +45,10 @@ jobs:
         id: prev_tag
         run: |
           PREV_TAG=$(git tag --sort=-creatordate | head -1)
+          if [ -z "${PREV_TAG}" ]; then
+            echo "::error::No existing tags found. Cannot generate changelog without a base tag."
+            exit 1
+          fi
           echo "tag=${PREV_TAG}" >> $GITHUB_OUTPUT
 
       - name: Generate changelog
