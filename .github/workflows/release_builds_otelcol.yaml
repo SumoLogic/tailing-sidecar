@@ -17,7 +17,18 @@ env:
   LATEST_TAG: "latest"
 
 jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate tag ref
+        run: |
+          if [[ "${GITHUB_REF}" != refs/tags/v* ]]; then
+            echo "::error::This workflow must be triggered on a tag ref (got: ${GITHUB_REF})"
+            exit 1
+          fi
+
   build-sidecar:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -88,6 +99,7 @@ jobs:
         working-directory: ./sidecar/otelcol
 
   build-operator:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -163,6 +175,7 @@ jobs:
         working-directory: ./operator
 
   push-helm-chart:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
