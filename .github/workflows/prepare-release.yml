@@ -66,6 +66,7 @@ jobs:
       - name: Create release branch, update Chart.yaml and CHANGELOG
         env:
           GH_TOKEN: ${{ github.token }}
+          CHANGELOG_BODY: ${{ steps.changelog.outputs.changelog }}
         run: |
           VERSION="${{ inputs.version }}"
           BRANCH="prepare-release-${VERSION}"
@@ -85,7 +86,7 @@ jobs:
           {
             echo "## [v${VERSION}] - ${TODAY}"
             echo ""
-            echo '${{ steps.changelog.outputs.changelog }}'
+            printf '%s\n' "${CHANGELOG_BODY}"
           } > /tmp/changelog-entry.md
 
 
