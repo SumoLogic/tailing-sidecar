@@ -71,6 +71,11 @@ jobs:
           BRANCH="prepare-release-${VERSION}"
           TODAY=$(date +%Y-%m-%d)
 
+          if git ls-remote --heads origin "${BRANCH}" | grep -q .; then
+            echo "::error::Branch ${BRANCH} already exists on remote"
+            exit 1
+          fi
+
           git checkout -b "${BRANCH}"
 
           sed -i "s/^version: .*/version: ${VERSION}/" helm/tailing-sidecar-operator/Chart.yaml
