@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
 
 env:
   SIDECAR_IMAGE: "ghcr.io/sumologic/tailing-sidecar"
@@ -16,7 +17,18 @@ env:
   LATEST_TAG: "latest"
 
 jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate tag ref
+        run: |
+          if [[ "${GITHUB_REF}" != refs/tags/v* ]]; then
+            echo "::error::This workflow must be triggered on a tag ref (got: ${GITHUB_REF})"
+            exit 1
+          fi
+
   build-sidecar:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -87,13 +99,14 @@ jobs:
         working-directory: ./sidecar/otelcol
 
   build-operator:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
       - name: Setup go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: "oldstable"
           cache-dependency-path: operator/go.sum
       - name: Extract tag
         id: extract_tag
@@ -162,6 +175,7 @@ jobs:
         working-directory: ./operator
 
   push-helm-chart:
+    needs: validate
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
