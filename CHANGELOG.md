@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20.4] - 2026-06-08
+
+- build(deps): bump docker/login-action from 4.0.0 to 4.1.0 ([#860](https://github.com/SumoLogic/tailing-sidecar/pull/860))
+
+- ci: improve dependency management with Dependabot and Renovate ([#863](https://github.com/SumoLogic/tailing-sidecar/pull/863))
+
+- chore: add renovate workflow for github actions ([#865](https://github.com/SumoLogic/tailing-sidecar/pull/865))
+
+- build(deps): bump renovatebot/github-action from 46.1.10 to 46.1.13 ([#873](https://github.com/SumoLogic/tailing-sidecar/pull/873))
+
+- chore: update Renovate to run daily and align with kubernetes-collection config ([#875](https://github.com/SumoLogic/tailing-sidecar/pull/875))
+
+- chore(config): migrate Renovate config ([#878](https://github.com/SumoLogic/tailing-sidecar/pull/878))
+
+- build(deps): bump renovatebot/github-action from 46.1.13 to 46.1.14 ([#880](https://github.com/SumoLogic/tailing-sidecar/pull/880))
+
+- fix: remove invalid helm-values manager config from renovate.json5 ([#881](https://github.com/SumoLogic/tailing-sidecar/pull/881))
+
+- [helm] support custom Cert Period Days for auto-gen ([#815](https://github.com/SumoLogic/tailing-sidecar/pull/815))
+
+- build(deps): bump github.com/onsi/gomega from 1.39.1 to 1.40.0 in /operator ([#871](https://github.com/SumoLogic/tailing-sidecar/pull/871))
+
+- build(deps): bump the docker-base-images group across 1 directory with 2 updates ([#874](https://github.com/SumoLogic/tailing-sidecar/pull/874))
+
+- ci: automate release workflow with changelog generation ([#882](https://github.com/SumoLogic/tailing-sidecar/pull/882))
+
+- build(deps): bump github.com/onsi/gomega from 1.40.0 to 1.41.0 in /operator ([#885](https://github.com/SumoLogic/tailing-sidecar/pull/885))
+
+- build(deps): bump sumologic/sumologic-otel-collector from 0.151.0-sumo-0-ubi to 0.152.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#884](https://github.com/SumoLogic/tailing-sidecar/pull/884))
+
+- chore(deps): bump quay.io/brancz/kube-rbac-proxy Docker tag to v0.22.0 ([#877](https://github.com/SumoLogic/tailing-sidecar/pull/877))
+
+- build(deps): bump the docker-base-images group across 1 directory with 2 updates ([#886](https://github.com/SumoLogic/tailing-sidecar/pull/886))
+
+- build(deps): bump docker/login-action from 4.1.0 to 4.2.0 ([#888](https://github.com/SumoLogic/tailing-sidecar/pull/888))
+
+- build(deps): bump docker/setup-qemu-action from 4.0.0 to 4.1.0 ([#889](https://github.com/SumoLogic/tailing-sidecar/pull/889))
+
+- build(deps): bump docker/setup-buildx-action from 4.0.0 to 4.1.0 ([#887](https://github.com/SumoLogic/tailing-sidecar/pull/887))
+
+- update dep to fix the CVEs ([#891](https://github.com/SumoLogic/tailing-sidecar/pull/891))
+
+- build(deps): bump imranismail/setup-kustomize from 2 to 3 ([#859](https://github.com/SumoLogic/tailing-sidecar/pull/859))
+
+- Temp pr change ([#893](https://github.com/SumoLogic/tailing-sidecar/pull/893))
+
+- Revert "Temp pr change" ([#894](https://github.com/SumoLogic/tailing-sidecar/pull/894))
+
+
+
 ## [v0.20.3] - 2026-04-09
 - chore: bump tailing-sidecar-operator to 0.20.3 (#861)
 - chore: bump sumologic-otel-collector to 0.149.0 (#861)
