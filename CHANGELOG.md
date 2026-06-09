@@ -8,14 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v0.20.5] - 2026-06-09
 
 - build(deps): bump renovatebot/github-action from 46.1.14 to 46.1.15 ([#896](https://github.com/SumoLogic/tailing-sidecar/pull/896))
-
 - build(deps): bump sumologic/sumologic-otel-collector from 0.152.0-sumo-0-ubi to 0.153.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#897](https://github.com/SumoLogic/tailing-sidecar/pull/897))
-
 - build(deps): bump mikepenz/release-changelog-builder-action from 5 to 6 ([#899](https://github.com/SumoLogic/tailing-sidecar/pull/899))
-
 - build(deps): bump the kubernetes group in /operator with 3 updates ([#900](https://github.com/SumoLogic/tailing-sidecar/pull/900))
-
-
 
 ## [v0.20.4] - 2026-06-08
 
