@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20.5] - 2026-06-09
+
+- build(deps): bump renovatebot/github-action from 46.1.14 to 46.1.15 ([#896](https://github.com/SumoLogic/tailing-sidecar/pull/896))
+
+- build(deps): bump sumologic/sumologic-otel-collector from 0.152.0-sumo-0-ubi to 0.153.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#897](https://github.com/SumoLogic/tailing-sidecar/pull/897))
+
+- build(deps): bump mikepenz/release-changelog-builder-action from 5 to 6 ([#899](https://github.com/SumoLogic/tailing-sidecar/pull/899))
+
+- build(deps): bump the kubernetes group in /operator with 3 updates ([#900](https://github.com/SumoLogic/tailing-sidecar/pull/900))
+
+
+
 ## [v0.20.4] - 2026-06-08
 
 - build(deps): bump docker/login-action from 4.0.0 to 4.1.0 ([#860](https://github.com/SumoLogic/tailing-sidecar/pull/860))
