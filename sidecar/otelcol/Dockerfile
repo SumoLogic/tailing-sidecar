@@ -1,6 +1,6 @@
 FROM public.ecr.aws/sumologic/sumologic-otel-collector:0.153.0-sumo-0 AS collector
 
-FROM alpine:3.23.4
+FROM alpine:3.24.0
 
 RUN apk update && apk upgrade --no-cache
 
