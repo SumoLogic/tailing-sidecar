@@ -1,0 +1,23 @@
+# Add 'documentation' label to any change to *.md files
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.md']
+
+# Add 'docker' label to any change in docker related files
+docker:
+  - changed-files:
+      - any-glob-to-any-file: ['**/Dockerfile*', '**/.dockerignore']
+
+# Add 'github_actions' label to any change .github/ directory
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/**']
+
+# Add 'go' label to any change *.go files
+go:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.go']
+
+osc:
+  - changed-files:
+      - any-glob-to-any-file: ['**']
