@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20.6] - 2026-08-19
+
+- build(deps): bump alpine from 3.23.4 to 3.24.0 in /sidecar/otelcol in the docker-base-images group ([#902](https://github.com/SumoLogic/tailing-sidecar/pull/902))
+- build(deps): bump github.com/onsi/gomega from 1.41.0 to 1.42.0 in /operator ([#904](https://github.com/SumoLogic/tailing-sidecar/pull/904))
+- build(deps): bump the docker-base-images group in /sidecar/otelcol with 2 updates ([#905](https://github.com/SumoLogic/tailing-sidecar/pull/905))
+- build(deps): bump the kubernetes group across 1 directory with 3 updates ([#903](https://github.com/SumoLogic/tailing-sidecar/pull/903))
+- build(deps): bump actions/checkout from 6 to 7 ([#906](https://github.com/SumoLogic/tailing-sidecar/pull/906))
+- build(deps): bump renovatebot/github-action from 46.1.15 to 46.1.16 ([#907](https://github.com/SumoLogic/tailing-sidecar/pull/907))
+- build(deps): bump github.com/onsi/gomega from 1.42.0 to 1.42.1 in /operator ([#908](https://github.com/SumoLogic/tailing-sidecar/pull/908))
+- build(deps): bump renovatebot/github-action from 46.1.16 to 46.1.17 ([#909](https://github.com/SumoLogic/tailing-sidecar/pull/909))
+- build(deps): bump docker/setup-qemu-action from 4.1.0 to 4.2.0 ([#910](https://github.com/SumoLogic/tailing-sidecar/pull/910))
+- build(deps): bump docker/setup-buildx-action from 4.1.0 to 4.2.0 ([#911](https://github.com/SumoLogic/tailing-sidecar/pull/911))
+- build(deps): bump docker/login-action from 4.2.0 to 4.4.0 ([#913](https://github.com/SumoLogic/tailing-sidecar/pull/913))
+- build(deps): bump sumologic/sumologic-otel-collector from 0.154.0-sumo-0-ubi to 0.155.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group across 1 directory ([#915](https://github.com/SumoLogic/tailing-sidecar/pull/915))
+- build(deps): bump renovatebot/github-action from 46.1.17 to 46.1.18 ([#914](https://github.com/SumoLogic/tailing-sidecar/pull/914))
+- build(deps): bump renovatebot/github-action from 46.1.18 to 46.1.19 ([#918](https://github.com/SumoLogic/tailing-sidecar/pull/918))
+- build(deps): bump github.com/go-logr/logr from 1.4.3 to 1.4.4 in /operator ([#921](https://github.com/SumoLogic/tailing-sidecar/pull/921))
+- build(deps): bump renovatebot/github-action from 46.1.19 to 46.1.20 ([#920](https://github.com/SumoLogic/tailing-sidecar/pull/920))
+- ci: add labeler for PRs ([#922](https://github.com/SumoLogic/tailing-sidecar/pull/922))
+- build(deps): bump actions/labeler from 6 to 7 ([#924](https://github.com/SumoLogic/tailing-sidecar/pull/924))
+- build(deps): bump actions/checkout from 6 to 7 ([#923](https://github.com/SumoLogic/tailing-sidecar/pull/923))
+- build(deps): bump golang from 1.26.4 to 1.26.5 in /operator in the docker-base-images group across 1 directory ([#916](https://github.com/SumoLogic/tailing-sidecar/pull/916))
+- build(deps): bump docker/login-action from 4.4.0 to 4.6.0 ([#930](https://github.com/SumoLogic/tailing-sidecar/pull/930))
+- build(deps): bump renovatebot/github-action from 46.1.20 to 46.2.0 ([#931](https://github.com/SumoLogic/tailing-sidecar/pull/931))
+- build(deps): bump sumologic/sumologic-otel-collector from 0.155.0-sumo-0-ubi to 0.158.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#938](https://github.com/SumoLogic/tailing-sidecar/pull/938))
+- build(deps): bump github.com/stretchr/testify from 1.11.1 to 1.12.0 in /operator ([#937](https://github.com/SumoLogic/tailing-sidecar/pull/937))
+- build(deps): bump renovatebot/github-action from 46.2.0 to 46.2.2 ([#935](https://github.com/SumoLogic/tailing-sidecar/pull/935))
+- build(deps): bump the kubernetes group across 1 directory with 3 updates ([#926](https://github.com/SumoLogic/tailing-sidecar/pull/926))
+
+
+
 ## [v0.20.5] - 2026-06-09
 
 - build(deps): bump renovatebot/github-action from 46.1.14 to 46.1.15 ([#896](https://github.com/SumoLogic/tailing-sidecar/pull/896))
