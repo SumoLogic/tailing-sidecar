@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20.7] - 2026-08-31
+
+- chore(deps): bump quay.io/brancz/kube-rbac-proxy Docker tag to v0.22.1 ([#917](https://github.com/SumoLogic/tailing-sidecar/pull/917))
+- build(deps): bump the kubernetes group across 1 directory with 2 updates ([#945](https://github.com/SumoLogic/tailing-sidecar/pull/945))
+- build(deps): bump github.com/onsi/gomega from 1.42.1 to 1.43.0 in /operator ([#944](https://github.com/SumoLogic/tailing-sidecar/pull/944))
+- build(deps): bump golang from 1.26.5 to 1.26.6 in /operator in the docker-base-images group across 1 directory ([#936](https://github.com/SumoLogic/tailing-sidecar/pull/936))
+- build(deps): bump github.com/stretchr/testify from 1.12.0 to 1.12.1 in /operator ([#941](https://github.com/SumoLogic/tailing-sidecar/pull/941))
+
+
+
 ## [v0.20.6] - 2026-08-19
 
 - build(deps): bump alpine from 3.23.4 to 3.24.0 in /sidecar/otelcol in the docker-base-images group ([#902](https://github.com/SumoLogic/tailing-sidecar/pull/902))
