@@ -6,6 +6,10 @@ updates:
       interval: "daily"
       time: "06:27"
       timezone: "Europe/Warsaw"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
 
   - package-ecosystem: "docker"
     directory: "/operator"
@@ -17,6 +21,10 @@ updates:
       docker-base-images:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
 
   - package-ecosystem: "docker"
     directory: "/sidecar/otelcol"
@@ -28,6 +36,10 @@ updates:
       docker-base-images:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
 
   - package-ecosystem: "gomod"
     directory: "/operator"
@@ -40,3 +52,7 @@ updates:
         patterns:
           - "k8s.io/*"
           - "sigs.k8s.io/*"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
