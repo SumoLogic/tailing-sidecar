@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20.8] - 2026-09-29
+
+- build(deps): bump renovatebot/github-action from 46.2.2 to 46.2.4 ([#943](https://github.com/SumoLogic/tailing-sidecar/pull/943))
+
+- build(deps): bump renovatebot/github-action from 46.2.4 to 46.2.5 ([#948](https://github.com/SumoLogic/tailing-sidecar/pull/948))
+
+- build(deps): bump golang from 1.26.6 to 1.27.0 in /operator in the docker-base-images group across 1 directory ([#947](https://github.com/SumoLogic/tailing-sidecar/pull/947))
+
+- build(deps): bump docker/setup-qemu-action from 4.2.0 to 4.3.0 ([#950](https://github.com/SumoLogic/tailing-sidecar/pull/950))
+
+- build(deps): bump sigs.k8s.io/controller-runtime from 0.24.1 to 0.25.0 in /operator in the kubernetes group ([#951](https://github.com/SumoLogic/tailing-sidecar/pull/951))
+
+- build(deps): bump golang from 1.27.0 to 1.27.1 in /operator in the docker-base-images group ([#949](https://github.com/SumoLogic/tailing-sidecar/pull/949))
+
+- ignore patch versions in dependabot PRs ([#952](https://github.com/SumoLogic/tailing-sidecar/pull/952))
+
+- build(deps): bump sumologic/sumologic-otel-collector from 0.158.0-sumo-0-ubi to 0.160.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#953](https://github.com/SumoLogic/tailing-sidecar/pull/953))
+
+- build(deps): bump renovatebot/github-action from 46.2.5 to 46.3.0 ([#954](https://github.com/SumoLogic/tailing-sidecar/pull/954))
+
+- build(deps): bump docker/setup-qemu-action from 4.3.0 to 4.4.0 ([#956](https://github.com/SumoLogic/tailing-sidecar/pull/956))
+
+- build(deps): bump docker/setup-buildx-action from 4.2.0 to 4.4.0 ([#955](https://github.com/SumoLogic/tailing-sidecar/pull/955))
+
+- build(deps): bump github.com/onsi/gomega from 1.43.0 to 1.44.0 in /operator ([#958](https://github.com/SumoLogic/tailing-sidecar/pull/958))
+
+- chore(deps): bump quay.io/brancz/kube-rbac-proxy Docker tag to v0.23.0 ([#957](https://github.com/SumoLogic/tailing-sidecar/pull/957))
+
+- chore: update deps ([#959](https://github.com/SumoLogic/tailing-sidecar/pull/959))
+
+
+
 ## [v0.20.7] - 2026-08-31
 
 - chore(deps): bump quay.io/brancz/kube-rbac-proxy Docker tag to v0.22.1 ([#917](https://github.com/SumoLogic/tailing-sidecar/pull/917))

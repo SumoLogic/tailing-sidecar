@@ -2,8 +2,8 @@ apiVersion: v2
 name: tailing-sidecar-operator
 description: Installs Tailing Sidecar Operator
 type: application
-version: 0.20.7
-appVersion: 0.20.7
+version: 0.20.8
+appVersion: 0.20.8
 keywords:
   - tailing-sidecar
   - k8s-logging
