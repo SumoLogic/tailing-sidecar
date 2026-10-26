@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.21.0] - 2026-10-26
+
+- build(deps): bump sumologic/sumologic-otel-collector from 0.161.0-sumo-0-ubi to 0.163.0-sumo-0-ubi in /sidecar/otelcol in the docker-base-images group ([#961](https://github.com/SumoLogic/tailing-sidecar/pull/961))
+
+- build(deps): bump docker/login-action from 4.6.0 to 4.7.0 ([#964](https://github.com/SumoLogic/tailing-sidecar/pull/964))
+
+- fix: bump base images to drop compromised eMudhra CA roots ([#963](https://github.com/SumoLogic/tailing-sidecar/pull/963))
+
+
+
 ## [v0.20.8] - 2026-09-29
 
 - build(deps): bump renovatebot/github-action from 46.2.2 to 46.2.4 ([#943](https://github.com/SumoLogic/tailing-sidecar/pull/943))
